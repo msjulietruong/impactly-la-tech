@@ -1,0 +1,29 @@
+/* ======================================= */
+/* Tailwind base, components, utilities */
+/* ======================================= */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ======================================= */
+/* Global Styles */
+/* ======================================= */
+html,
+body {
+  @apply bg-base-100 text-base-content font-sans m-0 p-0;
+  height: 100%;
+  width: 100%;
+}
+
+a {
+  @apply text-primary hover:underline;
+}
+
+button {
+  @apply cursor-pointer;
+}
+
+/* Optional: main container spacing */
+main {
+  @apply flex flex-col items-center justify-center flex-1 p-10 gap-6;
+}
