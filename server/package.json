@@ -8,8 +8,8 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "ingest:esg": "node scripts/ingest-esg.js",
-    "test": "jest --runInBand",
-    "verify": "node scripts/ingest-esg.js && jest --runInBand",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
+    "verify": "node scripts/ingest-esg.js && node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "verify:sh": "bash scripts/verify-local.sh",
     "verify:ps": "powershell -ExecutionPolicy Bypass -File scripts/verify-local.ps1"
   },

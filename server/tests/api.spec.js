@@ -1,7 +1,16 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
-const app = require('../server');
-const Company = require('../models/Company');
+// const request = require('supertest');
+// const mongoose = require('mongoose');
+// const app = require('../server');
+// const Company = require('../models/Company');
+
+import dotenv from 'dotenv';
+if (!process.env.CI) {
+  dotenv.config();
+}
+import request from 'supertest';
+import mongoose from 'mongoose';
+import app from '../server.js';
+import Company from '../models/Company.js';
 
 describe('API Smoke Tests', () => {
   let testCompanyId;
@@ -16,20 +25,20 @@ describe('API Smoke Tests', () => {
 
     try {
       // Connect to test database
-      await mongoose.connect(process.env.MONGODB_URI, { 
+      await mongoose.connect(process.env.MONGODB_URI, {
         serverSelectionTimeoutMS: 5000, // 5 second timeout
-        connectTimeoutMS: 5000 
+        connectTimeoutMS: 5000
       });
-      
+
       // Use TEST_TICKER from environment or default to MSFT
       const targetTicker = process.env.TEST_TICKER || 'MSFT';
-      
+
       // Find a company with the target ticker and ESG data
       const companyWithESG = await Company.findOne({
         tickers: { $regex: new RegExp(`^${targetTicker}$`, 'i') },
         'esgSources.0': { $exists: true }
       });
-      
+
       if (companyWithESG) {
         testCompanyId = companyWithESG._id.toString();
         testTicker = companyWithESG.tickers[0];
@@ -39,7 +48,7 @@ describe('API Smoke Tests', () => {
           'esgSources.0': { $exists: true },
           tickers: { $exists: true, $ne: [] }
         });
-        
+
         if (fallbackCompany) {
           testCompanyId = fallbackCompany._id.toString();
           testTicker = fallbackCompany.tickers[0];
@@ -120,7 +129,7 @@ describe('API Smoke Tests', () => {
       expect(response.body).toHaveProperty('esgSources');
       expect(response.body.tickers).toContain(testTicker);
       expect(Array.isArray(response.body.esgSources)).toBe(true);
-      
+
       if (response.body.esgSources.length > 0) {
         const esgSource = response.body.esgSources[0];
         expect(esgSource).toHaveProperty('raw');
@@ -128,7 +137,7 @@ describe('API Smoke Tests', () => {
         expect(esgSource.raw).toHaveProperty('S');
         expect(esgSource.raw).toHaveProperty('G');
         expect(esgSource.raw).toHaveProperty('scale', '0-100');
-        
+
         // E, S, G should be numbers or null
         const { E, S, G } = esgSource.raw;
         expect([E, S, G].every(val => typeof val === 'number' || val === null)).toBe(true);
@@ -153,12 +162,12 @@ describe('API Smoke Tests', () => {
           return;
         }
       }
-      
+
       expect(response.status).toBe(200);
 
       expect(response.body).toHaveProperty('matches');
       expect(Array.isArray(response.body.matches)).toBe(true);
-      
+
       // If matches exist, validate structure
       if (response.body.matches.length > 0) {
         const company = response.body.matches[0];
@@ -228,13 +237,13 @@ describe('API Smoke Tests', () => {
       // If company has all-null E/S/G, expect 404 instead
       const esgSource = response.body.breakdown;
       const allNull = esgSource.environment === null && esgSource.labor === null && esgSource.governance === null;
-      
+
       if (allNull) {
         // Re-run the test expecting 404
         const response404 = await request(app)
           .get(`/v1/score/${testCompanyId}`)
           .expect(404);
-        
+
         expect(response404.body).toHaveProperty('error');
         expect(response404.body.error).toHaveProperty('code', 'NOT_FOUND');
       }
@@ -247,7 +256,7 @@ describe('API Smoke Tests', () => {
       }
 
       const fakeId = '507f1f77bcf86cd799439011'; // Valid ObjectId format but non-existent
-      
+
       const response = await request(app)
         .get(`/v1/score/${fakeId}`);
 
@@ -259,7 +268,7 @@ describe('API Smoke Tests', () => {
           return;
         }
       }
-      
+
       expect(response.status).toBe(404);
 
       expect(response.body).toHaveProperty('error');
@@ -283,9 +292,9 @@ describe('API Smoke Tests', () => {
           domains: [],
           esgSources: []
         });
-        
+
         await companyWithoutESG.save();
-        
+
         const response = await request(app)
           .get(`/v1/score/${companyWithoutESG._id}`)
           .expect(404);
@@ -293,7 +302,7 @@ describe('API Smoke Tests', () => {
         expect(response.body).toHaveProperty('error');
         expect(response.body.error).toHaveProperty('code', 'NOT_FOUND');
         expect(response.body.error.message).toContain('No ESG data found');
-        
+
         // Clean up test company
         await Company.findByIdAndDelete(companyWithoutESG._id);
       } catch (error) {

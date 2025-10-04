@@ -44,4 +44,5 @@ companySchema.index({ name: 1 });
 companySchema.index({ "esgSources.asOf": -1 });
 
 const Company = mongoose.model("Company", companySchema);
+
 export default Company;

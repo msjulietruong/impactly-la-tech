@@ -35,4 +35,5 @@ jobs:
         npm test
       env:
         CI: true
+        NODE_OPTIONS: --experimental-vm-modules
         # MONGODB_URI not set, so DB tests will be skipped gracefully
