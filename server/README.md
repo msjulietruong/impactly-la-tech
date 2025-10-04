@@ -1,6 +1,7 @@
 # Ethical Product Finder Backend
 
-A Node.js + Express + MongoDB backend API that provides ethical product information by integrating with OpenFoodFacts and ESG data sources.
+A Node.js + Express + MongoDB backend API that provides ethical
+product information by integrating with OpenFoodFacts and ESG data sources.
 
 ## Features
 
@@ -9,28 +10,7 @@ A Node.js + Express + MongoDB backend API that provides ethical product informat
 - **Ethical Scoring**: Weighted ESG scoring methodology
 - **Caching**: MongoDB-based caching for improved performance
 
-## Environment Variables
-
-Create a `.env` file in the server directory:
-
-```bash
-# MongoDB Connection
-MONGODB_URI=mongodb://localhost:27017/ethical-product-finder
-
-# OpenFoodFacts Configuration
-OFF_ENV=staging
-OFF_USER_AGENT=EthicalProductFinder/0.1 (you@example.com)
-
-# Server Configuration
-PORT=3000
-NODE_ENV=development
-
-# Test Configuration (optional)
-TEST_TICKER=MSFT
-```
-
 ## Quick Start
-
 ### One-Command Setup (Recommended)
 
 1. **Setup environment**:
@@ -44,7 +24,7 @@ TEST_TICKER=MSFT
    ```bash
    # For bash/zsh users:
    npm run verify:sh
-   
+
    # For PowerShell users:
    npm run verify:ps
    ```
@@ -146,7 +126,7 @@ curl "http://localhost:3000/v1/score/507f1f77bcf86cd799439011"
 
 ESG scores are calculated using weighted factors:
 - **Environment**: 40% weight
-- **Labor/Social**: 40% weight  
+- **Labor/Social**: 40% weight
 - **Governance**: 20% weight
 
 Formula: `overall = round(E×0.4 + S×0.4 + G×0.2)`
@@ -170,7 +150,3 @@ Confidence calculation:
 ## API Documentation
 
 See [docs/api-contracts.md](docs/api-contracts.md) for complete API documentation.
-
-## License
-
-MIT

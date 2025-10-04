@@ -27,7 +27,7 @@ class OpenFoodFactsService {
 
   async lookupProduct(params) {
     const { upc, ean, gtin, q } = params;
-    
+
     // Validate input parameters
     if (!upc && !ean && !gtin && !q) {
       throw {
@@ -45,7 +45,7 @@ class OpenFoodFactsService {
     }
 
     let result;
-    
+
     if (q) {
       // Text search
       result = await this.searchByText(q);
@@ -57,17 +57,17 @@ class OpenFoodFactsService {
 
     // Normalize the response
     const normalized = this.normalizeProduct(result, upc || ean || gtin || q);
-    
+
     // Cache the result
     await this.setCache(cacheKey, normalized);
-    
+
     return normalized;
   }
 
   async getByBarcode(barcode) {
     try {
       const response = await axios.get(`${this.baseURL}/product/${barcode}.json`, this.baseConfig);
-      
+
       if (response.status === 404 || !response.data.product) {
         throw {
           code: 'NOT_FOUND',
@@ -137,7 +137,7 @@ class OpenFoodFactsService {
     const code = product.code || identifier;
     const brands = product.brands || product.brand || '';
     const brandList = brands.split(',').map(b => b.trim()).filter(Boolean);
-    
+
     // Determine barcode type and value
     let barcodeType, barcodeValue;
     if (identifier) {
@@ -181,7 +181,7 @@ class OpenFoodFactsService {
     // This is a stub implementation
     // In a real system, this would query a company database
     // and potentially return ambiguous results if multiple companies match
-    
+
     if (brands.length === 0) {
       return {
         resolution: 'unresolved',

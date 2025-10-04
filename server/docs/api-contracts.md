@@ -46,7 +46,7 @@ Look up product information using barcode or text search.
 
 #### Query Parameters
 - `upc` (string, optional): UPC barcode
-- `ean` (string, optional): EAN barcode  
+- `ean` (string, optional): EAN barcode
 - `gtin` (string, optional): GTIN barcode
 - `q` (string, optional): Text search query
 
@@ -120,7 +120,7 @@ Look up product information using barcode or text search.
           "name": "Company A"
         },
         {
-          "companyId": "company_456", 
+          "companyId": "company_456",
           "confidence": 0.78,
           "name": "Company B"
         }

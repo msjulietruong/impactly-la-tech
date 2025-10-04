@@ -29,10 +29,10 @@ const scoreController = {
       // Get the latest ESG entry by asOf (or newest if asOf missing)
       const latestESG = company.esgSources.reduce((latest, source) => {
         if (!latest) return source;
-        
+
         const latestAsOf = latest.asOf || new Date().toISOString();
         const sourceAsOf = source.asOf || new Date().toISOString();
-        
+
         return sourceAsOf > latestAsOf ? source : latest;
       });
 
@@ -46,7 +46,7 @@ const scoreController = {
       if (availableFactors.length < 3) {
         const factorCount = availableFactors.length;
         const equalWeight = 1.0 / factorCount;
-        
+
         weights = {
           wE: E !== null ? equalWeight : 0,
           wS: S !== null ? equalWeight : 0,
@@ -56,14 +56,14 @@ const scoreController = {
 
       // Calculate overall score
       const overall = Math.round(
-        (E || 0) * weights.wE + 
-        (S || 0) * weights.wS + 
+        (E || 0) * weights.wE +
+        (S || 0) * weights.wS +
         (G || 0) * weights.wG
       );
 
       // Calculate confidence
       let confidence = 0.80;
-      
+
       // +0.05 if asOf ≤ 24 months old
       if (latestESG.asOf) {
         const esgDate = new Date(latestESG.asOf);
@@ -72,12 +72,12 @@ const scoreController = {
           confidence += 0.05;
         }
       }
-      
+
       // +0.05 if none of E/S/G is null
       if (E !== null && S !== null && G !== null) {
         confidence += 0.05;
       }
-      
+
       // Cap at 0.95
       confidence = Math.min(confidence, 0.95);
 
