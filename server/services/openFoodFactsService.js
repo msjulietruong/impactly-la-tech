@@ -1,11 +1,11 @@
-const axios = require('axios');
-const ProductCache = require('../models/ProductCache');
+import axios from 'axios';
+import ProductCache from '../models/ProductCache.js';
 
 class OpenFoodFactsService {
   constructor() {
     this.env = process.env.OFF_ENV || 'staging';
     this.userAgent = process.env.OFF_USER_AGENT || 'EthicalProductFinder/0.1 (you@example.com)';
-    
+
     this.baseConfig = {
       headers: {
         'User-Agent': this.userAgent,
@@ -226,4 +226,4 @@ class OpenFoodFactsService {
   }
 }
 
-module.exports = new OpenFoodFactsService();
+export default new OpenFoodFactsService();

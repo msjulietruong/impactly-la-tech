@@ -1,22 +1,20 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
 
-// Import controllers
-const healthController = require('../controllers/healthController');
-const lookupController = require('../controllers/lookupController');
-const companyController = require('../controllers/companyController');
-const scoreController = require('../controllers/scoreController');
+import healthController from '../controllers/healthController.js';
+import lookupController from '../controllers/lookupController.js';
+import companyController from '../controllers/companyController.js';
+import scoreController from '../controllers/scoreController.js';
 
-// Import middleware
-const validateObjectId = require('../middleware/validateObjectId');
+import validateObjectId from '../middleware/validateObjectId.js';
 
-// Health check route
+const router = new express.Router();
+
 router.get('/health', healthController.getHealth);
 
-// API v1 routes
+// NOTE(liam): v1
 router.get('/v1/lookup', lookupController.lookupProduct);
-router.get('/v1/company', companyController.getCompany); // Support ticker and q query params
-router.get('/v1/company/:id', validateObjectId('id'), companyController.getCompany); // Support MongoDB _id
+router.get('/v1/company', companyController.getCompany);
+router.get('/v1/company/:id', validateObjectId('id'), companyController.getCompany);
 router.get('/v1/score/:companyId', validateObjectId('companyId'), scoreController.getScore);
 
-module.exports = router;
+export default router;

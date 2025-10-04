@@ -1,10 +1,10 @@
-const openFoodFactsService = require('../services/openFoodFactsService');
+import openFoodFactsService from '../services/openFoodFactsService.js';
 
 const lookupController = {
   lookupProduct: async (req, res) => {
     try {
       const { upc, ean, gtin, q } = req.query;
-      
+
       const result = await openFoodFactsService.lookupProduct({
         upc, ean, gtin, q
       });
@@ -28,4 +28,4 @@ const lookupController = {
   }
 };
 
-module.exports = lookupController;
+export default lookupController;

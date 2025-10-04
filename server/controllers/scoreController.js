@@ -1,4 +1,4 @@
-const Company = require('../models/Company');
+import Company from '../models/Company.js';
 
 const scoreController = {
   getScore: async (req, res) => {
@@ -7,7 +7,7 @@ const scoreController = {
 
       // Load company by _id
       const company = await Company.findById(companyId);
-      
+
       if (!company) {
         return res.status(404).json({
           error: {
@@ -121,4 +121,4 @@ const scoreController = {
   }
 };
 
-module.exports = scoreController;
+export default scoreController;

@@ -1,7 +1,8 @@
 {
   "name": "ethical-product-finder-backend",
-  "version": "1.0.0",
-  "description": "Backend API for ethical product finder with OpenFoodFacts integration",
+  "version": "0.0.1",
+  "description": "Backend API for ethical product finder.",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",

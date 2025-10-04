@@ -1,4 +1,4 @@
-const Company = require('../models/Company');
+import Company from "../models/Company.js";
 
 const companyController = {
   getCompany: async (req, res) => {
@@ -85,4 +85,4 @@ function formatCompanyResponse(company) {
   };
 }
 
-module.exports = companyController;
+export default companyController;

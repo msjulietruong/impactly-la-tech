@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const productCacheSchema = new mongoose.Schema({
   code: {
@@ -18,4 +18,5 @@ const productCacheSchema = new mongoose.Schema({
 // TTL index for automatic cleanup after seven days
 productCacheSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 604800 });
 
-module.exports = mongoose.model('ProductCache', productCacheSchema);
+const ProductCache = mongoose.model("ProductCache", productCacheSchema);
+export default ProductCache;

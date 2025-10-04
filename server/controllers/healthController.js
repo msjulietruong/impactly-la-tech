@@ -9,4 +9,4 @@ const healthController = {
   }
 };
 
-module.exports = healthController;
+export default healthController;
