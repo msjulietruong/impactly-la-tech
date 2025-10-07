@@ -1,0 +1,38 @@
+{
+  "name": "ethical-product-finder-backend",
+  "version": "0.0.1",
+  "description": "Backend API for ethical product finder.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "ingest:esg": "node scripts/ingest-esg.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
+    "verify": "node scripts/ingest-esg.js && node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
+    "verify:sh": "bash scripts/verify-local.sh",
+    "verify:ps": "powershell -ExecutionPolicy Bypass -File scripts/verify-local.ps1"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "csv-parse": "^5.5.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2",
+    "supertest": "^6.3.4"
+  },
+  "keywords": [
+    "api",
+    "food",
+    "ethical",
+    "products",
+    "barcode"
+  ],
+  "author": "",
+  "license": ""
+}
