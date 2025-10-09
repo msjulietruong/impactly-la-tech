@@ -31,7 +31,7 @@ jobs:
       - name: Run tests
         run: |
           cd backend
-          npm run dev
+          npm run
         env:
           CI: true
           NODE_OPTIONS: --experimental-vm-modules
@@ -73,6 +73,7 @@ jobs:
           package: ./backend
 
           
+
 
 
 
