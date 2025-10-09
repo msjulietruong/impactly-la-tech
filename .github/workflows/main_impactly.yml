@@ -17,26 +17,26 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: backend/package-lock.json
-
-    - name: Install dependencies
-      run: |
-        cd backend
-        npm ci
-
-    - name: Run tests
-      run: |
-        cd backend
-        npm run
-      env:
-        CI: true
-        NODE_OPTIONS: --experimental-vm-modules
-      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+  
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm ci
+  
+      - name: Run tests
+        run: |
+          cd backend
+          npm run
+        env:
+          CI: true
+          NODE_OPTIONS: --experimental-vm-modules
+        
 
   deploy:
     runs-on: ubuntu-latest
@@ -67,3 +67,4 @@ jobs:
           package: .
 
           
+
