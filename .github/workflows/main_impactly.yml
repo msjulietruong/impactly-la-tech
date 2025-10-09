@@ -17,23 +17,26 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
-        with:
-          node-version: '22.x'
+    - name: Install dependencies
+      run: |
+        cd backend
+        npm ci
 
-      - name: npm install, build, and test
-        run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-app
-          path: .
+    - name: Run tests
+      run: |
+        cd backend
+        npm run
+      env:
+        CI: true
+        NODE_OPTIONS: --experimental-vm-modules
+      
 
   deploy:
     runs-on: ubuntu-latest
@@ -62,4 +65,5 @@ jobs:
           app-name: 'impactly'
           slot-name: 'Production'
           package: .
+
           
