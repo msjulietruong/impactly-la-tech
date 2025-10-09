@@ -70,9 +70,10 @@ jobs:
         with:
           app-name: 'impactly'
           slot-name: 'Production'
-          package: ./backend
+          package: .
 
           
+
 
 
 
