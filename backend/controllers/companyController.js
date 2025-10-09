@@ -1,75 +1,81 @@
 import Company from "../models/Company.js";
 
-const companyController = {
-  getCompany: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { ticker, q } = req.query;
+// Get company by ID, ticker, or search query
+export const getCompany = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { ticker, q } = req.query;
 
-      // Validate input parameters
-      if (!id && !ticker && !q) {
-        return res.status(400).json({
-          error: {
-            code: 'INVALID_ARGUMENT',
-            message: 'Missing required parameter. Provide either id, ticker, or q'
-          }
-        });
-      }
+    let company;
 
-      let company;
-
-      if (id) {
-        // Load by MongoDB _id
-        company = await Company.findById(id);
-      } else if (ticker) {
-        // Case-insensitive match on tickers array
-        company = await Company.findOne({
-          tickers: { $regex: new RegExp(`^${ticker}$`, 'i') }
-        });
-      } else if (q) {
-        // Case-insensitive regex search on name or aliases
-        const companies = await Company.find({
-          $or: [
-            { name: { $regex: q, $options: 'i' } },
-            { aliases: { $regex: q, $options: 'i' } }
-          ]
-        }).limit(10);
-
-        return res.status(200).json({
-          matches: companies.map(formatCompanyResponse)
-        });
-      }
-
+    if (id) {
+      // Find company by MongoDB ID
+      company = await Company.findById(id);
       if (!company) {
-        return res.status(404).json({
+        return res.status(404).json({ 
           error: {
             code: 'NOT_FOUND',
-            message: `Company not found with ${id ? 'ID' : 'ticker'}: ${id || ticker}`
+            message: `Company not found with ID: ${id}`
           }
         });
       }
-
-      res.status(200).json(formatCompanyResponse(company));
-    } catch (error) {
-      const status = error.status || 500;
-      const response = {
-        error: {
-          code: error.code || 'INTERNAL_ERROR',
-          message: error.message || 'An internal error occurred'
-        }
-      };
-
-      if (error.details) {
-        response.error.details = error.details;
+      
+      res.json(formatCompany(company));
+      
+    } else if (ticker) {
+      // Find company by ticker symbol (case-insensitive)
+      company = await Company.findOne({
+        tickers: { $regex: new RegExp(`^${ticker}$`, 'i') }
+      });
+      
+      if (!company) {
+        return res.status(404).json({ 
+          error: {
+            code: 'NOT_FOUND',
+            message: `Company not found with ticker: ${ticker}`
+          }
+        });
       }
+      
+      res.json(formatCompany(company));
+      
+    } else if (q) {
+      // Search companies by name or aliases
+      const companies = await Company.find({
+        $or: [
+          { name: { $regex: q, $options: 'i' } },
+          { aliases: { $regex: q, $options: 'i' } }
+        ]
+      }).limit(10);
 
-      res.status(status).json(response);
+      res.json({
+        matches: companies.map(formatCompany),
+        totalResults: companies.length
+      });
+      
+    } else {
+      // No valid parameters provided
+      return res.status(400).json({
+        error: {
+          code: 'INVALID_ARGUMENT',
+          message: 'Missing required parameter. Provide either id, ticker, or q'
+        }
+      });
     }
+
+  } catch (error) {
+    console.error('Company lookup error:', error);
+    res.status(500).json({ 
+      error: {
+        code: 'INTERNAL_ERROR',
+        message: 'Failed to lookup company'
+      }
+    });
   }
 };
 
-// Helper function to format company response
-function formatCompanyResponse(company) {
+// Helper function to format company data for response
+function formatCompany(company) {
   return {
     id: company._id.toString(),
     name: company.name,
@@ -84,5 +90,3 @@ function formatCompanyResponse(company) {
     }
   };
 }
-
-export default companyController;
