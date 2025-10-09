@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 
 // Import controllers
 import * as healthController from '../controllers/healthController.js';
