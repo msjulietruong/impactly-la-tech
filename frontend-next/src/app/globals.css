@@ -1,6 +1,8 @@
 /* ======================================= */
 /* Tailwind base, components, utilities */
 /* ======================================= */
+@import "tailwindcss";
+@plugin "daisyui";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,20 +12,29 @@
 /* ======================================= */
 html,
 body {
-  @apply bg-base-100 text-base-content font-sans m-0 p-0;
+  margin: 0;
+  padding: 0;
   height: 100%;
   width: 100%;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
 }
 
 a {
-  @apply text-primary hover:underline;
+  text-decoration: underline;
 }
 
 button {
-  @apply cursor-pointer;
+  cursor: pointer;
 }
 
 /* Optional: main container spacing */
 main {
-  @apply flex flex-col items-center justify-center flex-1 p-10 gap-6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 10px;
+  gap: 6px;
 }
