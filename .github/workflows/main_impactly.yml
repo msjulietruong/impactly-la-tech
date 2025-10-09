@@ -31,7 +31,7 @@ jobs:
       - name: Run tests
         run: |
           cd backend
-          npm run
+          npm run dev
         env:
           CI: true
           NODE_OPTIONS: --experimental-vm-modules
@@ -55,6 +55,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: backend-app
+          path: backend
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -69,9 +70,10 @@ jobs:
         with:
           app-name: 'impactly'
           slot-name: 'Production'
-          package: backend
+          package: ./backend
 
           
+
 
 
 
