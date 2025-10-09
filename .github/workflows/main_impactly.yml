@@ -36,6 +36,12 @@ jobs:
         env:
           CI: true
           NODE_OPTIONS: --experimental-vm-modules
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-app
+          path: .
         
 
   deploy:
@@ -67,4 +73,5 @@ jobs:
           package: .
 
           
+
 
