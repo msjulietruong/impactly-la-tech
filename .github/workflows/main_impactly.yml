@@ -27,14 +27,6 @@ jobs:
         run: |
           cd backend
           npm ci
-  
-      - name: Run tests
-        run: |
-          cd backend
-          npm run
-        env:
-          CI: true
-          NODE_OPTIONS: --experimental-vm-modules
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -73,6 +65,7 @@ jobs:
           package: ./backend
 
           
+
 
 
 
