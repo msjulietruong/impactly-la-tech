@@ -1,26 +1,23 @@
-import { mongoose } from 'mongoose';
+import mongoose from 'mongoose';
 
-/**
- * Middleware to validate MongoDB ObjectId format
- * Returns 400 if the ID is invalid instead of 500
- */
+// Validate MongoDB ObjectId format in URL parameters
 export default function validateObjectId(paramName = 'id') {
   return (req, res, next) => {
     const id = req.params[paramName];
 
+    // Skip validation if no ID provided
     if (!id) {
       return next();
     }
 
+    // Check if ID is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
-        error: {
-          code: 'INVALID_ARGUMENT',
-          message: `Invalid ${paramName} format. Expected a valid MongoDB ObjectId.`
-        }
+        error: `Invalid ${paramName} format. Expected a valid MongoDB ObjectId.`
       });
     }
 
+    // Continue to next middleware
     next();
   };
 }
