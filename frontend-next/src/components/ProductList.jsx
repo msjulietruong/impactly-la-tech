@@ -73,7 +73,7 @@ export default function ProductList() {
                   alt={product.name}
                   className="w-20 h-20 rounded-2xl my-auto md:w-32 md:h-32 md:mx-auto md:py-2"
                 />
-                <div className="ml-6 my-auto md:pt-4">
+                <div className="ml-6 my-auto md:pt-4 md:ml-0">
                   <h4 className="text-xs  text-[var(--theme-color-secondary)] font-medium md:text-sm">
                     {product.company}
                   </h4>
