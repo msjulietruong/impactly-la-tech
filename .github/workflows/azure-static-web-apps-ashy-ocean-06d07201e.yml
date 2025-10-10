@@ -6,12 +6,6 @@ on:
       - main
     paths:
       - frontend-next/**
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
-    paths:
-      - frontend-next/**
 
 jobs:
   build_and_deploy_job:
