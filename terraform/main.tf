@@ -2,11 +2,17 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0.2"
+      version = "~> 4.47.0"
     }
   }
 
-  backend "azurerm" {}
+  required_version = ">= 1.1.0"
+  # backend "azurerm" {
+  #   resource_group_name = ""
+  #   storage_account_name = ""
+  #   container_name = ""
+  #   key = ""
+  # }
 }
 
 provider "azurerm" {
@@ -14,23 +20,23 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "project" {
-  name     = "DefaultResourceGroup-CUS"
-  location = "North Central US"
+  name     = "impactly-project"
+  location = "West US 2"
 }
 
 resource "azurerm_service_plan" "backend_plan" {
-  name = "impactly-backend-plan"
+  name                = "impactly-backend-plan"
   resource_group_name = azurerm_resource_group.project.name
-  location = azurerm_resource_group.project.location
-  os_type = "Linux"
-  sku_name = "Free"
+  location            = azurerm_resource_group.project.location
+  os_type             = "Linux"
+  sku_name            = "F1"
 }
 
 resource "azurerm_linux_web_app" "backend" {
-  name = "impactly-backend"
+  name                = "impactly-backend"
   resource_group_name = azurerm_resource_group.project.name
-  location = azurerm_resource_group.project.location
-  service_plan_id = azurerm_service_plan.project_plan.id
+  location            = azurerm_resource_group.project.location
+  service_plan_id     = azurerm_service_plan.backend_plan.id
 
   site_config {
     application_stack {
@@ -44,9 +50,14 @@ resource "azurerm_linux_web_app" "backend" {
 }
 
 resource "azurerm_static_web_app" "frontend" {
-  name = "impactly-frontend"
+  name                = "impactly-frontend"
   resource_group_name = azurerm_resource_group.project.name
-  location = azurerm_resource_group.project.location
+  location            = azurerm_resource_group.project.location
 
   sku_tier = "Free"
+}
+
+output "frontend_deployment_token" {
+  value     = azurerm_static_web_app.frontend.api_key
+  sensitive = true
 }
