@@ -1,0 +1,41 @@
+name: Terraform Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@4
+
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.0
+
+      - name: Terraform Initialize
+        working-directory: terraform
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: terraform
+        run: terraform plan
+
+      - name: Terraform Apply
+        working-directory: terraform
+        run: terraform apply -auto-approve
+
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+      # - name: Terraform Outputs
+      #   working-directory: terraform
+      #   id: tf
+      #   run: |
+      #     echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
+      #     echo "FRONTEND_TOKEN=$(terraform output -raw frontend_token)" >> $GITHUB_ENV
