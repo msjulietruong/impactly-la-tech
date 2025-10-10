@@ -64,31 +64,33 @@ export default function ProductList() {
   return (
     <div>
       <ul>
-        {data.map((product, index) => (
-          <li key={index}>
-            <div className="border-[var(--theme-color-tertiary)]/20 border-2 rounded-2xl p-4 flex my-2 bg-[#f9f9f9]/50">
-              <img
-                src={product.img}
-                alt={product.name}
-                className="w-20 h-20 rounded-2xl my-auto"
-              />
-              <div className="ml-6 my-auto">
-                <h4 className="text-xs  text-[var(--theme-color-secondary)] font-medium">
-                  {product.company}
-                </h4>
-                <h3 className="text-md text-[var(--theme-color-primary)] font-semibold">
-                  {product.name}
-                </h3>
-                <h4
-                  className="text-xs text-white font-semibold rounded-2xl py-1 px-2 my-1"
-                  style={{ backgroundColor: score_color(product.score) }}
-                >
-                  Score: {product.score}/100
-                </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+          {data.map((product, index) => (
+            <li key={index}>
+              <div className="border-[var(--theme-color-tertiary)]/20 border-2 rounded-2xl p-4 flex my-2 bg-[#f9f9f9]/50 md:p-6 md:flex-col ">
+                <img
+                  src={product.img}
+                  alt={product.name}
+                  className="w-20 h-20 rounded-2xl my-auto md:w-32 md:h-32 md:mx-auto md:py-2"
+                />
+                <div className="ml-6 my-auto md:pt-4">
+                  <h4 className="text-xs  text-[var(--theme-color-secondary)] font-medium md:text-sm">
+                    {product.company}
+                  </h4>
+                  <h3 className="text-md text-[var(--theme-color-primary)] font-semibold md:text-lg">
+                    {product.name}
+                  </h3>
+                  <h4
+                    className="text-xs text-white font-semibold rounded-2xl py-1 px-2 my-1 md:text-base md:py-2"
+                    style={{ backgroundColor: score_color(product.score) }}
+                  >
+                    Score: {product.score}/100
+                  </h4>
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
+            </li>
+          ))}
+        </div>
       </ul>
     </div>
   );
