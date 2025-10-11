@@ -46,9 +46,6 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    environment:
-      name: Production
-      url: https://${{ env.API_URL }}.azurewebs.net
 
     steps:
       - name: Download artifact from build job
@@ -68,5 +65,5 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: https://${{ env.API_URL }}.azurewebs.net
+          app-name: https://${{ env.API_URL }}.azurewebsite.net
           package: backend
