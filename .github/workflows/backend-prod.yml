@@ -65,5 +65,5 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: https://${{ env.API_URL }}.azurewebsites.net
+          app-name: https://${{ env.APP_URL }}.azurewebsites.net
           package: backend
