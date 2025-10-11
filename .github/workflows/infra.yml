@@ -31,14 +31,6 @@ jobs:
         with:
           terraform_version: 1.7.0
 
-      - name: Terraform Upload Config
-        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-        id: plan-upload
-        with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          directory: ./terraform
-          speculative: true
-
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -65,3 +57,4 @@ jobs:
       #   run: |
       #     echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
       #     echo "FRONTEND_TOKEN=$(terraform output -raw frontend_token)" >> $GITHUB_ENV
+
