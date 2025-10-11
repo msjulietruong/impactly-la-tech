@@ -7,12 +7,13 @@ terraform {
   }
 
   required_version = ">= 1.1.0"
-  # backend "azurerm" {
-  #   resource_group_name = ""
-  #   storage_account_name = ""
-  #   container_name = ""
-  #   key = ""
-  # }
+  cloud {
+    hostname = "app.terraform.io"
+    organization = "impactly-la-tech"
+    workspaces {
+      name = "impactly-la-tech"
+    }
+  }
 }
 
 provider "azurerm" {
@@ -25,7 +26,7 @@ resource "azurerm_resource_group" "project" {
 }
 
 resource "azurerm_resource_group" "project2" {
-  name = "impactly-backend-project"
+  name     = "impactly-backend-project"
   location = "North Central US"
 }
 
