@@ -8,7 +8,7 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@4
+      - uses: actions/checkout@v4
 
       - name: Terraform Setup
         uses: hashicorp/setup-terraform@v3
@@ -39,3 +39,4 @@ jobs:
       #   run: |
       #     echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
       #     echo "FRONTEND_TOKEN=$(terraform output -raw frontend_token)" >> $GITHUB_ENV
+
