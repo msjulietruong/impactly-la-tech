@@ -39,8 +39,7 @@ jobs:
           subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
 
       - name: Terraform Initialize
-        run: terraform init -backend-config="organization=${{ env.TF_CLOUD_ORGANIZATION }}" \
-                            -backend-config="workspaces.name=${{ env.TF_WORKSPACE }}"
+        run: terraform init
 
       - name: Terraform Validate
         run: terraform validate
