@@ -39,9 +39,6 @@ jobs:
           tenant-id: ${{ env.ARM_TENANT_ID }}
           subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
 
-      - name: Terraform Initialize
-        run: terraform init
-
       - name: Terraform Validate
         run: terraform validate
 
@@ -57,4 +54,5 @@ jobs:
       #   run: |
       #     echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
       #     echo "FRONTEND_TOKEN=$(terraform output -raw frontend_token)" >> $GITHUB_ENV
+
 
