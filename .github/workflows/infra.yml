@@ -13,8 +13,6 @@ env:
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-  TF_CLOUD_ORGANIZATION: "impactly-la-tech"
-  TF_WORKSPACE: "impactly-la-tech"
 
 jobs:
   terraform:
@@ -58,6 +56,7 @@ jobs:
       #   run: |
       #     echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
       #     echo "FRONTEND_TOKEN=$(terraform output -raw frontend_token)" >> $GITHUB_ENV
+
 
 
 
