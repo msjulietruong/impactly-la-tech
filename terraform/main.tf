@@ -7,11 +7,11 @@ terraform {
   }
 
   required_version = ">= 1.1.0"
-  cloud {
+  backend "remote" {
     hostname = "app.terraform.io"
-    organization = "impactly-la-tech"
+    organization = "impactly-la-lech"
     workspaces {
-      name = "impactly-la-tech"
+      name = "impactly"
     }
   }
 }
