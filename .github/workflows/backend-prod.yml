@@ -11,11 +11,10 @@ env:
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-  API_URL: ${{ needs.terraform.outputs.app_url }}
+  APP_URL: impactly-backend
 
 jobs:
   build:
-    needs: terraform
     runs-on: ubuntu-latest
     permissions:
       id-token: write
