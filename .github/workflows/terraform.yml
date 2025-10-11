@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - terraform/**
+      - .github/workflows/**
 
 permissions:
   id-token: write
