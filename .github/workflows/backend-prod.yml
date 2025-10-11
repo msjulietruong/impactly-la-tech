@@ -1,0 +1,84 @@
+name: Backend Server CI
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - backend/**
+
+env:
+  NODE_VERSION: '20.x'
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  API_URL: ${{ needs.terraform.outputs.app_url }}
+
+jobs:
+  build:
+    needs: terraform
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+        working-directory: backend
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-app
+          path: backend
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: Production
+      url: ${{ env.API_URL }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-app
+          path: backend
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.ARM_CLIENT_ID }}
+          tenant-id: ${{ env.ARM_TENANT_ID }}
+          subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_APP_NAME }}
+          package: backend
+
+
+
+
+
+
+
+
+
+
+
+
+
+
