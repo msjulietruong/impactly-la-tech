@@ -52,6 +52,7 @@ resource "azurerm_linux_web_app" "backend" {
   }
 
   app_settings = {
+    "MONGODB_URI" = var.mongodb_uri
     "WEBSITES_PORT" = "3000"
   }
 }
