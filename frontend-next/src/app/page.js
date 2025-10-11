@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import Modal from "../components/Modal";
+import BarcodeScannerContent from "../components/BarcodeScanner";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
