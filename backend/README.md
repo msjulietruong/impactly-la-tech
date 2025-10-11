@@ -1,5 +1,6 @@
 # Ethical Product Finder Backend
 
+
 A Node.js + Express + MongoDB backend API that provides ethical
 product information by integrating with OpenFoodFacts and ESG data sources.
 
