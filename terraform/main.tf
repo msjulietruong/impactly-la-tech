@@ -63,9 +63,3 @@ resource "azurerm_static_web_app" "frontend" {
 
   sku_tier = "Free"
 }
-
-output "frontend_deployment_token" {
-  value     = azurerm_static_web_app.frontend.api_key
-  sensitive = true
-}
-

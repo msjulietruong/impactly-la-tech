@@ -3,6 +3,8 @@ name: Terraform Deploy
 on:
   push:
     branches: [ main ]
+    paths:
+      - terraform/**
 
 permissions:
   id-token: write
@@ -19,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       app_url: ${{ steps.output_step.outputs.app_url }}
+      frontend_token: ${{ steps.output_step.outputs.frontend_token }}
     defaults:
       run:
         working-directory: terraform
@@ -52,14 +55,9 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
-      - name: Terraform Output
-        id: output_step
+      - name: Terraform Outputs
+        working-directory: terraform
+        id: tf-out
         run: |
-          echo "app_url=$(terraform output -raw app_url)" >> $GITHUB_OUTPUT
-
-      # - name: Terraform Outputs
-      #   working-directory: terraform
-      #   id: tf
-      #   run: |
-      #     echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
-      #     echo "FRONTEND_TOKEN=$(terraform output -raw frontend_token)" >> $GITHUB_ENV
+          echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
+          echo "FRONTEND_TOKEN=$(terraform output -raw frontend_token)" >> $GITHUB_ENV
