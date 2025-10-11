@@ -16,7 +16,7 @@ env:
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-  TF_VAR_MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  TF_VAR_mongodb_uri: ${{ secrets.MONGODB_URI }}
 
 jobs:
   terraform:
