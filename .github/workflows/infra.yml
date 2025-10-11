@@ -12,6 +12,9 @@ env:
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+  TF_CLOUD_ORGANIZATION: "impactly-la-tech"
+  TF_WORKSPACE: "impactly-la-tech"
 
 jobs:
   terraform:
@@ -19,7 +22,7 @@ jobs:
     defaults:
       run:
         working-directory: terraform
-        
+
     steps:
       - uses: actions/checkout@v4
 
@@ -27,6 +30,14 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.7.0
+
+      - name: Terraform Upload Config
+        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
+        id: plan-upload
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          directory: ./terraform
+          speculative: true
 
       - name: Azure Login
         uses: azure/login@v2
@@ -36,7 +47,8 @@ jobs:
           subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
 
       - name: Terraform Initialize
-        run: terraform init
+        run: terraform init -backend-config="organization=${{ env.TF_CLOUD_ORGANIZATION }}" \
+                            -backend-config="workspaces.name=${{ env.TF_WORKSPACE }}"
 
       - name: Terraform Validate
         run: terraform validate
@@ -53,11 +65,3 @@ jobs:
       #   run: |
       #     echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
       #     echo "FRONTEND_TOKEN=$(terraform output -raw frontend_token)" >> $GITHUB_ENV
-
-
-
-
-
-
-
-
