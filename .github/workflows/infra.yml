@@ -9,9 +9,9 @@ permissions:
   contents: read
 
 env:
-  ARM_CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_9763C07F1E144125BAB2D4C6589208EC }}
-  ARM_SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_887AAAA8A994488F805FBF125D62B9E5 }}
-  ARM_TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_88F0377570D141E99139D975E0093F03 }}
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
 jobs:
   terraform:
@@ -53,6 +53,7 @@ jobs:
       #   run: |
       #     echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
       #     echo "FRONTEND_TOKEN=$(terraform output -raw frontend_token)" >> $GITHUB_ENV
+
 
 
 
