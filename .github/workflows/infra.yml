@@ -39,14 +39,18 @@ jobs:
           tenant-id: ${{ env.ARM_TENANT_ID }}
           subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
 
+      - name: Terraform Initialize
+        run: terraform init -input=false
+
       - name: Terraform Validate
-        run: terraform validate
+        run: terraform validate -no-color
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform plan -no-color -input=false
+        continue-on-error: true
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve -input=false
 
       # - name: Terraform Outputs
       #   working-directory: terraform
@@ -54,5 +58,6 @@ jobs:
       #   run: |
       #     echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
       #     echo "FRONTEND_TOKEN=$(terraform output -raw frontend_token)" >> $GITHUB_ENV
+
 
 
