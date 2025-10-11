@@ -31,6 +31,14 @@ jobs:
         with:
           terraform_version: 1.7.0
 
+      - name: Upload Configuration
+        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
+        id: plan-upload
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          directory: ./terraform
+          speculative: true
+
       - name: Azure Login
         uses: azure/login@v2
         with:
