@@ -50,11 +50,11 @@ jobs:
         run: terraform validate -no-color
 
       - name: Terraform Plan
-        run: terraform plan -no-color -out=tfplan
+        run: terraform plan -no-color -out=tfplan -var "mongodb_uri=${{ env.TF_MONGODB_URI }}"
         continue-on-error: true
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve tfplan -var "mongodb_uri=${{ env.TF_MONGODB_URI }}"
 
       - name: Terraform Outputs
         working-directory: terraform
