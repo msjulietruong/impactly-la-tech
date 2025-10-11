@@ -7,7 +7,7 @@ terraform {
   }
 
   required_version = ">= 1.1.0"
-  backend "remote" {
+  cloud {
     hostname = "app.terraform.io"
     organization = "impactly-la-lech"
     workspaces {
@@ -68,3 +68,4 @@ output "frontend_deployment_token" {
   value     = azurerm_static_web_app.frontend.api_key
   sensitive = true
 }
+
