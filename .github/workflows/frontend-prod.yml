@@ -8,13 +8,12 @@ on:
       - frontend-next/**
 
 env:
-  NODE_VERSION: '20.x'
+  NODE_VERSION: ${{ secrets.NODE_VERSION }}
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   FRONTEND_TOKEN: ${{ secrets.FRONTEND_TOKEN }}
-
 
 jobs:
   build:
