@@ -9,6 +9,11 @@ on:
     branches: [ main ]
     paths:
       - backend/**
+  workflow_dispatch:
+
+concurrency:
+  group: backend-test-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   NODE_VERSION: ${{ secrets.NODE_VERSION }}

@@ -6,6 +6,12 @@ on:
       - main
     paths:
       - frontend-next/**
+      - '!frontend-next/**/*.md'
+  workflow_dispatch:
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   NODE_VERSION: ${{ secrets.NODE_VERSION }}

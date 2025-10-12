@@ -5,6 +5,11 @@ on:
     branches: [ main ]
     paths:
       - terraform/**
+  workflow_dispatch:
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   id-token: write
