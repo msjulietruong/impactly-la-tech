@@ -25,5 +25,5 @@
 
 | site | link |
 | - | - |
-| frontend | [wonderful-bay-0bb13241e.1.azurestaticapps.net](wonderful-bay-0bb13241e.1.azurestaticapps.net) |
+| frontend | [wonderful-bay-0bb13241e.1.azurestaticapps.net](impactly.mewee.xyz) |
 | api | [impactly-backend.azurewebsites.net](wonderful-bay-0bb13241e.1.azurestaticapps.net) |
