@@ -5,16 +5,23 @@ import Footer from "../components/Footer";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import Modal from "../components/Modal";
-import BarcodeScannerContent from "../components/BarcodeScanner";
+import BarcodeScanner from "../components/BarcodeScanner";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [scannedCode, setScannedCode] = useState("");
 
   const handleSearch = () => {
     alert(`Searching for "${inputValue}"...`);
-    // Here you can call your API or lookup function for ethical data
   };
+
+  const handleScan = (code) => {
+  console.log("Scanned barcode:", code);
+  setScannedCode(code);
+  setIsScannerOpen(false);
+};
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-base-100 text-base-content">
@@ -29,9 +36,22 @@ export default function Home() {
           placeholder="Type product name or barcode..."
         />
         <Button label="Search" onClick={handleSearch} />
+        <Button label="Scan Barcode" onClick={() => setIsScannerOpen(true)} />
       </main>
+    
+    {/* Barcode Scanner Modal */}
+    <Modal
+      isOpen={isScannerOpen}
+      onClose={() => setIsScannerOpen(false)}
+      title="Scan Barcode"
+    >
+      <BarcodeScanner
+        onScan={handleScan}
+        onClose={() => setIsScannerOpen(false)}
+      />
+    </Modal>
 
-      {/* Modal */}
+      {/* Help Modal */}
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Help">
         <p>Enter a product name or barcode to check its ethical rating.</p>
       </Modal>
