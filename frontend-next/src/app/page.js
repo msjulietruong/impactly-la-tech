@@ -8,9 +8,9 @@ import Modal from "../components/Modal";
 import BarcodeScanner from "../components/BarcodeScanner";
 
 export default function Home() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   const [scannedCode, setScannedCode] = useState("");
 
   const handleSearch = () => {
@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col justify-between bg-base-100 text-base-content">
       {/* Navbar */}
-      <Navbar onOpenModal={() => setIsOpen(true)} />
+      <Navbar onOpenModal={() => setIsHelpOpen(true)} />
 
       {/* Main Content */}
       <main className="flex flex-col items-center justify-center flex-1 gap-6 p-10">
@@ -45,14 +45,14 @@ export default function Home() {
       onClose={() => setIsScannerOpen(false)}
       title="Scan Barcode"
     >
-      <BarcodeScanner
-        onScan={handleScan}
-        onClose={() => setIsScannerOpen(false)}
-      />
+     <BarcodeScanner
+          onScan={handleScan}
+          onClose={() => setIsScannerOpen(false)}
+        />
     </Modal>
 
       {/* Help Modal */}
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Help">
+      <Modal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} title="Help">
         <p>Enter a product name or barcode to check its ethical rating.</p>
       </Modal>
 
