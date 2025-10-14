@@ -1,82 +1,199 @@
-require('dotenv').config();
-const fs = require('fs');
-const path = require('path');
-const { parse } = require('csv-parse');
-const mongoose = require('mongoose');
-const Company = require('../models/Company');
+/**
+ * ========================================
+ * ESG DATA INGESTION SCRIPT
+ * ========================================
+ * 
+ * What this does:
+ * - Reads a CSV file containing company ESG data
+ * - Imports all the data into our MongoDB database
+ * - Updates existing companies or creates new ones
+ * 
+ * What is ingestion?
+ * - "Ingestion" = importing/loading data into a system
+ * - Like eating food → your body "ingests" it
+ * - Here we're importing data → MongoDB "ingests" it
+ * 
+ * How to use:
+ * 1. Put your CSV file in backend/data/dataset.csv
+ * 2. Run: npm run ingest:esg
+ * 3. Wait for it to finish
+ * 4. Check the summary at the end
+ * 
+ * CSV should have columns like:
+ * - ticker, name, environment_score, social_score, governance_score, etc.
+ */
 
-// Helper function to extract registrable domain from URL
+// Load environment variables from .env file
+require('dotenv').config();
+
+// Import tools we need
+const fs = require('fs');               // Tool for reading files
+const path = require('path');           // Tool for working with file paths
+const { parse } = require('csv-parse'); // Tool for parsing CSV files
+const mongoose = require('mongoose');   // Tool for talking to MongoDB
+const Company = require('../models/Company');  // Our Company database model
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+// These small functions help us clean and process the CSV data
+
+/**
+ * HELPER: Extract domain from URL
+ * 
+ * What it does:
+ * - Takes a URL like "https://www.microsoft.com/about"
+ * - Returns just the domain "microsoft.com"
+ * 
+ * Why?
+ * - We only want to store the main domain, not the full URL
+ * - Removes "www." prefix to keep it clean
+ */
 function registrableDomainFrom(url) {
+  // If URL is empty or not a string, return null
   if (!url || typeof url !== 'string') return null;
   
   try {
+    // Add https:// if not present (URL needs a protocol)
     const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
+    
+    // Get the hostname and remove "www." if present
     return urlObj.hostname.replace(/^www\./, '');
   } catch (error) {
+    // If URL is invalid, return null
     return null;
   }
 }
 
-// Helper function to convert to number or null
+/**
+ * HELPER: Convert to number or null
+ * 
+ * What it does:
+ * - Tries to convert a value to a number
+ * - Returns null if it's empty or can't be converted
+ * 
+ * Examples:
+ *   num("75") → 75
+ *   num("") → null
+ *   num("abc") → null
+ */
 function num(value) {
+  // If empty, blank, or the word "null", return null
   if (!value || value === '' || value === 'null') return null;
+  
+  // Try to convert to number
   const parsed = Number(value);
+  
+  // If it's Not-a-Number, return null. Otherwise return the number
   return isNaN(parsed) ? null : parsed;
 }
 
-// Helper function to convert date to ISO string
+/**
+ * HELPER: Convert date string to ISO format
+ * 
+ * What it does:
+ * - Takes a date string like "2023-12-01"
+ * - Converts to ISO format: "2023-12-01T00:00:00.000Z"
+ * 
+ * Why ISO format?
+ * - ISO = International Standard
+ * - MongoDB likes this format
+ * - Easy to compare and sort dates
+ */
 function iso(dateStr) {
+  // If empty or the word "null", return null
   if (!dateStr || dateStr === '' || dateStr === 'null') return null;
   
   try {
+    // Convert to Date object
     const date = new Date(dateStr);
+    
+    // Check if valid date, return ISO string or null
     return isNaN(date.getTime()) ? null : date.toISOString();
   } catch (error) {
+    // If date is invalid, return null
     return null;
   }
 }
 
-// Helper function to union and dedupe arrays
+/**
+ * HELPER: Combine and remove duplicates from arrays
+ * 
+ * What it does:
+ * - Takes multiple arrays
+ * - Combines them into one
+ * - Removes any duplicates
+ * 
+ * Example:
+ *   unionDedupe(['apple'], ['banana', 'apple']) → ['apple', 'banana']
+ */
 function unionDedupe(...arrays) {
+  // Set = a collection that automatically removes duplicates
   const set = new Set();
+  
+  // Loop through each array
   arrays.forEach(arr => {
     if (Array.isArray(arr)) {
+      // Loop through each item in the array
       arr.forEach(item => {
         if (item && typeof item === 'string') {
-          set.add(item.trim());
+          set.add(item.trim());  // Add to set (trimming whitespace)
         }
       });
     }
   });
+  
+  // Convert Set back to Array and return
   return Array.from(set);
 }
 
+// ============================================================================
+// MAIN FUNCTION: Ingest ESG Data
+// ============================================================================
+/**
+ * FUNCTION: Import ESG data from CSV into MongoDB
+ * 
+ * What it does:
+ * 1. Connects to MongoDB database
+ * 2. Reads the CSV file
+ * 3. For each row: creates/updates a company
+ * 4. Shows a summary of what happened
+ */
 async function ingestESGData() {
   try {
-    // Connect to MongoDB
+    // STEP 1: Connect to MongoDB database
     const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ethical-product-finder';
     await mongoose.connect(mongoURI);
     console.log('Connected to MongoDB');
 
+    // STEP 2: Find the CSV file
+    // __dirname = the directory this script is in (backend/scripts/)
+    // '..' = go up one level to backend/
+    // 'data/dataset.csv' = the CSV file
     const csvPath = path.join(__dirname, '..', 'data', 'dataset.csv');
     
+    // Check if the file exists
     if (!fs.existsSync(csvPath)) {
       throw new Error(`CSV file not found: ${csvPath}`);
     }
 
+    // STEP 3: Set up counters to track what happens
     const stats = {
-      inserted: 0,
-      updated: 0,
-      skipped: 0,
-      skippedReasons: []
+      inserted: 0,        // How many new companies we created
+      updated: 0,         // How many existing companies we updated
+      skipped: 0,         // How many rows we skipped (bad data)
+      skippedReasons: []  // Why we skipped them (for debugging)
     };
 
+    // STEP 4: Set up the CSV parser
+    // This tool reads CSV files and turns them into JavaScript objects
     const parser = parse({
-      columns: true,
-      skip_empty_lines: true,
-      trim: true
+      columns: true,           // First row has column names
+      skip_empty_lines: true,  // Ignore blank lines
+      trim: true               // Remove extra spaces
     });
 
+    // Array to hold all the CSV rows
     const records = [];
     
     // Read and parse CSV

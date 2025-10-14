@@ -1,79 +1,142 @@
-import axios from 'axios';
-import ProductCache from '../models/ProductCache.js';
+/**
+ * ========================================
+ * OPEN FOOD FACTS SERVICE
+ * ========================================
+ * 
+ * What this does:
+ * - Talks to the OpenFoodFacts API (a huge database of food products)
+ * - Lets us search for products by name or barcode
+ * - Caches results in our database so future searches are faster
+ * 
+ * What is OpenFoodFacts?
+ * - A free, open database of food products from around the world
+ * - Like Wikipedia but for food - anyone can contribute
+ * - Has millions of products with barcodes, ingredients, nutrition info
+ * 
+ * How it works:
+ * 1. Someone asks for a product
+ * 2. We check our cache first (faster!)
+ * 3. If not in cache, we ask OpenFoodFacts
+ * 4. We save the result to cache for next time
+ * 5. We return the product info
+ */
 
-// OpenFoodFacts API configuration
+import axios from 'axios';                    // Tool for making HTTP requests
+import ProductCache from '../models/ProductCache.js';  // Our cache database model
+
+// ============================================================================
+// CONFIGURATION
+// ============================================================================
+// Set up how we talk to the OpenFoodFacts API
+
 const API_CONFIG = {
+  // Which server to use? 
+  // - staging (testing) = world.openfoodfacts.net
+  // - production (real) = world.openfoodfacts.org
   baseURL: process.env.OFF_ENV === 'staging' 
-    ? 'https://world.openfoodfacts.net/api/v2'
-    : 'https://world.openfoodfacts.org/api/v2',
-  timeout: 10000,
+    ? 'https://world.openfoodfacts.net/api/v2'    // Testing server
+    : 'https://world.openfoodfacts.org/api/v2',   // Real server
+  
+  timeout: 10000,  // Wait max 10 seconds for a response
+  
   headers: {
+    // Tell OpenFoodFacts who we are (required by their API)
     'User-Agent': process.env.OFF_USER_AGENT || 'EthicalProductFinder/0.1 (you@example.com)',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json'  // We send/receive JSON data
   }
 };
 
-// Add authentication for staging environment
+// If using staging server, we need to provide login credentials
 if (process.env.OFF_ENV === 'staging') {
   API_CONFIG.auth = {
-    username: 'off',
-    password: 'off'
+    username: 'off',  // Staging username
+    password: 'off'   // Staging password
   };
 }
 
-// Look up product by barcode or search query
+// ============================================================================
+// MAIN FUNCTION: Look up product
+// ============================================================================
+/**
+ * FUNCTION: Look up a product by barcode or text search
+ * 
+ * What it does:
+ * 1. Checks our cache first (super fast!)
+ * 2. If not in cache, asks OpenFoodFacts API
+ * 3. Saves result to cache for next time
+ * 4. Returns product information
+ * 
+ * How to use:
+ *   lookupProduct({ upc: '3274080005003' })        // Find by barcode
+ *   lookupProduct({ q: 'chocolate' })               // Search by text
+ * 
+ * What it returns:
+ *   Product object with name, brand, image, etc.
+ */
 export async function lookupProduct(params) {
+  // STEP 1: Extract the search parameters
   const { upc, ean, gtin, q } = params;
+  // upc = Universal Product Code (12 digits)
+  // ean = European Article Number (13 digits)
+  // gtin = Global Trade Item Number (general barcode)
+  // q = search query (like "chocolate" or "coca cola")
 
-  // Validate input parameters
+  // STEP 2: Make sure they gave us SOMETHING to search for
   if (!upc && !ean && !gtin && !q) {
     const error = new Error('Missing required parameters. Provide either upc, ean, gtin, or q');
     error.code = 'INVALID_ARGUMENT';
     throw error;
   }
 
-  // Check cache first
+  // STEP 3: Check our cache first (much faster than calling the API!)
+  // Cache key = whatever they're searching for (barcode or search term)
   const cacheKey = upc || ean || gtin || q;
   const cached = await getFromCache(cacheKey);
   if (cached) {
-    return cached;
+    return cached;  // Found it in cache! Return immediately
   }
 
+  // STEP 4: Not in cache, so we need to call OpenFoodFacts API
   let result;
 
   try {
     if (q) {
-      // Search by text query
+      // They gave us a search term like "chocolate"
       result = await searchByText(q);
     } else {
-      // Look up by barcode
+      // They gave us a barcode (upc, ean, or gtin)
       const barcode = upc || ean || gtin;
       result = await getByBarcode(barcode);
     }
 
-    // Convert to our standard format
+    // STEP 5: Convert the OpenFoodFacts format to our standard format
+    // (OpenFoodFacts uses different field names than we do)
     const product = normalizeProduct(result, upc || ean || gtin || q);
 
-    // Save to cache
+    // STEP 6: Save to cache so next time is faster
     await setCache(cacheKey, product);
 
+    // STEP 7: Return the product!
     return product;
 
   } catch (error) {
-    // Re-throw the error with proper code
+    // STEP 8: Handle different types of errors
+
+    // Error 404 = Product not found
     if (error.response?.status === 404) {
       const notFoundError = new Error(`Product not found: ${cacheKey}`);
       notFoundError.code = 'NOT_FOUND';
       throw notFoundError;
     }
 
+    // Error 429 = We made too many requests (rate limit)
     if (error.response?.status === 429) {
       const rateLimitError = new Error('OpenFoodFacts API rate limit exceeded');
       rateLimitError.code = 'RATE_LIMITED';
       throw rateLimitError;
     }
 
-    // Default error
+    // Some other error we don't recognize
     const serviceError = new Error('Failed to fetch product from OpenFoodFacts');
     serviceError.code = 'EXTERNAL_SERVICE_ERROR';
     throw serviceError;
@@ -219,26 +282,61 @@ function resolveCompany(brands) {
   };
 }
 
-// Get product from cache
+// ============================================================================
+// CACHE FUNCTIONS
+// ============================================================================
+// These functions save and retrieve products from our MongoDB cache
+// Caching makes searches MUCH faster (no need to call OpenFoodFacts again!)
+
+/**
+ * FUNCTION: Get product from cache
+ * 
+ * What it does:
+ * - Looks in our MongoDB database for a cached product
+ * - Returns the product if found, or null if not found
+ * 
+ * Why we cache:
+ * - Calling OpenFoodFacts API takes 1-2 seconds
+ * - Reading from our cache takes only 0.1 seconds
+ * - That's 10-20x faster!
+ */
 async function getFromCache(code) {
   try {
+    // Look for a cached product with this code (barcode or search term)
     const cached = await ProductCache.findOne({ code });
+    
+    // If found, return the saved data. If not found, return null
     return cached ? cached.data : null;
   } catch (error) {
+    // If something goes wrong, just log it and return null
+    // (We can still get the product from OpenFoodFacts)
     console.error('Cache read error:', error);
     return null;
   }
 }
 
-// Save product to cache
+/**
+ * FUNCTION: Save product to cache
+ * 
+ * What it does:
+ * - Saves a product to our MongoDB database for future use
+ * - Uses "upsert" which means "update if exists, insert if new"
+ * 
+ * Why we use findOneAndUpdate:
+ * - If product already in cache → update it with new data
+ * - If product not in cache → create a new entry
+ * - No need to check if it exists first!
+ */
 async function setCache(code, data) {
   try {
     await ProductCache.findOneAndUpdate(
-      { code },
-      { code, data, updatedAt: new Date() },
-      { upsert: true, new: true }
+      { code },                              // Find by this code
+      { code, data, updatedAt: new Date() }, // Update with this data
+      { upsert: true, new: true }            // upsert = create if doesn't exist
     );
   } catch (error) {
+    // If caching fails, that's OK - we still returned the product!
+    // Just log the error and continue (don't throw)
     console.error('Cache write error:', error);
     // Don't throw - caching is not critical for functionality
   }
