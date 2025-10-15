@@ -1,4 +1,4 @@
 variable "mongodb_uri" {
-    type = string
-    sensitive = true
+  type      = string
+  sensitive = true
 }
