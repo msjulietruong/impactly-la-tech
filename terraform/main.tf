@@ -32,7 +32,7 @@ resource "azurerm_resource_group" "project2" {
 
 resource "azurerm_resource_group" "project3" {
   name     = "impactly-db-project"
-  location = "East US"
+  location = "East US 2"
 }
 
 resource "azurerm_cosmosdb_account" "db_account" {
