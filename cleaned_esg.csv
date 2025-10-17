@@ -1,0 +1,723 @@
+ticker,name,logo,weburl,environment_grade,environment_level,social_grade,social_level,governance_grade,governance_level,environment_score,social_score,governance_score,total_score,last_processing_date,total_grade,total_level,cik
+dis,Walt Disney Co,https://static.finnhub.io/logo/ef50b4a2b263c847211b567a01edb702cae8b9ef46ca1f6856ca4432a70e9f52.png,https://thewaltdisneycompany.com/,A,High,BB,Medium,BB,Medium,60,31,62,58,04/19/2022,BBB,High,1744489
+gm,General Motors Co,https://static.finnhub.io/logo/9253db78-80c9-11ea-920d-00000000092a.png,https://www.gm.com/,A,High,BB,Medium,B,Medium,60,28,45,50,04/17/2022,BBB,High,1467858
+gww,WW Grainger Inc,https://static.finnhub.io/logo/f153dcda-80eb-11ea-bc2e-00000000092a.png,https://www.grainger.com/,B,Medium,BB,Medium,B,Medium,11,44,41,30,04/19/2022,BB,Medium,277135
+mhk,Mohawk Industries Inc,https://static.finnhub.io/logo/26868a62-80ec-11ea-9712-00000000092a.png,https://mohawkind.com/,A,High,B,Medium,BB,Medium,71,27,57,61,04/18/2022,BBB,High,851968
+lyv,Live Nation Entertainment Inc,https://static.finnhub.io/logo/1cd144d2-80ec-11ea-b50a-00000000092a.png,https://www.livenationentertainment.com/,BBB,High,BB,Medium,B,Medium,56,30,44,48,04/18/2022,BBB,High,1335258
+lvs,Las Vegas Sands Corp,https://static.finnhub.io/logo/7256a9be-8279-11ea-874d-00000000092a.png,https://www.sands.com/,A,High,BB,Medium,BB,Medium,67,31,60,62,04/18/2022,BBB,High,1300514
+clx,Clorox Co,https://static.finnhub.io/logo/a67c34fe-80eb-11ea-a87f-00000000092a.png,https://www.thecloroxcompany.com/,A,High,BB,Medium,BB,Medium,69,37,68,70,04/16/2022,A,High,21076
+aacg,ATA Creativity Global,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/AACG.svg,http://www.ata.net.cn,B,Medium,B,Medium,B,Medium,1,8,32,1,07/01/2022,B,Medium,1420529
+aal,American Airlines Group Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/AAL.png,https://americanairlines.gcs-web.com/,B,Medium,B,Medium,B,Medium,13,10,48,16,04/16/2022,B,Medium,6201
+aame,Atlantic American Corp,https://static.finnhub.io/logo/6b536b3e-826a-11ea-bc66-00000000092a.png,http://www.atlam.com/,B,Medium,B,Medium,BB,Medium,4,12,56,15,04/16/2022,B,Medium,8177
+aaoi,Applied Optoelectronics Inc,https://static.finnhub.io/logo/7afdb95a-80ce-11ea-849c-00000000092a.png,http://ao-inc.com/,BB,Medium,B,Medium,B,Medium,21,19,36,20,04/16/2022,BB,Medium,1158114
+aaon,Aaon Inc,https://static.finnhub.io/logo/8819421c-80df-11ea-80b9-00000000092a.png,https://www.aaon.com/,A,High,BB,Medium,B,Medium,58,28,37,45,04/16/2022,BBB,High,824142
+aapl,Apple Inc,https://static.finnhub.io/logo/87cb30d8-80df-11ea-8951-00000000092a.png,https://www.apple.com/,BB,Medium,B,Medium,B,Medium,30,24,45,31,04/16/2022,BB,Medium,320193
+aatc,Autoscope Technologies Corp,Logo Not Provided,Url Not Provided,BBB,High,B,Medium,B,Medium,40,25,41,36,06/11/2022,BBB,High,943034
+aaww,Atlas Air Worldwide Holdings Inc,https://static.finnhub.io/logo/8b74bf8a-80df-11ea-8463-00000000092a.png,https://www.atlasairworldwide.com/,A,High,B,Medium,B,Medium,62,16,40,43,04/16/2022,BBB,High,1135185
+aaci,Armada Acquisition Corp I,Logo Not Provided,Url Not Provided,B,Medium,B,Medium,B,Medium,1,8,31,1,06/20/2022,B,Medium,1844817
+aadi,Aadi Bioscience Inc,https://static.finnhub.io/logo/358b0921e9d761a529cffa812e99b140f4bb9c2e1e63bfeee3a4ea7165257e7b.png,https://aadibio.com/,B,Medium,B,Medium,B,Medium,0,8,32,0,06/11/2022,B,Medium,1422142
+abeo,Abeona Therapeutics Inc,https://static.finnhub.io/logo/33b2a5a8-80d1-11ea-8de8-00000000092a.png,https://abeonatherapeutics.com/,B,Medium,BB,Medium,BB,Medium,1,29,59,24,04/16/2022,BB,Medium,318306
+abnb,Airbnb Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/ABNB.png,https://www.airbnb.co.in/,A,High,A,High,BBB,High,59,81,81,93,06/10/2022,A,High,1559720
+abio,ARCA Biopharma Inc,https://static.finnhub.io/logo/52ec4c2e0c249a506cbce41ef284e287901cccb0a08db285aa9a9d4091ba8434.png,http://arcabio.com/,B,Medium,B,Medium,B,Medium,0,12,54,12,04/16/2022,B,Medium,907654
+abmd,ABIOMED Inc,https://static.finnhub.io/logo/8b2cc7cc-80df-11ea-b8c7-00000000092a.png,https://www.abiomed.com/,A,High,BB,Medium,BB,Medium,58,32,57,57,04/16/2022,BBB,High,815094
+abos,Acumen Pharmaceuticals Inc,https://static.finnhub.io/logo/f1081a3d8031ad222b050bbbcfef7a073cea50638ad028f1fd31c5ca934f3820.png,https://acumenpharm.com/,B,Medium,B,Medium,B,Medium,1,8,31,1,06/11/2022,B,Medium,1576885
+absi,Absci Corp,https://static.finnhub.io/logo/d030f309b5a348085ba6297eadf507c1d7410dbf605e6147f34eec997f6f073f.png,https://www.absci.com/,B,Medium,B,Medium,B,Medium,1,13,39,6,06/11/2022,B,Medium,1672688
+abtx,Allegiance Bancshares Inc,https://static.finnhub.io/logo/b34c7c52-80d2-11ea-8e19-00000000092a.png,https://ir.allegiancebank.com/,B,Medium,BB,Medium,BB,Medium,19,28,56,32,04/16/2022,BB,Medium,1642081
+abus,Arbutus Biopharma Corp,https://static.finnhub.io/logo/0068df02-80ca-11ea-abb6-00000000092a.png,https://www.arbutusbio.com/,B,Medium,B,Medium,BB,Medium,1,9,66,15,04/16/2022,B,Medium,1447028
+abvc,ABVC Biopharma Inc,https://static.finnhub.io/logo/2b1c9fbcfafa70dcfa10247ad6ebe12858ca5878a4c90e32840a2080a507eb3d.png,https://abvcpharma.com/,B,Medium,B,Medium,B,Medium,4,10,32,4,06/11/2022,B,Medium,1173313
+acad,ACADIA Pharmaceuticals Inc,https://static.finnhub.io/logo/2d87da57d47f7a5c0225c54f67d806d3a906cec1ea63d739dad084772cf5079c.png,https://acadia.com/,B,Medium,B,Medium,BB,Medium,6,14,57,18,04/16/2022,BB,Medium,1070494
+acac,Acri Capital Acquisition Corp,Logo Not Provided,Url Not Provided,B,Medium,B,Medium,BB,Medium,0,9,56,11,06/10/2022,B,Medium,1914023
+accd,Accolade Inc,https://static.finnhub.io/logo/a967c80c75f9c72bb31fd3ae796a0a4e1e0dec7378ade4f78c06f10d89acf8bf.png,https://www.accolade.com,B,Medium,B,Medium,B,Medium,11,19,40,15,06/10/2022,B,Medium,1481646
+acet,Adicet Bio Inc,https://static.finnhub.io/logo/ea701be36180b02128c519975a35fcca2ef8ef5cd412e65e7ff39eb054703270.png,https://www.adicetbio.com/,B,Medium,B,Medium,BB,Medium,3,10,57,14,04/16/2022,B,Medium,1720580
+abcl,Abcellera Biologics Inc,https://static.finnhub.io/logo/cd950365b552eae0cadf348f427e5a4dd05974468d5803b8b63e44da362a5ee9.png,https://www.abcellera.com/,A,High,BB,Medium,BB,Medium,66,38,68,68,06/10/2022,A,High,1703057
+abcb,Ameris Bancorp,https://static.finnhub.io/logo/8cea9450-80df-11ea-80b8-00000000092a.png,https://www.amerisbank.com/,B,Medium,BB,Medium,B,Medium,17,28,44,26,04/16/2022,BB,Medium,351569
+acev,ACE Convergence Acquisition Corp,https://static.finnhub.io/logo/d86f14d77a3f95acbb00c602a4e2d735df7f2d3cfd22be9263a22876630ae65d.png,http://acev.io/home/,B,Medium,B,Medium,B,Medium,5,10,35,5,06/10/2022,B,Medium,1813658
+achl,Achilles Therapeutics PLC,https://static.finnhub.io/logo/6147e0afabb6d97c0483d7921c255166e49adccf043d5bf956068f9c4c546cae.png,https://www.achillestx.com/,B,Medium,B,Medium,B,Medium,6,25,52,22,06/10/2022,BB,Medium,1830749
+achc,Acadia Healthcare Company Inc,https://static.finnhub.io/logo/4b6b2e5a4cfce5b1377719219ab5a354a629c9b9fb43067b5993423152fef1fb.png,https://www.acadiahealthcare.com/,BB,Medium,B,Medium,B,Medium,25,14,36,19,04/16/2022,BB,Medium,1520697
+aciw,ACI Worldwide Inc,https://static.finnhub.io/logo/875c5a76-80df-11ea-ab99-00000000092a.png,https://www.aciworldwide.com/,A,High,BB,Medium,BB,Medium,58,33,56,56,04/16/2022,BBB,High,935036
+acls,Axcelis Technologies Inc,https://static.finnhub.io/logo/88b5f730-80df-11ea-94d0-00000000092a.png,https://www.axcelis.com/,A,High,BB,Medium,B,Medium,61,29,46,51,04/16/2022,BBB,High,1113232
+aciu,AC Immune SA,https://static.finnhub.io/logo/f93a1c3e-80db-11ea-a2b4-00000000092a.png,https://www.acimmune.com/,B,Medium,B,Medium,BB,Medium,10,27,57,27,04/16/2022,BB,Medium,1651625
+achv,Achieve Life Sciences Inc,https://static.finnhub.io/logo/bf32de26-80e0-11ea-962e-00000000092a.png,http://achievelifesciences.com/,B,Medium,B,Medium,BB,Medium,3,12,57,15,06/10/2022,B,Medium,949858
+acmr,ACM Research Inc,https://static.finnhub.io/logo/bd3e9ce4b1a48aa839d6a0ff155fc165309d14773a651b8fb39fe880212870b2.png,https://www.acmrcsh.com/,BBB,High,B,Medium,BB,Medium,40,14,62,39,06/10/2022,BBB,High,1680062
+acor,Acorda Therapeutics Inc,https://static.finnhub.io/logo/8d3dceec-80df-11ea-98bc-00000000092a.png,http://www.acorda.com/,B,Medium,BB,Medium,BB,Medium,6,29,59,26,04/16/2022,BB,Medium,1008848
+acnb,ACNB Corp,https://static.finnhub.io/logo/fa34ff3a5a42ae240b90281cb94d9f9dc73fe2b24a600c551b6d7f0e200dd0e8.png,https://www.acnb.com/,B,Medium,B,Medium,B,Medium,4,12,35,6,04/16/2022,B,Medium,715579
+acrs,Aclaris Therapeutics Inc,https://static.finnhub.io/logo/a0e2bf10-80d2-11ea-bde8-00000000092a.png,https://www.aclaristx.com/,B,Medium,B,Medium,B,Medium,6,9,36,6,04/16/2022,B,Medium,1557746
+acrx,AcelRx Pharmaceuticals Inc,https://static.finnhub.io/logo/04b72c22-80ca-11ea-a317-00000000092a.png,http://www.acelrx.com,B,Medium,B,Medium,BB,Medium,0,15,56,15,04/16/2022,B,Medium,1427925
+act,Enact Holdings Inc,https://static4.finnhub.io/file/publicdatany2/stock_logo/ACT_5038081287.png,https://enactmi.com/,A,High,BB,Medium,BB,Medium,66,33,60,62,04/20/2022,BBB,High,1823529
+actg,Acacia Research Corp,https://static.finnhub.io/logo/9a284398-80df-11ea-8a34-00000000092a.png,http://acaciaresearch.com/,B,Medium,B,Medium,B,Medium,0,8,50,8,04/16/2022,B,Medium,934549
+acva,ACV Auctions Inc,https://static.finnhub.io/logo/d1e18ee9f9b952b21566aa5cf9af8ffba761e9085e9de40fbe30fa6b65b8d785.png,https://www.acvauctions.com/,B,Medium,B,Medium,BB,Medium,7,20,60,23,06/10/2022,BB,Medium,1637873
+adag,Adagene Inc,https://static.finnhub.io/logo/5dc6728a7d01cd93139ce716cce8147be340b68b00025bc3471e9350c8487792.png,https://www.adagene.com/,B,Medium,BB,Medium,BB,Medium,18,28,57,32,06/10/2022,BBB,High,1818838
+acxp,Acurx Pharmaceuticals Inc,https://static.finnhub.io/logo/dae37e820f89b2050d5105bea48bf5d491196bc6ef42b3249f3bf29ca14589ca.png,https://www.acurxpharma.com/,B,Medium,BB,Medium,BB,Medium,7,28,57,26,06/11/2022,BB,Medium,1736243
+adbe,Adobe Inc,https://static.finnhub.io/logo/9b4b19c2-80df-11ea-becf-00000000092a.png,https://www.adobe.com/,B,Medium,B,Medium,B,Medium,0,12,31,2,04/16/2022,B,Medium,796343
+adap,Adaptimmune Therapeutics PLC,https://static.finnhub.io/logo/c2ef9c38-80d1-11ea-b201-00000000092a.png,https://www.adaptimmune.com/,BB,Medium,B,Medium,BB,Medium,32,24,57,38,04/16/2022,BBB,High,1621227
+adma,ADMA Biologics Inc,https://static.finnhub.io/logo/cba1b436-80d0-11ea-bae6-00000000092a.png,https://www.admabiologics.com/,B,Medium,B,Medium,BB,Medium,8,21,61,24,04/16/2022,BB,Medium,1368514
+ades,Advanced Emissions Solutions Inc,https://static.finnhub.io/logo/d0ea69a2118af9d978c84b2f19242e5a5f3275cf41c49498003f2ffb80911f23.png,https://www.ada-cs.com/Home/default.aspx,B,Medium,B,Medium,BB,Medium,1,8,56,11,04/16/2022,B,Medium,1515156
+adi,Analog Devices Inc,https://static.finnhub.io/logo/638498fa-80eb-11ea-8d04-00000000092a.png,https://www.analog.com/,BB,Medium,BB,Medium,BB,Medium,29,31,56,39,04/16/2022,BBB,High,6281
+adil,Adial Pharmaceuticals Inc,https://static.finnhub.io/logo/e0366ab8-80da-11ea-9da8-00000000092a.png,https://www.adialpharma.com/,B,Medium,B,Medium,BB,Medium,0,8,56,11,06/10/2022,B,Medium,1513525
+admp,Adamis Pharmaceuticals Corp,https://static.finnhub.io/logo/2653d72e-80cf-11ea-b9db-00000000092a.png,http://www.adamispharmaceuticals.com/,B,Medium,B,Medium,B,Medium,16,9,35,11,04/16/2022,B,Medium,887247
+acer,Acer Therapeutics Inc,https://static.finnhub.io/logo/da0a6c40-80e0-11ea-81ae-00000000092a.png,https://acertx.com/,B,Medium,B,Medium,BB,Medium,4,26,59,24,06/10/2022,BB,Medium,1069308
+adoc,Edoc Acquisition Corp,Logo Not Provided,Url Not Provided,B,Medium,BB,Medium,BB,Medium,3,28,56,23,04/16/2022,BB,Medium,1824884
+adus,Addus Homecare Corp,https://static.finnhub.io/logo/20ba9a37b3127f14370410e76dcf5f2e7db9e068cc08f2da0e740aa7aaa6bf52.png,https://addus.com/,B,Medium,B,Medium,B,Medium,2,11,36,5,04/16/2022,B,Medium,1468328
+acgl,Arch Capital Group Ltd,https://static.finnhub.io/logo/8c4d69f6-80df-11ea-8233-00000000092a.png,https://www.archgroup.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/16/2022,BBB,High,947484
+adpt,Adaptive Biotechnologies Corp,https://static.finnhub.io/logo/49f91794-80da-11ea-be7a-00000000092a.png,https://www.adaptivebiotech.com,B,Medium,BB,Medium,B,Medium,12,37,46,29,04/16/2022,BB,Medium,1478320
+adsk,Autodesk Inc,https://static.finnhub.io/logo/99d251e4-80df-11ea-ad7f-00000000092a.png,https://www.autodesk.com/,A,High,BB,Medium,BB,Medium,68,28,59,61,04/16/2022,BBB,High,769397
+adp,Automatic Data Processing Inc,https://static.finnhub.io/logo/987cc1f6-80df-11ea-96e8-00000000092a.png,https://www.adp.com/,A,High,BB,Medium,B,Medium,58,28,31,43,07/25/2022,BBB,High,8670
+adtx,Aditxt Inc,https://static.finnhub.io/logo/278ebd47277db15b770d06958e2e2b981b0f75047d9485ef7fd67eabe0c557f0.png,https://aditxt.com/,B,Medium,B,Medium,BB,Medium,2,13,57,15,06/10/2022,B,Medium,1726711
+adv,Advantage Solutions Inc,https://static.finnhub.io/logo/4191147864cd494d9602ea7d462b368568307c389e3447f9d958e091675fc1b7.png,https://advantagesolutions.net/,A,High,B,Medium,BB,Medium,61,21,63,55,04/20/2022,BBB,High,1776661
+advm,Adverum Biotechnologies Inc,https://static.finnhub.io/logo/2a8c64fe-80d0-11ea-9f54-00000000092a.png,https://adverum.com/,B,Medium,BB,Medium,B,Medium,12,32,40,23,04/16/2022,BB,Medium,1501756
+aehr,Aehr Test Systems,https://static.finnhub.io/logo/9a8fe21e-80df-11ea-8837-00000000092a.png,https://www.aehr.com/,B,Medium,B,Medium,BB,Medium,17,20,56,27,04/16/2022,BB,Medium,1040470
+aehl,Antelope Enterprise Holdings Ltd,https://static.finnhub.io/logo/9a75e4385b34c0cb39ac72f06791b387f2ee941735bc144041b63d26403c5301.png,https://www.aehltd.com/,B,Medium,B,Medium,BB,Medium,7,15,62,21,06/10/2022,BB,Medium,1470683
+aei,Alset Ehome International Inc,https://static.finnhub.io/logo/98c8d7c249f43e2d9209af2a93fb646dc774a1a85a30840fc88e94859962870c.png,http://www.hfenterp.com,A,High,B,Medium,B,Medium,62,9,34,36,04/20/2022,BBB,High,1750106
+aeis,Advanced Energy Industries Inc,https://static.finnhub.io/logo/9ae27426-80df-11ea-a9fa-00000000092a.png,https://www.advancedenergy.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/16/2022,BBB,High,927003
+aep,American Electric Power Company Inc,https://static.finnhub.io/logo/65ca8abe-80eb-11ea-9cac-00000000092a.png,https://www.aep.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/20/2022,BBB,High,4904
+aemd,Aethlon Medical Inc,https://static.finnhub.io/logo/63fe5910-80d2-11ea-bdd5-00000000092a.png,https://www.aethlonmedical.com/,B,Medium,B,Medium,BB,Medium,0,20,60,19,04/16/2022,BB,Medium,882291
+aese,Allied Esports Entertainment Inc,https://static.finnhub.io/logo/60068062-80db-11ea-826d-00000000092a.png,https://ir.alliedesportsent.com/,B,Medium,B,Medium,B,Medium,0,8,31,0,06/10/2022,B,Medium,1708341
+aeye,AudioEye Inc,https://static.finnhub.io/logo/d47b30ac-80da-11ea-acae-00000000092a.png,https://www.audioeye.com/,B,Medium,BB,Medium,BB,Medium,7,28,58,26,04/16/2022,BB,Medium,1362190
+aeri,Aerie Pharmaceuticals Inc,https://static.finnhub.io/logo/c3eb1f5c-80ce-11ea-bebe-00000000092a.png,https://aeriepharma.com/,A,High,B,Medium,BB,Medium,58,21,59,51,04/16/2022,BBB,High,1337553
+aey,ADDvantage Technologies Group Inc,https://static.finnhub.io/logo/d2abb4b87e579c2bb32357938df36ceafc9b5d1e999aee923ea9938b2acee94c.png,http://www.addvantagetechnologies.com/,B,Medium,B,Medium,BB,Medium,7,15,56,18,04/16/2022,BB,Medium,874292
+afaq,AF Acquisition Corp,Logo Not Provided,Url Not Provided,B,Medium,B,Medium,B,Medium,0,8,31,0,06/21/2022,B,Medium,1841661
+afmd,Affimed NV,https://static.finnhub.io/logo/29cc761a-80d0-11ea-ab42-00000000092a.png,https://www.affimed.com/,BB,Medium,BB,Medium,BB,Medium,32,28,59,41,04/16/2022,BBB,High,1608390
+afcg,AFC Gamma Inc,https://static.finnhub.io/logo/f0ef42fade24d578bbdf91be70ad822290a91ced952da4c22093df2e1c015b1b.png,https://afcgamma.com/,B,Medium,B,Medium,B,Medium,11,9,38,9,06/10/2022,B,Medium,1822523
+afbi,Affinity Bancshares Inc,Logo Not Provided,https://communityfirstbancshares.q4ir.com/,B,Medium,B,Medium,B,Medium,0,9,31,1,06/10/2022,B,Medium,1823406
+afrm,Affirm Holdings Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/AFRM.png,https://www.affirm.com/,B,Medium,BB,Medium,BB,Medium,5,35,65,32,06/10/2022,BB,Medium,1820953
+afib,Acutus Medical Inc,https://static.finnhub.io/logo/352bd59a63f14910c54166ecc5aa8f67ac11b7d8828185bc023d5915d7cf0457.png,http://www.acutusmedical.com/,B,Medium,B,Medium,B,Medium,1,10,40,5,06/10/2022,B,Medium,1522860
+agen,Agenus Inc,https://static.finnhub.io/logo/9ccb30fe-80df-11ea-993b-00000000092a.png,https://agenusbio.com/,B,Medium,B,Medium,BB,Medium,17,17,56,25,04/16/2022,BB,Medium,1098972
+afya,Afya Ltd,https://static.finnhub.io/logo/c57ab10fd72c2aa8b1db15524838647943d52bf5f5ad9be3c1f19d9c5c03a762.png,https://www.afya.com.br/,B,Medium,B,Medium,B,Medium,17,8,32,10,06/10/2022,B,Medium,1771007
+agfs,AgroFresh Solutions Inc,https://static.finnhub.io/logo/b57e8700-80cf-11ea-b35b-00000000092a.png,https://www.agrofresh.com/,A,High,BB,Medium,B,Medium,58,28,50,51,04/16/2022,BBB,High,1592016
+agfy,Agrify Corp,https://static.finnhub.io/logo/aa5216aab348419b7fcfc5d9d79e4b271d486e16e75a4938dee5bd2343263eb9.png,https://www.agrify.com/,A,High,BB,Medium,BB,Medium,66,40,57,65,06/10/2022,A,High,1800637
+agil,AgileThought Inc,https://static.finnhub.io/logo/becb547f102d410d67137477f782925246bd6ca61915f634a3fa91063ff51d0c.png,https://agilethought.com/,BB,Medium,B,Medium,BB,Medium,27,27,57,37,06/11/2022,BBB,High,1790625
+agmh,AGM Group Holdings Inc,https://static.finnhub.io/logo/7f908b9c-80db-11ea-96c9-00000000092a.png,http://www.agmprime.com/,B,Medium,B,Medium,B,Medium,1,9,34,2,06/10/2022,B,Medium,1705402
+agio,Agios Pharmaceuticals Inc,https://static.finnhub.io/logo/4298fc14-80ce-11ea-ace7-00000000092a.png,https://www.agios.com/,A,High,BB,Medium,BB,Medium,62,28,62,59,04/16/2022,BBB,High,1439222
+agle,Aeglea Bio Therapeutics Inc,https://static.finnhub.io/logo/523351d2-80d2-11ea-b332-00000000092a.png,https://www.aeglea.com/,B,Medium,B,Medium,B,Medium,1,12,31,3,09/16/2022,B,Medium,1636282
+agnc,AGNC Investment Corp,https://static.finnhub.io/logo/2f35e91b0085245b224c9799c269249eec328a9687dcd6c3345b79a268802cb0.png,https://agnc.com/,BB,Medium,B,Medium,BB,Medium,35,16,57,35,04/16/2022,BBB,High,1423689
+agri,AgriFORCE Growing Systems Ltd,https://static.finnhub.io/logo/13b2627f534d45aba679196877fcbf2fe8af01324ddfa2aecc3dbba8c1132239.png,https://agriforcegs.com/,A,High,B,Medium,BB,Medium,60,17,57,49,06/11/2022,BBB,High,1826397
+agrx,Agile Therapeutics Inc,https://static.finnhub.io/logo/ce934c88-80cf-11ea-8207-00000000092a.png,https://www.agiletherapeutics.com/,B,Medium,B,Medium,B,Medium,8,8,46,11,04/16/2022,B,Medium,1261249
+agys,Agilysys Inc,https://static.finnhub.io/logo/9f139b98-80df-11ea-bde1-00000000092a.png,https://www.agilysys.com/,A,High,BB,Medium,BB,Medium,58,28,56,54,04/16/2022,BBB,High,78749
+agtc,Applied Genetic Technologies Corp,https://static.finnhub.io/logo/56431592-80cf-11ea-a718-00000000092a.png,https://www.agtc.com/,B,Medium,BB,Medium,BB,Medium,7,32,57,28,04/16/2022,BB,Medium,1273636
+ahco,Adapthealth Corp,https://static.finnhub.io/logo/0d255d71bb558e608b96ab76dc546dbaef93419ed054817b132789da3b0c0350.png,https://adapthealth.com/investor-relations/,B,Medium,B,Medium,B,Medium,2,10,40,6,06/10/2022,B,Medium,1725255
+ahpi,Allied Healthcare Products Inc,https://static.finnhub.io/logo/a505c155a53bb84a0c27e5a919e287f856f4a255e509bc48f499f9f73b588069.png,http://www.alliedhpi.com/,B,Medium,B,Medium,BB,Medium,2,13,62,17,04/16/2022,BB,Medium,874710
+aib,AIB Acquisition Corp,Logo Not Provided,Url Not Provided,B,Medium,B,Medium,BB,Medium,3,13,56,15,05/24/2022,B,Medium,1882963
+adtn,ADTRAN Inc,https://static.finnhub.io/logo/544d99910973b1d04b345cd611449e802ade0468588c1066ad0a5be905a80a84.png,https://www.adtran.com/,A,High,BB,Medium,BB,Medium,60,29,56,55,04/16/2022,BBB,High,926282
+adn,Advent Technologies Holdings Inc,https://static.finnhub.io/logo/adca3c2e-80da-11ea-9ab0-00000000092a.png,http://amciacquisition.com/,B,Medium,B,Medium,B,Medium,10,8,36,8,04/20/2022,B,Medium,1744494
+aiki,Aikido Pharma Inc,https://static.finnhub.io/logo/b16fc664-80e0-11ea-9b8a-00000000092a.png,https://aikidopharma.com/,B,Medium,B,Medium,B,Medium,0,15,32,4,06/10/2022,B,Medium,12239
+akic,Sports Ventures Acquisition Corp,Logo Not Provided,Url Not Provided,B,Medium,B,Medium,B,Medium,0,9,39,4,06/11/2022,B,Medium,1826574
+aip,Arteris Inc,https://static.finnhub.io/logo/6429ccca605b3faa9498cbbc2727b1c4fb8e3c24e577855ff8bf45eeff7d21b2.png,https://www.arteris.com/,A,High,B,Medium,BB,Medium,58,25,56,52,06/07/2022,BBB,High,1667011
+akro,Akero Therapeutics Inc,https://static.finnhub.io/logo/5ac79f50-80da-11ea-8fee-00000000092a.png,https://www.akerotx.com/,B,Medium,B,Medium,BB,Medium,10,17,57,21,06/10/2022,BB,Medium,1744659
+airt,Air T Inc,https://static.finnhub.io/logo/9e54807a-80df-11ea-9dbf-00000000092a.png,http://www.airt.net/,B,Medium,B,Medium,BB,Medium,7,10,62,18,04/16/2022,BB,Medium,353184
+aimc,Altra Industrial Motion Corp,https://static.finnhub.io/logo/9da7f902-80df-11ea-b5a0-00000000092a.png,https://www.altramotion.com/,A,High,BB,Medium,BB,Medium,63,31,57,58,04/16/2022,BBB,High,1374535
+akba,Akebia Therapeutics Inc,https://static.finnhub.io/logo/7d6670f8-80cf-11ea-aab1-00000000092a.png,https://akebia.com/,B,Medium,B,Medium,B,Medium,0,11,35,4,04/16/2022,B,Medium,1517022
+airg,Airgain Inc,https://static.finnhub.io/logo/ff72eaca-80db-11ea-a64a-00000000092a.png,http://www.airgain.com/,A,High,BB,Medium,BB,Medium,58,28,64,57,04/16/2022,BBB,High,1272842
+airs,Airsculpt Technologies Inc,https://static.finnhub.io/logo/e5484b255e157a1ac5f11571a56a7a14e23cb71d6cf02440a54c447cae42e82a.png,https://elitebodysculpture.com/,B,Medium,B,Medium,B,Medium,2,8,32,2,06/11/2022,B,Medium,1870940
+akam,Akamai Technologies Inc,https://static.finnhub.io/logo/0982f80bff901e6c53bbeda92444bf52ccfe7fb4b559716e0e2bc14037d6ca3f.png,https://www.akamai.com/,A,High,BB,Medium,BB,Medium,61,36,57,60,04/16/2022,BBB,High,1086222
+aku,Akumin Inc,https://static.finnhub.io/logo/60c47c38-80db-11ea-aa7b-00000000092a.png,https://www.akumin.com,BBB,High,BB,Medium,BB,Medium,49,37,56,54,04/21/2022,BBB,High,1776197
+akus,Akouos Inc,https://static.finnhub.io/logo/a33692c919e7f03a35025ca5873e5f14ee8f53cd5bc190cd22d677f58ceaf538.png,https://akouos.com/,B,Medium,B,Medium,B,Medium,1,12,55,13,06/10/2022,B,Medium,1722271
+akts,Akoustis Technologies Inc,https://static.finnhub.io/logo/c87e2de6-80db-11ea-b469-00000000092a.png,https://ir.akoustis.com/,B,Medium,BB,Medium,BBB,High,4,28,88,38,04/16/2022,BBB,High,1584754
+aktx,Akari Therapeutics PLC,https://static.finnhub.io/logo/6566bacc-80cf-11ea-a49e-00000000092a.png,http://akaritx.com/,B,Medium,B,Medium,BB,Medium,5,11,57,16,04/16/2022,B,Medium,1541157
+albo,Albireo Pharma Inc,https://static.finnhub.io/logo/b888b486-80df-11ea-bc00-00000000092a.png,https://albireopharma.com/,A,High,BB,Medium,BB,Medium,58,28,59,54,06/10/2022,BBB,High,1322505
+akya,Akoya Biosciences Inc,https://static.finnhub.io/logo/ebaa6db90afb3fd57e3402e38731e2ac663ddb7015f44ae0c020a525a4e80832.png,https://www.akoyabio.com/,A,High,BB,Medium,B,Medium,60,28,35,46,06/10/2022,BBB,High,1711933
+alco,Alico Inc,https://static.finnhub.io/logo/95b11e40-80df-11ea-8e03-00000000092a.png,https://www.alicoinc.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/16/2022,BBB,High,3545
+aldx,Aldeyra Therapeutics Inc,https://static.finnhub.io/logo/4b4f9dba-80cf-11ea-87c6-00000000092a.png,https://www.aldeyra.com/,B,Medium,B,Medium,B,Medium,6,20,40,14,04/16/2022,B,Medium,1341235
+alec,Alector Inc,https://static.finnhub.io/logo/871e51b8-80da-11ea-b167-00000000092a.png,https://alector.com,B,Medium,B,Medium,BB,Medium,8,23,56,23,06/10/2022,BB,Medium,1653087
+algm,Allegro Microsystems Inc,https://static.finnhub.io/logo/20eb4170e5f97f9a34699f366ad26aa5e0bcc1b90d5ba7ceca4d2ea325c798dc.png,https://www.allegromicro.com/en,A,High,BB,Medium,B,Medium,66,30,44,54,06/10/2022,BBB,High,866291
+alf,Alfi Inc,https://static.finnhub.io/logo/954cad65a4d7e526ef98b990ffa89eaef29832cb3309ee729758201a938bb326.png,https://www.getalfi.com/,B,Medium,B,Medium,BB,Medium,5,20,60,21,06/11/2022,BB,Medium,1833908
+algn,Align Technology Inc,https://static4.finnhub.io/file/publicdatany2/stock_logo/ALGN_4295900190.png,https://www.aligntech.com/,B,Medium,B,Medium,B,Medium,7,25,45,19,04/16/2022,BB,Medium,1097149
+algs,Aligos Therapeutics Inc,https://static.finnhub.io/logo/6b5a2554225d2f95a883cfe8cf08836e3f393f6b9ba4ee3a8276ca38e48f43ae.png,https://www.aligos.com/,B,Medium,B,Medium,B,Medium,2,12,40,7,06/10/2022,B,Medium,1799448
+alhc,Alignment Healthcare LLC,https://static.finnhub.io/logo/de5dbbf80fc814b921a6c8c5dbf9419a4bf46742aaa0f34752661418ffaa4158.png,https://www.alignmenthealthcare.com,B,Medium,BB,Medium,B,Medium,2,28,45,18,06/10/2022,BB,Medium,1832466
+alks,Alkermes Plc,https://static.finnhub.io/logo/9187a488-80df-11ea-8157-00000000092a.png,http://www.alkermes.com/,BBB,High,BB,Medium,BB,Medium,41,28,64,48,04/16/2022,BBB,High,1520262
+alim,Alimera Sciences Inc,https://static.finnhub.io/logo/911aa6ee-8100-11ea-ae7f-00000000092a.png,http://www.alimerasciences.com/,B,Medium,B,Medium,B,Medium,4,13,42,10,04/16/2022,B,Medium,1267602
+algt,Allegiant Travel Co,https://static.finnhub.io/logo/8f1d001c-80df-11ea-9290-00000000092a.png,https://www.allegiantair.com/,B,Medium,B,Medium,B,Medium,17,9,43,15,04/16/2022,B,Medium,1362468
+aih,Aesthetic Medical International Holdings Group Ltd,https://static.finnhub.io/logo/697bd3e4-81d2-11ea-8587-00000000092a.png,http://www.pengai.com.cn,B,Medium,B,Medium,BB,Medium,4,18,56,18,06/10/2022,BB,Medium,1757143
+alkt,Alkami Technology Inc,https://static.finnhub.io/logo/4d26995d74a0ad752eb680076961f46e4e33333cf4615fa33aeb2e0789a1971e.png,https://www.alkami.com/,B,Medium,BB,Medium,B,Medium,15,29,46,26,06/10/2022,BB,Medium,1529274
+alny,Alnylam Pharmaceuticals Inc,https://static.finnhub.io/logo/f84d39ef1ff5def1044225ef2ea4a1ed1f2deca8bc5d338574d2991c88959b10.png,https://www.alnylam.com/,BB,Medium,BB,Medium,BB,Medium,25,37,62,43,04/16/2022,BBB,High,1178670
+allt,Allot Ltd,https://static.finnhub.io/logo/9564945e-80df-11ea-9144-00000000092a.png,https://www.allot.com,A,High,BB,Medium,BB,Medium,59,32,59,58,04/16/2022,BBB,High,1365767
+allo,Allogene Therapeutics Inc,https://static.finnhub.io/logo/c257caf6-80da-11ea-8622-00000000092a.png,https://allogene.com/,A,High,BB,Medium,BB,Medium,65,32,57,60,06/10/2022,BBB,High,1737287
+amat,Applied Materials Inc,https://static.finnhub.io/logo/907771b0-80df-11ea-848b-00000000092a.png,https://www.appliedmaterials.com/,A,High,BB,Medium,BB,Medium,63,31,56,58,04/16/2022,BBB,High,6951
+amd,Advanced Micro Devices Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/AMD_4295903297.jpeg,https://www.amd.com/en,B,Medium,B,Medium,B,Medium,0,9,31,1,04/16/2022,B,Medium,2488
+atvi,Activision Blizzard Inc,https://static.finnhub.io/logo/74116cec-80fc-11ea-bc98-00000000092a.png,https://www.activisionblizzard.com/,B,Medium,BB,Medium,BB,Medium,15,37,64,38,04/16/2022,BBB,High,718877
+avgo,Broadcom Inc,https://static.finnhub.io/logo/8ef67930-80d3-11ea-abb0-00000000092a.png,https://www.broadcom.com,B,Medium,B,Medium,B,Medium,2,10,31,2,04/16/2022,B,Medium,1730168
+anss,ANSYS Inc,https://static.finnhub.io/logo/6edb83c2-826a-11ea-9332-00000000092a.png,https://www.ansys.com/,A,High,BB,Medium,B,Medium,73,35,52,64,04/16/2022,A,High,1013462
+amzn,Amazon.com Inc,https://static.finnhub.io/logo/967bf7b0-80df-11ea-abb4-00000000092a.png,https://www.amazon.com/,AA,Excellent,BB,Medium,BBB,High,90,29,96,89,04/16/2022,A,High,1018724
+aihs,Senmiao Technology Ltd,https://static.finnhub.io/logo/86ea906d08d7e5c73068d922de5ea0f69468758c41e6c219d1238ddb022b5193.png,https://www.ihongsen.com,B,Medium,B,Medium,B,Medium,4,8,31,2,06/10/2022,B,Medium,1711012
+apa,APA Corp (US),https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/5080022433.png,https://apacorp.com/,A,High,BB,Medium,BB,Medium,60,31,62,59,04/16/2022,BBB,High,1841666
+biib,Biogen Inc,https://static.finnhub.io/logo/4eb95aee-80e0-11ea-a580-00000000092a.png,https://www.biogen.com/,BB,Medium,BB,Medium,BB,Medium,35,28,72,48,04/16/2022,BBB,High,875045
+bkng,Booking Holdings Inc,https://static.finnhub.io/logo/a8fcd262-80e0-11ea-9907-00000000092a.png,https://www.bookingholdings.com/,A,High,BB,Medium,BB,Medium,69,29,59,61,06/10/2022,BBB,High,1075531
+cdns,Cadence Design Systems Inc,https://static.finnhub.io/logo/bbbf4280-80df-11ea-834e-00000000092a.png,https://www.cadence.com/,A,High,BB,Medium,B,Medium,58,29,55,54,04/16/2022,BBB,High,813672
+cdw,CDW Corp,https://static.finnhub.io/logo/4c3802e76baf7914df0324fcd9bfd1c05c835a803751266262cf9f14022ecf4c.png,https://www.cdw.com/,B,Medium,B,Medium,B,Medium,5,10,31,4,04/16/2022,B,Medium,1402057
+chrw,CH Robinson Worldwide Inc,https://static.finnhub.io/logo/390745f6-80e0-11ea-8529-00000000092a.png,https://www.chrobinson.com/,A,High,BB,Medium,BB,Medium,72,34,66,69,04/16/2022,A,High,1043277
+cinf,Cincinnati Financial Corp,https://static.finnhub.io/logo/78f04730-80e0-11ea-9b3b-00000000092a.png,https://www.cinfin.com/,B,Medium,B,Medium,B,Medium,7,23,44,17,04/16/2022,BB,Medium,20286
+chtr,Charter Communications Inc,https://static.finnhub.io/logo/ac65393a-80c9-11ea-a42d-00000000092a.png,https://corporate.charter.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/16/2022,BBB,High,1091667
+cmcsa,Comcast Corp,https://static.finnhub.io/logo/9f50b602-826a-11ea-855c-00000000092a.png,https://corporate.comcast.com/,A,High,BB,Medium,BB,Medium,59,36,60,60,04/16/2022,BBB,High,1166691
+cprt,Copart Inc,https://static.finnhub.io/logo/c1ae2adc-80df-11ea-997f-00000000092a.png,https://www.copart.com/,B,Medium,B,Medium,B,Medium,13,9,32,8,04/16/2022,B,Medium,900075
+cost,Costco Wholesale Corp,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/COST_4295912987.png,https://www.costco.com/,A,High,BB,Medium,B,Medium,65,29,38,50,04/16/2022,BBB,High,909832
+csx,CSX Corp,https://static.finnhub.io/logo/b034979a-80eb-11ea-b0c3-00000000092a.png,https://www.csx.com/,A,High,BB,Medium,BB,Medium,60,30,62,58,04/17/2022,BBB,High,277948
+ctsh,Cognizant Technology Solutions Corp,https://static.finnhub.io/logo/cad080be-80df-11ea-8b33-00000000092a.png,https://www.cognizant.com/,AA,Excellent,BB,Medium,BB,Medium,78,40,56,72,04/16/2022,A,High,1058290
+cme,CME Group Inc,https://static.finnhub.io/logo/121b709a86980d7eb8db8589918a76d3db9e4e428b05857011dbd8957fd059bf.png,https://www.cmegroup.com/,BB,Medium,B,Medium,B,Medium,34,15,31,23,07/26/2022,BB,Medium,1156375
+csco,Cisco Systems Inc,https://static.finnhub.io/logo/ca223cac-80df-11ea-a99c-00000000092a.png,https://www.cisco.com/,B,Medium,B,Medium,B,Medium,15,15,36,14,06/11/2022,B,Medium,858877
+ctas,Cintas Corp,https://static.finnhub.io/logo/cb889e02-80df-11ea-80b6-00000000092a.png,https://www.cintas.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/16/2022,BBB,High,723254
+ctxs,Citrix Systems Inc,https://static.finnhub.io/logo/ceb2199a-80df-11ea-af9f-00000000092a.png,https://www.citrix.com/,A,High,BB,Medium,BB,Medium,64,29,57,58,04/16/2022,BBB,High,877890
+czr,Caesars Entertainment Inc,https://static.finnhub.io/logo/45d618da-80cc-11ea-884e-00000000092a.png,https://www.caesars.com/,B,Medium,B,Medium,B,Medium,13,13,31,10,04/16/2022,B,Medium,1590895
+dish,DISH Network Corp,https://static.finnhub.io/logo/c9b0175c-80df-11ea-a0ec-00000000092a.png,https://ir.dish.com/,B,Medium,B,Medium,B,Medium,2,20,32,8,04/17/2022,B,Medium,1001082
+dltr,Dollar Tree Inc,https://static.finnhub.io/logo/d277a94a-80df-11ea-8f0a-00000000092a.png,https://www.dollartree.com/,B,Medium,B,Medium,B,Medium,7,9,35,6,04/17/2022,B,Medium,935703
+dxcm,Dexcom Inc,https://static.finnhub.io/logo/fb3c517a-80df-11ea-a0a0-00000000092a.png,https://www.dexcom.com/,B,Medium,B,Medium,B,Medium,3,15,35,7,04/17/2022,B,Medium,1093557
+ea,Electronic Arts Inc,https://static.finnhub.io/logo/556815ac-80e0-11ea-bb14-00000000092a.png,https://www.ea.com/,BB,Medium,BB,Medium,B,Medium,31,28,38,30,04/17/2022,BB,Medium,712515
+lnt,Alliant Energy Corp,https://static.finnhub.io/logo/1981fcae-80ec-11ea-a4b8-00000000092a.png,https://www.alliantenergy.com/,A,High,BB,Medium,BB,Medium,61,29,56,56,04/16/2022,BBB,High,352541
+fang,Diamondback Energy Inc,https://static.finnhub.io/logo/fe1ab98ccc6f7867a191970f03152cff56846b7811399704b9d4be280d895b5b.png,https://ir.diamondbackenergy.com/,A,High,B,Medium,BB,Medium,60,22,56,52,04/17/2022,BBB,High,1539838
+ebay,eBay Inc,https://static.finnhub.io/logo/919a6270-826a-11ea-abe9-00000000092a.png,https://www.ebayinc.com/,A,High,BB,Medium,BB,Medium,58,28,57,54,04/17/2022,BBB,High,1065088
+lkq,LKQ Corp,https://static.finnhub.io/logo/0846719a1ab7311db60cef58b6985f4e9269ceb9eaf89e63efc354b2188280a1.png,https://www.lkqcorp.com/,A,High,BB,Medium,BB,Medium,61,28,57,56,04/18/2022,BBB,High,1065696
+googl,Alphabet Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/GOOGL.png,https://abc.xyz/,B,Medium,BB,Medium,BB,Medium,18,40,70,44,04/30/2022,BBB,High,1652044
+mar,Marriott International Inc,https://static.finnhub.io/logo/1f7dc93a-80ec-11ea-a5dc-00000000092a.png,https://www.marriott.com/,B,Medium,B,Medium,B,Medium,3,8,35,3,04/18/2022,B,Medium,1048286
+mchp,Microchip Technology Inc,https://static.finnhub.io/logo/35e836b8-80e0-11ea-855a-00000000092a.png,https://www.microchip.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/18/2022,BBB,High,827054
+lrcx,Lam Research Corp,https://static.finnhub.io/logo/b05d9f52-80e0-11ea-8823-00000000092a.png,https://www.lamresearch.com/,A,High,BB,Medium,BB,Medium,60,33,60,59,04/18/2022,BBB,High,707549
+mdlz,Mondelez International Inc,https://static.finnhub.io/logo/10b5dc9a-80ec-11ea-897a-00000000092a.png,https://www.mondelezinternational.com/,A,High,BB,Medium,BB,Medium,62,29,56,56,04/18/2022,BBB,High,1103982
+meta,Meta Platforms Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/FB.png,https://www.facebook.com,B,Medium,B,Medium,B,Medium,1,14,35,6,04/22/2022,B,Medium,1326801
+mktx,Marketaxess Holdings Inc,https://static.finnhub.io/logo/4a309d80-80e1-11ea-8514-00000000092a.png,https://www.marketaxess.com/,B,Medium,B,Medium,B,Medium,6,10,34,6,04/18/2022,B,Medium,1278021
+mnst,Monster Beverage Corp,https://static.finnhub.io/logo/18126d0c-80e0-11ea-a414-00000000092a.png,http://monsterbevcorp.com/,A,High,BB,Medium,BB,Medium,61,36,56,60,04/18/2022,BBB,High,865752
+mrna,Moderna Inc,https://static.finnhub.io/logo/a024deee-80da-11ea-9046-00000000092a.png,https://www.modernatx.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/18/2022,BBB,High,1682852
+mtch,Match Group Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/4295908221.png,https://www.mtch.com/,B,Medium,BB,Medium,BB,Medium,9,45,59,37,04/18/2022,BBB,High,891103
+mpwr,Monolithic Power Systems Inc,https://static.finnhub.io/logo/3ec1921c-80e1-11ea-b9d8-00000000092a.png,https://www.monolithicpower.com/,BB,Medium,B,Medium,B,Medium,25,25,40,27,04/18/2022,BB,Medium,1280452
+msft,Microsoft Corp,https://static.finnhub.io/logo/25e313016e9fac0f4b78bbd7e3afded45a8136b17f450c262aea14beed438191.png,https://www.microsoft.com/en-us,AA,Excellent,BBB,High,BB,Medium,99,56,75,100,04/27/2022,A,High,789019
+mu,Micron Technology Inc,https://static.finnhub.io/logo/33e8930c-80ec-11ea-a30a-00000000092a.png,https://www.micron.com/,A,High,BB,Medium,BB,Medium,64,34,56,60,04/18/2022,BBB,High,723125
+ndaq,Nasdaq Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/NDAQ_8589934167.png,https://www.nasdaq.com/,A,High,BB,Medium,BB,Medium,59,30,56,55,04/18/2022,BBB,High,1120193
+nlok,NortonLifeLock Inc,https://static.finnhub.io/logo/a14f7054-80e0-11ea-8378-00000000092a.png,https://www.nortonlifelock.com/,A,High,BB,Medium,BB,Medium,59,31,57,56,06/10/2022,BBB,High,849399
+ntrs,Northern Trust Corp,https://static.finnhub.io/logo/729a6714ac01ab49a6f558cdeaf2d29037d313f87e6acd4af638a8152a23b9fc.png,https://www.northerntrust.com/united-states/,B,Medium,B,Medium,B,Medium,10,13,38,11,04/18/2022,B,Medium,73124
+nwl,Newell Brands Inc,https://static.finnhub.io/logo/43c3da30-80ec-11ea-a6ea-00000000092a.png,https://www.newellbrands.com/,A,High,BB,Medium,BB,Medium,63,28,60,58,04/18/2022,BBB,High,814453
+nvda,NVIDIA Corp,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/NVDA.png,https://www.nvidia.com/,BB,Medium,BB,Medium,B,Medium,24,28,50,32,04/18/2022,BB,Medium,1045810
+allk,Allakos Inc,https://static.finnhub.io/logo/7358df46-81d5-11ea-b3b3-00000000092a.png,http://www.allakos.com/,B,Medium,B,Medium,BB,Medium,0,22,56,18,06/10/2022,BB,Medium,1564824
+nwsa,News Corp,https://static.finnhub.io/logo/38632848-80ce-11ea-a34f-00000000092a.png,https://newscorp.com/,A,High,BB,Medium,BB,Medium,60,28,56,54,04/18/2022,BBB,High,1564708
+odfl,Old Dominion Freight Line Inc,https://static.finnhub.io/logo/8b7ba59a51614579f97c95184c2a54ab36d44842d9bf5350e077217523059382.png,https://www.odfl.com/,BBB,High,BBB,High,B,Medium,51,52,51,61,04/18/2022,BBB,High,878927
+pcar,Paccar Inc,https://static4.finnhub.io/file/publicdatany2/stock_logo/PCAR_4295907525.jpg,https://www.paccar.com/,A,High,BB,Medium,BB,Medium,71,36,57,66,04/18/2022,A,High,75362
+nxpi,NXP Semiconductors NV,https://static.finnhub.io/logo/86154d10-80c9-11ea-9926-00000000092a.png,https://www.nxp.com/,A,High,BB,Medium,BB,Medium,59,33,57,58,04/18/2022,BBB,High,1413447
+orly,O'Reilly Automotive Inc,https://static.finnhub.io/logo/e7e4dff0-826a-11ea-8801-00000000092a.png,https://corporate.oreillyauto.com/corporate/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/18/2022,BBB,High,898173
+payx,Paychex Inc,https://static.finnhub.io/logo/acaa8fac-80e0-11ea-9d58-00000000092a.png,https://www.paychex.com/,A,High,BB,Medium,B,Medium,58,28,31,43,07/26/2022,BBB,High,723531
+pfg,Principal Financial Group Inc,https://static.finnhub.io/logo/52a59ab6-80ec-11ea-b750-00000000092a.png,https://www.principal.com/,A,High,BB,Medium,BB,Medium,68,32,56,61,04/18/2022,BBB,High,1126328
+rost,Ross Stores Inc,https://static.finnhub.io/logo/d0674d8a-826a-11ea-8077-00000000092a.png,https://www.rossstores.com/,BB,Medium,BB,Medium,BB,Medium,34,33,56,43,04/19/2022,BBB,High,745732
+sbac,SBA Communications Corp,https://static.finnhub.io/logo/19c8edbbf482503d3a876417a19001cfb20a28894f61df4606c75b8d5657da21.png,https://ir.sbasite.com/overview/default.aspx,B,Medium,B,Medium,B,Medium,10,18,35,12,04/19/2022,B,Medium,1034054
+qcom,Qualcomm Inc,https://static.finnhub.io/logo/28159d10-80e1-11ea-b725-00000000092a.png,https://www.qualcomm.com/,BBB,High,BB,Medium,BB,Medium,40,28,56,44,04/19/2022,BBB,High,804328
+pool,Pool Corp,https://static.finnhub.io/logo/ac59de52-80e0-11ea-9ff4-00000000092a.png,https://www.poolcorp.com/,A,High,BB,Medium,BB,Medium,63,29,60,58,04/18/2022,BBB,High,945841
+pep,PepsiCo Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/PEP_4295904718.png,https://www.pepsico.com/,AA,Excellent,BB,Medium,BB,Medium,100,36,71,87,04/18/2022,A,High,77476
+sbux,Starbucks Corp,https://static.finnhub.io/logo/8d4c97ac-80e0-11ea-b957-00000000092a.png,https://www.starbucks.com/,BBB,High,BB,Medium,B,Medium,53,44,55,59,04/19/2022,BBB,High,829224
+reg,Regency Centers Corp,https://static.finnhub.io/logo/5ecc68e8-80ec-11ea-af0b-00000000092a.png,https://www.regencycenters.com/,A,High,BB,Medium,BB,Medium,72,42,72,76,04/19/2022,A,High,910606
+qrvo,Qorvo Inc,https://static.finnhub.io/logo/6008ddde-80d1-11ea-8e0e-00000000092a.png,https://www.qorvo.com/,A,High,BB,Medium,BB,Medium,65,30,57,59,04/19/2022,BBB,High,1604778
+ptc,PTC Inc,https://static.finnhub.io/logo/29d81df0-80e1-11ea-8920-00000000092a.png,https://www.ptc.com/,A,High,BB,Medium,BB,Medium,67,28,58,60,04/19/2022,BBB,High,857005
+penn,PENN Entertainment Inc,https://static.finnhub.io/logo/aeca4e7e-80e0-11ea-b61c-00000000092a.png,https://www.pngaming.com/,BB,Medium,BB,Medium,B,Medium,33,28,36,31,04/18/2022,BB,Medium,921738
+pypl,PayPal Holdings Inc,https://static.finnhub.io/logo/58e310c0-80d2-11ea-8993-00000000092a.png,https://www.paypal.com/,BB,Medium,B,Medium,B,Medium,33,17,52,32,04/18/2022,BB,Medium,1633917
+regn,Regeneron Pharmaceuticals Inc,https://static.finnhub.io/logo/94aceb0a-80e0-11ea-a230-00000000092a.png,https://www.regeneron.com/,A,High,BB,Medium,BB,Medium,59,33,57,57,04/19/2022,BBB,High,872589
+amgn,Amgen Inc,https://static.finnhub.io/logo/06a226980337772e10ad0953d2904b1be6d15866d212e9912efaea5850757690.png,https://www.amgen.com/,A,High,BB,Medium,BB,Medium,72,30,63,66,04/16/2022,A,High,318154
+snps,Synopsys Inc,https://static.finnhub.io/logo/b5dff9e4-80e0-11ea-b347-00000000092a.png,https://www.synopsys.com/,A,High,BB,Medium,BB,Medium,63,31,60,59,04/19/2022,BBB,High,883241
+stx,Seagate Technology Holdings PLC,https://static.finnhub.io/logo/1b9ae09b2197a137d5e26ef7606d068678109eab18fefac2f4994c3ab827a080.png,https://investors.seagate.com/overview/default.aspx,A,High,BB,Medium,BB,Medium,66,38,56,64,04/19/2022,BBB,High,1137789
+tech,Bio-Techne Corp,https://static.finnhub.io/logo/21c90d484b75f48b0c3943f2cd9208034fc36add542c71254724b6e6e173036c.png,https://www.bio-techne.com/,A,High,B,Medium,BB,Medium,60,21,56,51,04/16/2022,BBB,High,842023
+ter,Teradyne Inc,https://static.finnhub.io/logo/8211e574-80ec-11ea-b01d-00000000092a.png,https://www.teradyne.com/,A,High,BB,Medium,BB,Medium,59,33,60,59,04/19/2022,BBB,High,97210
+swks,Skyworks Solutions Inc,https://static.finnhub.io/logo/6d9737aa218175cf0ecab9fbfde6531a45cb826eab7877356403e5b905bcca2f.png,https://www.skyworksinc.com/,A,High,BB,Medium,B,Medium,61,28,49,52,04/19/2022,BBB,High,4127
+trmb,Trimble Inc,https://static.finnhub.io/logo/f89b3dba-80e0-11ea-a642-00000000092a.png,https://www.trimble.com/,A,High,BBB,High,BB,Medium,67,50,60,73,04/19/2022,A,High,864749
+trow,T Rowe Price Group Inc,https://static.finnhub.io/logo/f20081c2-80e0-11ea-aa51-00000000092a.png,https://www.troweprice.com,A,High,BB,Medium,BB,Medium,60,33,59,58,04/19/2022,BBB,High,1113169
+ttwo,Take-Two Interactive Software Inc,https://static.finnhub.io/logo/c1e64458-80e0-11ea-8873-00000000092a.png,https://www.take2games.com/,B,Medium,BB,Medium,BB,Medium,5,29,59,26,04/19/2022,BB,Medium,946581
+tsla,Tesla Inc,https://static.finnhub.io/logo/2dd96524-80c9-11ea-aaac-00000000092a.png,https://www.tesla.com/,A,High,CCC,Low,B,Medium,68,0,51,42,04/19/2022,BBB,High,1318605
+tsco,Tractor Supply Co,https://static.finnhub.io/logo/c382b098-80e0-11ea-a382-00000000092a.png,https://www.tractorsupply.com/,A,High,BB,Medium,B,Medium,58,28,31,43,09/17/2022,BBB,High,916365
+txn,Texas Instruments Inc,https://static.finnhub.io/logo/8e047d7e-80ec-11ea-a11f-00000000092a.png,https://www.ti.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/19/2022,BBB,High,97476
+tmus,T-Mobile US Inc,https://static.finnhub.io/logo/4ffaa8b8-80ec-11ea-94ca-00000000092a.png,https://www.t-mobile.com/,BB,Medium,BB,Medium,B,Medium,27,34,39,32,04/19/2022,BBB,High,1283699
+ual,United Airlines Holdings Inc,https://static.finnhub.io/logo/b3f34b67dcba1725d92ac006206475d24142031e7f30415f77010a101e9fae1b.png,https://ir.united.com/,B,Medium,B,Medium,B,Medium,1,8,36,3,04/19/2022,B,Medium,100517
+vrsk,Verisk Analytics Inc,https://static.finnhub.io/logo/fe905336-80fe-11ea-adc8-00000000092a.png,https://www.verisk.com,AA,Excellent,BB,Medium,BB,Medium,80,41,56,73,04/19/2022,A,High,1442145
+ulta,Ulta Beauty Inc,https://static.finnhub.io/logo/d10866ba-80e0-11ea-9adf-00000000092a.png,https://www.ulta.com/,B,Medium,B,Medium,B,Medium,1,16,31,5,04/19/2022,B,Medium,1403568
+vrtx,Vertex Pharmaceuticals Inc,https://static.finnhub.io/logo/feec7ad8-80e0-11ea-ac96-00000000092a.png,https://www.vrtx.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/19/2022,BBB,High,875320
+vtrs,Viatris Inc,https://static.finnhub.io/logo/bb69368ad1567617f611958c6dbb56e67edc624e4531b680597d2d17e8dcace8.png,https://www.viatris.com/en,A,High,BB,Medium,B,Medium,58,28,31,43,09/24/2022,BBB,High,1792044
+vrsn,Verisign Inc,https://static.finnhub.io/logo/9adf6b51871316924a9578bea95b2d64a4227d34ba3b664d3826fdba28ff23ae.png,https://www.verisign.com/,A,High,BB,Medium,BB,Medium,67,38,62,67,04/19/2022,A,High,1014473
+wba,Walgreens Boots Alliance Inc,https://static.finnhub.io/logo/9cc9acf0-80ec-11ea-a362-00000000092a.png,https://www.walgreensbootsalliance.com/,A,High,BB,Medium,BB,Medium,61,33,56,58,04/19/2022,BBB,High,1618921
+ntap,NetApp Inc,https://static.finnhub.io/logo/8aa1beee-80e0-11ea-85fc-00000000092a.png,https://www.netapp.com/,A,High,BB,Medium,BB,Medium,66,39,62,67,04/18/2022,A,High,1002047
+xel,Xcel Energy Inc,https://static.finnhub.io/logo/ad4fb250-80ec-11ea-950a-00000000092a.png,https://www.xcelenergy.com/,B,Medium,B,Medium,B,Medium,4,8,32,3,04/20/2022,B,Medium,72903
+xray,DENTSPLY SIRONA Inc,https://static.finnhub.io/logo/27b1f30a-80e1-11ea-bdab-00000000092a.png,https://www.dentsplysirona.com/,A,High,BB,Medium,BB,Medium,64,31,57,59,04/17/2022,BBB,High,818479
+zbra,Zebra Technologies Corp,https://static.finnhub.io/logo/19363bc2-80e1-11ea-be98-00000000092a.png,https://www.zebra.com/,BB,Medium,BB,Medium,BB,Medium,23,31,56,36,04/20/2022,BBB,High,877212
+aap,Advance Auto Parts Inc,https://static.finnhub.io/logo/5fdef210-80eb-11ea-8a31-00000000092a.png,https://shop.advanceautoparts.com/,B,Medium,B,Medium,B,Medium,12,20,34,14,04/16/2022,B,Medium,1158449
+zion,Zions Bancorporation NA,https://static.finnhub.io/logo/1ab22e6c-80e1-11ea-8246-00000000092a.png,https://www.zionsbank.com/,B,Medium,B,Medium,B,Medium,0,8,31,0,04/20/2022,B,Medium,109380
+wynn,Wynn Resorts Ltd,https://static.finnhub.io/logo/acba626ebfc3757928c79f34ba0291de64d34a185fce74db448210806384f2dd.png,https://www.wynnresorts.com/,B,Medium,B,Medium,B,Medium,5,8,31,3,04/20/2022,B,Medium,1174922
+a,Agilent Technologies Inc,https://static.finnhub.io/logo/5f1f8412-80eb-11ea-bd05-00000000092a.png,https://www.agilent.com/,A,High,B,Medium,B,Medium,72,14,40,47,04/16/2022,BBB,High,1090872
+abbv,Abbvie Inc,https://static.finnhub.io/logo/8806d72c-80cd-11ea-b0f0-00000000092a.png,https://www.abbvie.com/,A,High,BB,Medium,BB,Medium,59,31,56,56,04/16/2022,BBB,High,1551152
+abc,Amerisourcebergen Corp,https://static.finnhub.io/logo/984684bcb4bd8dbd25efd66e89a3e9b1529e45333e9cbcefbbb50b1d8fdd44d2.png,https://www.amerisourcebergen.com/,A,High,BB,Medium,BB,Medium,59,28,60,56,04/16/2022,BBB,High,1140859
+adm,Archer-Daniels-Midland Co,https://static.finnhub.io/logo/633db98c-80eb-11ea-ab18-00000000092a.png,https://www.adm.com/,A,High,BB,Medium,BB,Medium,75,38,57,69,04/16/2022,A,High,7084
+abt,Abbott Laboratories,https://static.finnhub.io/logo/d90fadbf0b79644dfb7ab6f63b510b0e690db067d5a36ebcbaebaf342c0728d0.png,https://www.abbott.com/,A,High,BB,Medium,BB,Medium,61,29,57,56,04/16/2022,BBB,High,1800
+aee,Ameren Corp,https://static.finnhub.io/logo/643922d8-80eb-11ea-b89f-00000000092a.png,https://www.ameren.com/,A,High,BB,Medium,BB,Medium,70,36,56,65,04/16/2022,A,High,1002910
+aes,AES Corp,https://static.finnhub.io/logo/dd2e38bf724fd9d5860157f55d57588ba0ea09e12d3ac1b9361148d013d566d4.png,https://www.aes.com/,A,High,BB,Medium,BB,Medium,63,33,74,66,04/16/2022,A,High,874761
+afl,Aflac Inc,https://static.finnhub.io/logo/669fcffe-80eb-11ea-8a69-00000000092a.png,https://www.aflac.com/,BBB,High,BB,Medium,B,Medium,49,28,40,42,04/16/2022,BBB,High,4977
+acn,Accenture PLC,https://static.finnhub.io/logo/d97049de-8278-11ea-8ac9-00000000092a.png,https://www.accenture.com/ie-en/,A,High,BB,Medium,BB,Medium,61,39,57,62,04/16/2022,BBB,High,1467373
+ajg,Arthur J. Gallagher & Co.,https://static.finnhub.io/logo/6ad765be-80eb-11ea-97ea-00000000092a.png,https://www.ajg.com/,A,High,BB,Medium,BB,Medium,64,36,59,62,04/16/2022,BBB,High,354190
+aiz,Assurant Inc,https://static.finnhub.io/logo/6d03fe00-80eb-11ea-a0c7-00000000092a.png,https://www.assurant.com/,BBB,High,BB,Medium,BB,Medium,46,31,56,49,04/16/2022,BBB,High,1267238
+alk,Alaska Air Group Inc,https://static.finnhub.io/logo/6f0f3ff0-80eb-11ea-adee-00000000092a.png,https://investor.alaskaair.com/,A,High,BB,Medium,B,Medium,61,28,46,51,04/16/2022,BBB,High,766421
+alb,Albemarle Corp,https://static.finnhub.io/logo/4ef8740ea71ccbddb20e0dcfc8e82c9029f79efda1e34947efece24c8974199c.png,https://www.albemarle.com/,A,High,BB,Medium,BB,Medium,66,32,60,62,04/16/2022,BBB,High,915913
+aig,American International Group Inc,https://static.finnhub.io/logo/69801f92-80eb-11ea-a320-00000000092a.png,https://www.aig.com/individual,A,High,BB,Medium,BB,Medium,61,32,59,59,04/16/2022,BBB,High,5272
+all,Allstate Corp,https://static.finnhub.io/logo/e0a6bc18-8278-11ea-aad1-00000000092a.png,https://www.allstateinvestors.com/investor-overview?c=93125&p=irol-irhome,A,High,BB,Medium,B,Medium,64,28,36,48,04/16/2022,BBB,High,899051
+alle,Allegion PLC,https://static.finnhub.io/logo/57a8176a6abfdd7d5a24ec8d7802b8ccd943b7e6b0f435d6af062dab03864422.png,https://www.allegion.com/corp/en/index.html,A,High,BB,Medium,BB,Medium,66,32,60,62,04/16/2022,BBB,High,1579241
+amp,Ameriprise Financial Inc,https://static.finnhub.io/logo/71b42062-80eb-11ea-a0bc-00000000092a.png,https://www.ameriprise.com/,BB,Medium,BB,Medium,B,Medium,38,29,48,40,04/16/2022,BBB,High,820027
+ame,AMETEK Inc,https://static.finnhub.io/logo/70aae254-80eb-11ea-8bb6-00000000092a.png,https://www.ametek.com/,A,High,BB,Medium,B,Medium,66,33,49,58,04/16/2022,BBB,High,1037868
+amt,American Tower Corp,https://static.finnhub.io/logo/72058208-80eb-11ea-bbb0-00000000092a.png,https://www.americantower.com/,A,High,BB,Medium,BB,Medium,64,34,57,61,04/16/2022,BBB,High,1053507
+aos,A O Smith Corp,https://static.finnhub.io/logo/73381be8-80eb-11ea-b385-00000000092a.png,https://www.aosmith.com/,A,High,BB,Medium,BB,Medium,60,31,59,57,04/16/2022,BBB,High,91142
+apd,Air Products and Chemicals Inc,https://static.finnhub.io/logo/74581b6e-80eb-11ea-a665-00000000092a.png,https://www.airproducts.com/,AA,Excellent,BBB,High,BB,Medium,96,56,56,90,04/16/2022,A,High,2969
+aon,Aon PLC,https://static.finnhub.io/logo/aa9668652232c8e21ee7ff27ca3f3a49a12c07c6d86670032b41608efb282982.png,https://www.aon.com/,BBB,High,BB,Medium,B,Medium,55,28,53,51,04/16/2022,BBB,High,315293
+anet,Arista Networks Inc,https://static.finnhub.io/logo/5c1639fa-81b4-11ea-a6d0-00000000092a.png,https://www.arista.com/en/,BBB,High,BB,Medium,B,Medium,47,30,55,48,04/16/2022,BBB,High,1596532
+aph,Amphenol Corp,https://static.finnhub.io/logo/74ad03fe-80eb-11ea-a501-00000000092a.png,https://www.amphenol.com/,A,High,BB,Medium,BBB,High,60,28,100,74,04/16/2022,A,High,820313
+ato,Atmos Energy Corp,https://static.finnhub.io/logo/77cd59a2-80eb-11ea-b2f2-00000000092a.png,https://www.atmosenergy.com/,A,High,BB,Medium,BB,Medium,72,41,60,70,04/16/2022,A,High,731802
+awk,American Water Works Company Inc,https://static.finnhub.io/logo/7abeb7a8-80eb-11ea-9cc9-00000000092a.png,https://www.amwater.com/,AA,Excellent,BB,Medium,BB,Medium,87,46,56,80,04/16/2022,A,High,1410636
+are,Alexandria Real Estate Equities Inc,https://static.finnhub.io/logo/ffde2ccf9a1b68d8c0417d434712742c97a013bed497f0bcafbd67c6c48c3838.png,https://www.are.com/,AA,Excellent,BB,Medium,BB,Medium,77,35,68,73,04/16/2022,A,High,1035443
+aptv,Aptiv PLC,https://static.finnhub.io/logo/56ba8998-80cb-11ea-ade4-00000000092a.png,https://www.aptiv.com,A,High,BB,Medium,BB,Medium,68,35,59,65,06/10/2022,A,High,1521332
+avb,Avalonbay Communities Inc,https://static.finnhub.io/logo/7940482e-80eb-11ea-9e46-00000000092a.png,https://www.avaloncommunities.com/,A,High,BB,Medium,B,Medium,58,28,56,53,04/16/2022,BBB,High,915912
+avy,Avery Dennison Corp,https://static.finnhub.io/logo/79d9e86c-80eb-11ea-acfe-00000000092a.png,https://www.averydennison.com/,A,High,BB,Medium,BB,Medium,65,37,62,65,04/16/2022,A,High,8818
+ba,Boeing Co,https://static.finnhub.io/logo/7f18239e-80eb-11ea-b544-00000000092a.png,https://www.boeing.com/,B,Medium,B,Medium,B,Medium,4,13,40,8,09/21/2022,B,Medium,12927
+bac,Bank of America Corp,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/BAC.png,https://www.bankofamerica.com,B,Medium,BB,Medium,B,Medium,4,46,48,30,04/16/2022,BB,Medium,70858
+bax,Baxter International Inc,https://static.finnhub.io/logo/7fd00f9c-80eb-11ea-95bb-00000000092a.png,https://www.baxter.com/,A,High,BB,Medium,BB,Medium,58,31,56,55,04/16/2022,BBB,High,10456
+bbwi,Bath & Body Works Inc,https://static.finnhub.io/logo/1b846d4a-80ec-11ea-b03e-00000000092a.png,https://www.bbwinc.com/,A,High,BB,Medium,BB,Medium,63,28,56,56,06/11/2022,BBB,High,701985
+bdx,Becton Dickinson and Co,https://static.finnhub.io/logo/82e1f20c-80eb-11ea-b25d-00000000092a.png,https://www.bd.com/,AA,Excellent,BB,Medium,BB,Medium,78,44,60,75,04/16/2022,A,High,10795
+bio,Bio Rad Laboratories Inc,https://static.finnhub.io/logo/44edee0a-80df-11ea-9ec3-00000000092a.png,https://www.bio-rad.com/,B,Medium,B,Medium,BB,Medium,14,13,56,22,04/16/2022,BB,Medium,12208
+bby,Best Buy Co Inc,https://static.finnhub.io/logo/81b71688-80eb-11ea-8a5b-00000000092a.png,https://www.bestbuy.com/,BBB,High,B,Medium,BB,Medium,44,14,56,39,04/16/2022,BBB,High,764478
+bk,Bank of New York Mellon Corp,https://static.finnhub.io/logo/f1e8660c-8278-11ea-a415-00000000092a.png,https://www.bnymellon.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/16/2022,BBB,High,1390777
+axp,American Express Co,https://static.finnhub.io/logo/7c511c66-80eb-11ea-83d7-00000000092a.png,https://www.americanexpress.com/,B,Medium,B,Medium,B,Medium,6,13,33,7,04/16/2022,B,Medium,4962
+br,Broadridge Financial Solutions Inc,https://static.finnhub.io/logo/8c4db812-80eb-11ea-a03a-00000000092a.png,https://www.broadridge.com/,A,High,BB,Medium,BB,Medium,67,30,62,63,04/16/2022,BBB,High,1383312
+bmy,Bristol-Myers Squibb Co,https://static.finnhub.io/logo/8b628318-80eb-11ea-93a2-00000000092a.png,https://www.bms.com/,A,High,BB,Medium,BB,Medium,58,32,59,57,04/16/2022,BBB,High,14272
+bro,Brown & Brown Inc,https://static.finnhub.io/logo/8d4bb0d8-80eb-11ea-b804-00000000092a.png,https://www.bbinsurance.com/,BBB,High,BB,Medium,BB,Medium,39,32,56,45,04/16/2022,BBB,High,79282
+azo,Autozone Inc,https://static.finnhub.io/logo/7e0ca700-80eb-11ea-bd89-00000000092a.png,https://www.autozone.com/,B,Medium,B,Medium,B,Medium,12,12,34,10,04/16/2022,B,Medium,866787
+bsx,Boston Scientific Corp,https://static.finnhub.io/logo/8ee22dde-80eb-11ea-9789-00000000092a.png,https://www.bostonscientific.com/,A,High,BB,Medium,BB,Medium,63,47,56,67,04/16/2022,A,High,885725
+bx,Blackstone Inc,https://static.finnhub.io/logo/933284c8-80eb-11ea-b057-00000000092a.png,https://www.blackstone.com/,A,High,BB,Medium,BB,Medium,64,36,61,64,04/16/2022,BBB,High,1393818
+bxp,Boston Properties Inc,https://static.finnhub.io/logo/908869c8-80eb-11ea-b9d6-00000000092a.png,https://www.bxp.com/,A,High,BB,Medium,BB,Medium,64,35,57,62,04/16/2022,BBB,High,1037540
+sivb,SVB Financial Group,https://static.finnhub.io/logo/1fbbb8c43e148c0b3b8648e5ec5a5d9008616203f19162e3973e79435b02ea11.png,https://www.svb.com/,A,High,BB,Medium,BB,Medium,60,36,56,59,04/19/2022,BBB,High,719739
+c,Citigroup Inc,https://static.finnhub.io/logo/93e64c9c-80eb-11ea-805d-00000000092a.png,http://www.citigroup.com/,A,High,BB,Medium,BB,Medium,61,28,57,55,04/16/2022,BBB,High,831001
+cat,Caterpillar Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/4295903678.jpeg,https://www.caterpillar.com/en.html,B,Medium,B,Medium,B,Medium,7,16,40,12,06/07/2022,B,Medium,18230
+carr,Carrier Global Corp,https://static.finnhub.io/logo/603e44f9a46419a67a8a0e59358d8fa90f116ba0bd9735830f2b11886a71fd52.png,https://www.carrier.com/,B,Medium,B,Medium,B,Medium,2,19,38,10,04/21/2022,B,Medium,1783180
+cbre,CBRE Group Inc,https://static.finnhub.io/logo/96608490-80eb-11ea-a287-00000000092a.png,https://www.cbre.us,B,Medium,B,Medium,B,Medium,0,10,31,1,06/10/2022,B,Medium,1138118
+cci,Crown Castle Inc,https://static.finnhub.io/logo/9955c1da-80eb-11ea-9b73-00000000092a.png,https://www.crowncastle.com/,A,High,BB,Medium,B,Medium,58,28,31,43,09/16/2022,BBB,High,1051470
+cday,Ceridian HCM Holding Inc,https://static.finnhub.io/logo/3da179a75ee0a0b5064738cfdc79ace212dc770b203df04d3ffbfe92274e0663.png,https://investors.ceridian.com/overview/default.aspx,A,High,BB,Medium,BB,Medium,64,43,61,67,04/21/2022,A,High,1725057
+cma,Comerica Inc,https://static.finnhub.io/logo/9e86587471234fdad18123d132d5b66e368edaf5a527a6618c12a7f5cc1279bd.png,https://www.comerica.com/,B,Medium,BB,Medium,B,Medium,15,28,39,22,04/16/2022,BB,Medium,28412
+dhi,D R Horton Inc,https://static.finnhub.io/logo/397ce09a79a25513f426bce1f02302bbe45178c074100dbe1c09d74d3fcaaa80.png,https://www.drhorton.com/,B,Medium,B,Medium,B,Medium,10,22,32,13,04/17/2022,B,Medium,882184
+dov,Dover Corp,https://static.finnhub.io/logo/c1b83b1a-80eb-11ea-957d-00000000092a.png,https://www.dovercorporation.com/,A,High,BB,Medium,BB,Medium,58,32,57,56,04/17/2022,BBB,High,29905
+dri,Darden Restaurants Inc,https://static.finnhub.io/logo/c375d95c-80eb-11ea-817c-00000000092a.png,https://www.darden.com,A,High,BB,Medium,BB,Medium,61,29,56,56,04/17/2022,BBB,High,940944
+ce,Celanese Corp,https://static.finnhub.io/logo/9a354dde-80eb-11ea-9454-00000000092a.png,https://www.celanese.com/,A,High,BB,Medium,BB,Medium,58,31,56,55,06/10/2022,BBB,High,1306830
+dg,Dollar General Corp,https://static.finnhub.io/logo/f9e89aa6-82a3-11ea-bcf8-00000000092a.png,https://www.dollargeneral.com/,B,Medium,B,Medium,B,Medium,9,12,31,7,04/17/2022,B,Medium,29534
+cmg,Chipotle Mexican Grill Inc,https://static.finnhub.io/logo/a551a6c2-80eb-11ea-a89e-00000000092a.png,https://www.chipotle.com/,B,Medium,B,Medium,B,Medium,2,16,34,7,04/16/2022,B,Medium,1058090
+dgx,Quest Diagnostics Inc,https://static.finnhub.io/logo/bcfcc2be-80eb-11ea-b2d4-00000000092a.png,https://www.questdiagnostics.com/,B,Medium,BB,Medium,B,Medium,6,28,32,14,04/19/2022,B,Medium,1022079
+ccl,Carnival Corp,https://static.finnhub.io/logo/9994e2b0-80eb-11ea-a0cb-00000000092a.png,https://www.carnivalcorp.com/,A,High,BB,Medium,BB,Medium,61,33,61,60,04/16/2022,BBB,High,815097
+chd,Church & Dwight Co Inc,https://static.finnhub.io/logo/80497981115775795530c2304913f6f51722baec9f0cd47eb4115e3d16f2ff4b.png,https://churchdwight.com/,A,High,BB,Medium,BB,Medium,73,36,68,71,04/16/2022,A,High,313927
+dow,Dow Inc,https://static.finnhub.io/logo/d809bb30e681dc3abf1fa05dc6154f5ce1ca51b61eadafdf15369c1c4d37f99b.png,https://investors.dow.com/,B,Medium,B,Medium,B,Medium,5,8,31,3,04/17/2022,B,Medium,1751788
+dfs,Discover Financial Services,https://static.finnhub.io/logo/bcb852c0-80eb-11ea-b6e7-00000000092a.png,https://www.discover.com/,BB,Medium,BB,Medium,BB,Medium,26,32,60,39,04/17/2022,BBB,High,1393612
+duk,Duke Energy Corp,https://static.finnhub.io/logo/c6386312-80eb-11ea-a9c6-00000000092a.png,https://www.duke-energy.com/,AA,Excellent,BB,Medium,BB,Medium,78,40,63,74,04/17/2022,A,High,1326160
+dre,Duke Realty Corp,https://static.finnhub.io/logo/c2b783b4-80eb-11ea-9a9a-00000000092a.png,https://www.dukerealty.com/,A,High,BB,Medium,BB,Medium,66,30,56,59,04/17/2022,BBB,High,783280
+cf,CF Industries Holdings Inc,https://static.finnhub.io/logo/9b57a636-80eb-11ea-8738-00000000092a.png,https://www.cfindustries.com/,A,High,BB,Medium,BB,Medium,63,29,59,58,04/16/2022,BBB,High,1324404
+dvn,Devon Energy Corp,https://static.finnhub.io/logo/c6b217be-80eb-11ea-af1d-00000000092a.png,https://www.devonenergy.com/,A,High,BB,Medium,BB,Medium,71,28,56,61,04/17/2022,BBB,High,1090012
+ecl,Ecolab Inc,https://static.finnhub.io/logo/310f9a68901ccb666997c890b733d4af9872166796de8310822ee896fb970a3f.png,https://www.ecolab.com/,A,High,BB,Medium,BB,Medium,67,42,62,69,04/17/2022,A,High,31462
+hd,Home Depot Inc,https://static.finnhub.io/logo/f3d21b34-80eb-11ea-9fb5-00000000092a.png,https://www.homedepot.com/,B,Medium,BB,Medium,B,Medium,6,31,32,16,04/17/2022,BB,Medium,354950
+dte,DTE Energy Co,https://static.finnhub.io/logo/c4c6a66c-80eb-11ea-a459-00000000092a.png,https://www.newlook.dteenergy.com/,A,High,BB,Medium,B,Medium,76,30,34,55,04/17/2022,BBB,High,936340
+eix,Edison International,https://static.finnhub.io/logo/cbccd574-80eb-11ea-ac7b-00000000092a.png,https://www.edison.com/,AA,Excellent,A,High,BB,Medium,96,70,60,99,04/17/2022,A,High,827052
+glw,Corning Inc,https://static.finnhub.io/logo/ec2c31c6-80eb-11ea-946c-00000000092a.png,https://www.corning.com/,B,Medium,B,Medium,B,Medium,0,8,31,0,04/16/2022,B,Medium,24741
+dva,DaVita Inc,https://static.finnhub.io/logo/c5ccdcdc-80eb-11ea-9165-00000000092a.png,https://www.davita.com/,B,Medium,BB,Medium,BB,Medium,12,34,56,31,04/17/2022,BB,Medium,927066
+wdc,Western Digital Corp,https://static.finnhub.io/logo/614eaedc2d32b02535d899770c447ff80b1fef23bd17a0f30cec4ea863891044.png,https://www.westerndigital.com/,A,High,BB,Medium,B,Medium,66,35,46,58,04/20/2022,BBB,High,106040
+gs,Goldman Sachs Group Inc,https://static.finnhub.io/logo/7ba3bd9e8fc91f97252e3b58f24fe98824e71ab51ac7805cec819dc88f10e7de.png,https://www.goldmansachs.com/,A,High,BB,Medium,BB,Medium,63,29,57,57,04/17/2022,BBB,High,886982
+dxc,DXC Technology Co,https://static.finnhub.io/logo/12afb9ee-8279-11ea-a94d-00000000092a.png,https://dxc.com/us/en,A,High,BB,Medium,BB,Medium,59,33,57,57,06/10/2022,BBB,High,1688568
+etn,Eaton Corporation PLC,https://static.finnhub.io/logo/d2178ec6-80eb-11ea-a096-00000000092a.png,https://www.eaton.com/,A,High,BB,Medium,BB,Medium,62,33,61,61,04/17/2022,BBB,High,1551182
+ed,Consolidated Edison Inc,https://static.finnhub.io/logo/24f921dc-8279-11ea-9a09-00000000092a.png,https://www.conedison.com/,AA,Excellent,BB,Medium,BB,Medium,96,39,56,81,04/16/2022,A,High,1047862
+hsy,Hershey Co,https://static.finnhub.io/logo/f2b115ad22f1c30d69a33526154bd236297b2162d2cc21642cd3b508818b4d3b.png,https://www.thehersheycompany.com/,A,High,BB,Medium,BB,Medium,63,40,56,63,04/17/2022,BBB,High,47111
+jnj,Johnson & Johnson,https://static.finnhub.io/logo/0a900736-80ec-11ea-8224-00000000092a.png,https://www.jnj.com/,A,High,BB,Medium,BB,Medium,70,29,56,61,04/18/2022,BBB,High,200406
+jpm,JPMorgan Chase & Co,https://static.finnhub.io/logo/0bf9570a-80ec-11ea-9e21-00000000092a.png,https://www.jpmorganchase.com/,A,High,BB,Medium,BB,Medium,59,31,66,60,04/18/2022,BBB,High,19617
+ko,Coca-Cola Co,https://static.finnhub.io/logo/12f0377a-80ec-11ea-896a-00000000092a.png,https://www.coca-colacompany.com/,B,Medium,B,Medium,B,Medium,0,8,31,0,04/16/2022,B,Medium,21344
+kmx,Carmax Inc,https://static.finnhub.io/logo/2879f1e14e28ba6a8ddfa0976c76da74189bd418a0c3505ebd333d3c7efb1b85.png,https://www.carmax.com/,B,Medium,B,Medium,BB,Medium,10,15,56,20,04/16/2022,BB,Medium,1170010
+ldos,Leidos Holdings Inc,https://static.finnhub.io/logo/6a70aab0-80ec-11ea-b140-00000000092a.png,https://www.leidos.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/18/2022,BBB,High,1336920
+leg,Leggett & Platt Inc,https://static.finnhub.io/logo/5e2230cc2a5c21f9fa14b3e7606d0fac3df9217b811e3743301fa11c8fc0c684.png,https://leggett.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/18/2022,BBB,High,58492
+mcd,McDonald's Corp,https://static.finnhub.io/logo/1fc48922e8f6853d63649be8c022bc451941771d13aefd69960f6bd1c6e726ed.png,https://www.mcdonalds.com/us/en-us.html,A,High,BB,Medium,BB,Medium,59,33,57,57,04/18/2022,BBB,High,63908
+lin,Linde PLC,https://static.finnhub.io/logo/b8fe2cdc-81d4-11ea-bd4e-00000000092a.png,https://www.linde.com/,B,Medium,B,Medium,B,Medium,2,16,50,13,04/20/2022,B,Medium,1707925
+lumn,Lumen Technologies Inc,https://static.finnhub.io/logo/b2f04cc0-80eb-11ea-a434-00000000092a.png,https://www.centurylink.com/,A,High,BB,Medium,BB,Medium,65,33,57,61,06/10/2022,BBB,High,18926
+lyb,LyondellBasell Industries NV,https://static.finnhub.io/logo/d3871fc8-80c9-11ea-8168-00000000092a.png,https://www.lyondellbasell.com/,A,High,BB,Medium,BB,Medium,75,38,64,71,04/18/2022,A,High,1489393
+mco,Moody's Corp,https://static.finnhub.io/logo/21b77074-80ec-11ea-a2fe-00000000092a.png,https://www.moodys.com/,A,High,BB,Medium,B,Medium,61,29,40,49,04/18/2022,BBB,High,1059556
+mck,Mckesson Corp,https://static.finnhub.io/logo/20acef66-80ec-11ea-9004-00000000092a.png,https://www.mckesson.com/,A,High,BB,Medium,BB,Medium,58,28,59,55,04/18/2022,BBB,High,927653
+mas,Masco Corp,https://static.finnhub.io/logo/f733abfaa82424a088ae7010ead7d371b7f6579b20393e2cf842ecda43a4e1e6.png,https://masco.com/,A,High,BB,Medium,BB,Medium,62,32,57,59,04/18/2022,BBB,High,62996
+low,Lowe's Companies Inc,https://static.finnhub.io/logo/1a543662-80ec-11ea-962e-00000000092a.png,http://media.lowes.com/,B,Medium,B,Medium,B,Medium,3,8,31,2,04/18/2022,B,Medium,60667
+mdt,Medtronic PLC,https://static.finnhub.io/logo/23418fdc-80ec-11ea-b2ad-00000000092a.png,https://www.medtronic.com/,A,High,BB,Medium,BB,Medium,61,29,60,57,04/18/2022,BBB,High,1613103
+mkc,McCormick & Company Inc,https://static.finnhub.io/logo/283299b6-80ec-11ea-a748-00000000092a.png,https://www.mccormick.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/18/2022,BBB,High,63754
+met,MetLife Inc,https://static.finnhub.io/logo/23fa7ee8-80ec-11ea-b9be-00000000092a.png,https://www.metlife.com/,A,High,BB,Medium,BB,Medium,61,29,57,56,04/18/2022,BBB,High,1099219
+mgm,MGM Resorts International,https://static.finnhub.io/logo/2545909a-80ec-11ea-ac68-00000000092a.png,https://www.mgmresorts.com/,A,High,BB,Medium,B,Medium,58,28,31,43,09/17/2022,BBB,High,789570
+mmc,Marsh & McLennan Companies Inc,https://static.finnhub.io/logo/0dcbb2b38c092b479f704d3951261861da99b7990ad086d13815d96c4a79c5ea.png,https://www.marshmclennan.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/18/2022,BBB,High,62709
+mo,Altria Group Inc,https://static.finnhub.io/logo/002a95625a927e5c06c8491f073040b874a1ab4f55d0e779c5e5492ff0e3239d.png,https://www.altria.com/,A,High,BB,Medium,BB,Medium,58,33,66,61,04/16/2022,BBB,High,764180
+bwa,Borgwarner Inc,https://static.finnhub.io/logo/fcb21b76-8278-11ea-affb-00000000092a.png,https://www.borgwarner.com/,B,Medium,B,Medium,B,Medium,12,9,39,10,04/16/2022,B,Medium,908255
+mrk,Merck & Co Inc,https://static.finnhub.io/logo/2eedcaa6-80ec-11ea-853f-00000000092a.png,https://www.merck.com/,A,High,BB,Medium,BB,Medium,58,29,60,56,04/18/2022,BBB,High,310158
+mro,Marathon Oil Corp,https://static.finnhub.io/logo/2f57969a-80ec-11ea-a60d-00000000092a.png,https://www.marathonoil.com/,A,High,BB,Medium,BB,Medium,64,30,57,59,04/21/2022,BBB,High,101778
+mpc,Marathon Petroleum Corp,https://static.finnhub.io/logo/3fcc7474-80cb-11ea-83e4-00000000092a.png,https://www.marathonpetroleum.com/,AA,Excellent,BB,Medium,BB,Medium,96,41,60,83,04/18/2022,A,High,1510295
+ms,Morgan Stanley,https://static.finnhub.io/logo/2fa6e0cc-80ec-11ea-9393-00000000092a.png,https://www.morganstanley.com/,A,High,BB,Medium,BB,Medium,68,28,61,62,04/18/2022,BBB,High,895421
+mtb,M&T Bank Corp,https://static.finnhub.io/logo/30d4609c-80ec-11ea-8ba5-00000000092a.png,https://www.mtb.com/,A,High,BB,Medium,B,Medium,58,28,46,49,04/18/2022,BBB,High,36270
+mtd,Mettler-Toledo International Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/MTD.svg,https://www.mt.com/,A,High,BB,Medium,B,Medium,59,28,41,48,04/18/2022,BBB,High,1037646
+msi,Motorola Solutions Inc,https://static.finnhub.io/logo/2d51c630-80ec-11ea-be27-00000000092a.png,https://www.motorolasolutions.com,A,High,BB,Medium,BB,Medium,59,29,68,60,04/18/2022,BBB,High,68505
+nee,Nextera Energy Inc,https://static.finnhub.io/logo/e1c67092-80eb-11ea-b610-00000000092a.png,https://www.nexteraenergy.com/,AA,Excellent,BB,Medium,BB,Medium,90,29,60,73,04/18/2022,A,High,753308
+msci,MSCI Inc,https://static.finnhub.io/logo/353f2fa2-80ec-11ea-84d6-00000000092a.png,https://www.msci.com/,A,High,BB,Medium,BB,Medium,73,37,65,71,04/18/2022,A,High,1408198
+nclh,Norwegian Cruise Line Holdings Ltd,https://static.finnhub.io/logo/11f658d4f694f9c02c757031862ef93a50badc3344e7193e69183a3b1eb46ff0.png,https://www.nclhltd.com/,BBB,High,BB,Medium,BB,Medium,57,29,56,54,04/18/2022,BBB,High,1513761
+ni,NiSource Inc,https://static.finnhub.io/logo/3b042364-80ec-11ea-a3c4-00000000092a.png,https://www.nisource.com/,BB,Medium,BB,Medium,B,Medium,31,32,37,33,04/18/2022,BBB,High,1111711
+noc,Northrop Grumman Corp,https://static.finnhub.io/logo/3e3d9eda-80ec-11ea-810a-00000000092a.png,https://www.northropgrumman.com/,A,High,BB,Medium,BB,Medium,59,28,56,54,04/18/2022,BBB,High,1133421
+now,ServiceNow Inc,https://static.finnhub.io/logo/8023521c-80cc-11ea-9907-00000000092a.png,https://www.servicenow.com/,A,High,BB,Medium,BB,Medium,67,42,69,72,04/19/2022,A,High,1373715
+nue,Nucor Corp,https://static.finnhub.io/logo/61f6fa71dcc06483a3992eb1285beddd4a1d668f622c8a324412e5fc6828d664.png,https://nucor.com/,BB,Medium,BB,Medium,B,Medium,34,36,38,36,04/18/2022,BBB,High,73309
+nlsn,Nielsen Holdings PLC,https://static.finnhub.io/logo/56db3b78-80ca-11ea-860e-00000000092a.png,https://www.nielsen.com/,A,High,BB,Medium,BB,Medium,58,30,56,54,04/18/2022,BBB,High,1492633
+nsc,Norfolk Southern Corp,https://static.finnhub.io/logo/40989d8c-80ec-11ea-9189-00000000092a.png,http://www.nscorp.com/,BB,Medium,BB,Medium,BB,Medium,30,35,64,46,04/18/2022,BBB,High,702165
+nvr,NVR Inc,https://static.finnhub.io/logo/432bfe4c-80ec-11ea-8f50-00000000092a.png,https://www.nvrinc.com/,B,Medium,B,Medium,B,Medium,13,9,32,8,04/18/2022,B,Medium,906163
+pgr,Progressive Corp,https://static.finnhub.io/logo/5339a36c-80ec-11ea-bfff-00000000092a.png,https://www.progressive.com/,BB,Medium,BB,Medium,B,Medium,29,38,49,40,04/19/2022,BBB,High,80661
+pfe,Pfizer Inc,https://static.finnhub.io/logo/5163194a-80ec-11ea-8a20-00000000092a.png,https://www.pfizer.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/18/2022,BBB,High,78003
+phm,Pultegroup Inc,https://static.finnhub.io/logo/538406a4-80ec-11ea-afbb-00000000092a.png,https://www.pultegroupinc.com/,B,Medium,B,Medium,B,Medium,3,8,41,6,04/19/2022,B,Medium,822416
+ph,Parker-Hannifin Corp,https://static.finnhub.io/logo/52fb881e-80ec-11ea-9c1b-00000000092a.png,https://www.parker.com/portal/site/PARKER/menuitem.b90576e27a4d71ae1bfcc510237ad1ca/?vgnextoid=c38888b5bd16e010VgnVCM1000000308a8c0RCRD&vgnextfmt=EN,BB,Medium,BB,Medium,B,Medium,24,28,38,27,04/18/2022,BB,Medium,76334
+pki,PerkinElmer Inc,https://static.finnhub.io/logo/560b48b4-80ec-11ea-a26c-00000000092a.png,https://www.perkinelmer.com/,A,High,BB,Medium,BB,Medium,61,31,62,59,04/18/2022,BBB,High,31791
+pld,Prologis Inc,https://static.finnhub.io/logo/6ff93222-80eb-11ea-8e84-00000000092a.png,https://www.prologis.com/,A,High,BB,Medium,BB,Medium,73,42,60,71,04/19/2022,A,High,1045609
+ppg,PPG Industries Inc,https://static.finnhub.io/logo/5a8e2c2e-80ec-11ea-9a08-00000000092a.png,https://www.ppg.com/,B,Medium,B,Medium,B,Medium,18,15,36,16,04/18/2022,B,Medium,79879
+psa,Public Storage,https://static.finnhub.io/logo/5bb9e9a4-80ec-11ea-b327-00000000092a.png,https://www.publicstorage.com/,B,Medium,B,Medium,B,Medium,7,17,32,9,04/19/2022,B,Medium,1393311
+pnc,PNC Financial Services Group Inc,https://static.finnhub.io/logo/595585fe-80ec-11ea-9ee3-00000000092a.png,https://www.pnc.com/,BBB,High,BB,Medium,BB,Medium,49,32,56,51,04/18/2022,BBB,High,713676
+pm,Philip Morris International Inc,https://static.finnhub.io/logo/58416e9a-80ec-11ea-a68c-00000000092a.png,https://www.pmi.com/,A,High,BB,Medium,BB,Medium,62,33,60,60,04/18/2022,BBB,High,1413329
+pkg,Packaging Corp of America,https://static.finnhub.io/logo/55c64d68-80ec-11ea-881b-00000000092a.png,https://www.packagingcorp.com/,A,High,BB,Medium,BB,Medium,58,28,56,54,04/18/2022,BBB,High,75677
+psx,Phillips 66,https://static.finnhub.io/logo/861c8692-80cc-11ea-8e76-00000000092a.png,https://www.phillips66.com/,A,High,BB,Medium,BB,Medium,71,40,59,69,04/18/2022,A,High,1534701
+pru,Prudential Financial Inc,https://static.finnhub.io/logo/5be82d74-80ec-11ea-8776-00000000092a.png,https://www.prudential.com/,B,Medium,BB,Medium,B,Medium,16,28,53,29,04/19/2022,BB,Medium,1137774
+pnr,Pentair PLC,https://static.finnhub.io/logo/7c350a5284b5364e4cbc3ebcdd8e5340212483e8b43f627494bb2fe66925d7be.png,https://www.pentair.com/,BBB,High,BB,Medium,BB,Medium,45,34,60,51,04/18/2022,BBB,High,77360
+pnw,Pinnacle West Capital Corp,https://static.finnhub.io/logo/58db7dc2-80ec-11ea-a1d4-00000000092a.png,https://www.pinnaclewest.com/,AA,Excellent,BBB,High,BB,Medium,83,63,56,86,04/18/2022,A,High,764622
+ppl,PPL Corp,https://static.finnhub.io/logo/5ad1b27e-80ec-11ea-91fc-00000000092a.png,https://www.pplweb.com/,A,High,BB,Medium,BB,Medium,63,29,56,57,04/18/2022,BBB,High,922224
+pwr,Quanta Services Inc,https://static.finnhub.io/logo/5cd40824-80ec-11ea-8cdc-00000000092a.png,https://www.quantaservices.com/,A,High,BB,Medium,BB,Medium,66,44,59,68,04/19/2022,A,High,1050915
+rjf,Raymond James Financial Inc,https://static.finnhub.io/logo/61f3d4a2-80ec-11ea-bc21-00000000092a.png,https://www.raymondjames.com/,A,High,BB,Medium,BB,Medium,59,29,57,55,04/19/2022,BBB,High,720005
+rf,Regions Financial Corp,https://static.finnhub.io/logo/6078f774-80ec-11ea-a4f9-00000000092a.png,https://www.regions.com/,BBB,High,BB,Medium,BB,Medium,56,28,57,53,04/17/2022,BBB,High,1281761
+rcl,Royal Caribbean Cruises Ltd,https://static.finnhub.io/logo/fa7e26aaa52b5bf30455b809ea0e58a231ef2155d3060c9c25907fe65ac56333.png,https://www.royalcaribbeangroup.com/,A,High,BB,Medium,BB,Medium,58,33,59,58,04/19/2022,BBB,High,884887
+rl,Ralph Lauren Corp,https://static.finnhub.io/logo/627d9592-80ec-11ea-8d78-00000000092a.png,https://investor.ralphlauren.com/,BBB,High,BB,Medium,BB,Medium,42,38,57,51,04/19/2022,BBB,High,1037038
+pvh,PVH Corp,https://static.finnhub.io/logo/5c877bb6-80ec-11ea-aa40-00000000092a.png,https://www.pvh.com/,BBB,High,BB,Medium,BB,Medium,42,31,60,48,04/19/2022,BBB,High,78239
+rhi,Robert Half International Inc,https://static.finnhub.io/logo/611b69c8-80ec-11ea-97f0-00000000092a.png,https://www.roberthalf.com/,B,Medium,BB,Medium,BB,Medium,11,34,59,32,04/19/2022,BB,Medium,315213
+pxd,Pioneer Natural Resources Co,https://static.finnhub.io/logo/5d0d741c-80ec-11ea-a494-00000000092a.png,https://www.pxd.com/,AA,Excellent,BBB,High,BB,Medium,96,50,56,87,04/18/2022,A,High,1038357
+rol,Rollins Inc,https://static.finnhub.io/logo/65f77576-80ec-11ea-b637-00000000092a.png,https://www.rollins.com/,A,High,BB,Medium,BB,Medium,58,28,57,54,04/19/2022,BBB,High,84839
+rmd,Resmed Inc,https://static.finnhub.io/logo/6392da88-80ec-11ea-998e-00000000092a.png,https://www.resmed.com/,BB,Medium,BB,Medium,BB,Medium,25,30,56,37,04/19/2022,BBB,High,943819
+schw,Charles Schwab Corp,https://static.finnhub.io/logo/867fa080-80e0-11ea-9be1-00000000092a.png,https://www.schwab.com/,A,High,BB,Medium,BB,Medium,61,28,56,55,04/16/2022,BBB,High,316709
+rok,Rockwell Automation Inc,https://static.finnhub.io/logo/65a84b78-80ec-11ea-a534-00000000092a.png,https://www.rockwellautomation.com/,BB,Medium,B,Medium,B,Medium,21,16,34,17,04/19/2022,BB,Medium,1024478
+tdg,TransDigm Group Inc,https://static.finnhub.io/logo/80ac1b50-80ec-11ea-a061-00000000092a.png,https://www.transdigm.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/19/2022,BBB,High,1260221
+see,Sealed Air Corp,https://static.finnhub.io/logo/6c39a694-80ec-11ea-9601-00000000092a.png,https://sealedair.com/,A,High,BB,Medium,B,Medium,68,31,46,57,04/19/2022,BBB,High,1012100
+rop,Roper Technologies Inc,https://static.finnhub.io/logo/6649ef38-80ec-11ea-a694-00000000092a.png,https://www.ropertech.com/,A,High,BB,Medium,BB,Medium,71,37,66,71,04/19/2022,A,High,882835
+swk,Stanley Black & Decker Inc,https://static.finnhub.io/logo/5acc625a815c258fc2f37a7ee1e02489374a3c1b896b8919dff795cfd7f2002d.png,https://www.stanleyblackanddecker.com/,A,High,BB,Medium,BB,Medium,68,31,56,61,04/19/2022,BBB,High,93556
+stz,Constellation Brands Inc,https://static.finnhub.io/logo/79274efe-80ec-11ea-a002-00000000092a.png,https://www.cbrands.com/,BBB,High,BB,Medium,B,Medium,50,30,55,50,04/16/2022,BBB,High,16918
+syk,Stryker Corp,https://static.finnhub.io/logo/7b69d1b8-80ec-11ea-8adc-00000000092a.png,https://www.stryker.com/,BBB,High,BB,Medium,BB,Medium,55,32,62,57,04/19/2022,BBB,High,310764
+syy,Sysco Corp,https://static.finnhub.io/logo/7d98fe90-80ec-11ea-8efe-00000000092a.png,https://www.sysco.com/,A,High,BB,Medium,BB,Medium,68,28,57,60,04/19/2022,BBB,High,96021
+shw,Sherwin-Williams Co,https://static.finnhub.io/logo/6f293378-80ec-11ea-a6d1-00000000092a.png,https://www.sherwin-williams.com/,B,Medium,B,Medium,B,Medium,18,20,36,19,04/19/2022,BB,Medium,89800
+spgi,S&P Global Inc,https://static.finnhub.io/logo/2746fe14-80ec-11ea-98af-00000000092a.png,https://www.spglobal.com/,BBB,High,BB,Medium,BB,Medium,45,36,59,52,06/11/2022,BBB,High,64040
+ste,STERIS plc,https://static.finnhub.io/logo/7994efac322b7ad341facfee5c9fcf15f66bed805484134ee74b573f56fb60c1.png,https://www.steris.com/,A,High,BB,Medium,BB,Medium,60,28,57,55,04/19/2022,BBB,High,1757898
+syf,Synchrony Financial,https://static.finnhub.io/logo/d47e2046-80cf-11ea-9956-00000000092a.png,https://www.synchrony.com/,BB,Medium,BB,Medium,BB,Medium,24,30,59,37,04/19/2022,BBB,High,1601712
+spg,Simon Property Group Inc,https://static.finnhub.io/logo/7457aade-80ec-11ea-9de4-00000000092a.png,http://www.simon.com/,B,Medium,B,Medium,B,Medium,5,17,32,8,04/19/2022,B,Medium,1063761
+sre,Sempra Energy,https://static.finnhub.io/logo/761f51b8-80ec-11ea-8baf-00000000092a.png,https://www.sempra.com/,AA,Excellent,BB,Medium,BB,Medium,96,45,59,85,04/19/2022,A,High,1032208
+so,Southern Co,https://static.finnhub.io/logo/7372a876-80ec-11ea-85f4-00000000092a.png,https://www.southerncompany.com/,A,High,BB,Medium,BB,Medium,61,29,64,59,04/19/2022,BBB,High,92122
+stt,State Street Corp,https://static.finnhub.io/logo/79719626-80ec-11ea-aeff-00000000092a.png,https://www.statestreet.com/home.html,B,Medium,B,Medium,B,Medium,5,10,34,5,04/19/2022,B,Medium,93751
+sna,Snap-On Inc,https://static.finnhub.io/logo/7270adb0-80ec-11ea-9ce1-00000000092a.png,https://www.snapon.com/,A,High,BB,Medium,B,Medium,58,28,46,49,04/19/2022,BBB,High,91440
+rtx,Raytheon Technologies Corp,https://static.finnhub.io/logo/cbc931066795111b6f985e16035ce417298b00557a4ce7585eb53595ebda66e1.png,https://www.rtx.com/,A,High,BB,Medium,BBB,High,62,34,81,69,06/11/2022,A,High,101829
+hig,Hartford Financial Services Group Inc,https://static.finnhub.io/logo/f5c0966c-80eb-11ea-aa55-00000000092a.png,https://www.thehartford.com/,A,High,BB,Medium,BB,Medium,58,29,57,54,04/17/2022,BBB,High,874766
+tel,TE Connectivity Ltd,https://static.finnhub.io/logo/81c63b2c-80ec-11ea-baa4-00000000092a.png,https://www.te.com/,B,Medium,B,Medium,B,Medium,0,8,31,0,04/19/2022,B,Medium,1385157
+tfx,Teleflex Inc,https://static4.finnhub.io/file/publicdatany2/stock_logo/TFX_4295905048.jpg,https://www.teleflex.com/,B,Medium,B,Medium,B,Medium,0,8,31,0,04/19/2022,B,Medium,96943
+tfc,Truist Financial Corp,https://static.finnhub.io/logo/50ba697e87554ae92fd2decca59d04a9c03acaac4a994a4902eafed0531f0a4d.png,https://www.truist.com/,BBB,High,BB,Medium,BB,Medium,54,29,56,52,06/11/2022,BBB,High,92230
+tdy,Teledyne Technologies Inc,https://static.finnhub.io/logo/800bfc1a-80ec-11ea-bbca-00000000092a.png,https://www.teledyne.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/19/2022,BBB,High,1094285
+tgt,Target Corp,https://static.finnhub.io/logo/83bbf858-80ec-11ea-9454-00000000092a.png,https://corporate.target.com/,A,High,BB,Medium,BB,Medium,67,36,60,65,04/19/2022,A,High,27419
+tjx,TJX Companies Inc,https://static.finnhub.io/logo/867767c8-80ec-11ea-84cc-00000000092a.png,https://www.tjx.com/index.html,A,High,BB,Medium,BB,Medium,58,28,56,53,04/19/2022,BBB,High,109198
+tpr,Tapestry Inc,https://static.finnhub.io/logo/58ad34560d8e182ad9f36cef6e62734c155a4efcfb882243789cbe3a0b2edf4a.png,https://www.tapestry.com/,BBB,High,BB,Medium,BB,Medium,55,30,56,53,06/11/2022,BBB,High,1116132
+trv,Travelers Companies Inc,https://static.finnhub.io/logo/8a5ea176-80ec-11ea-bcad-00000000092a.png,https://www.travelers.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,07/27/2022,BBB,High,86312
+tmo,Thermo Fisher Scientific Inc,https://static.finnhub.io/logo/87f0bdac-80ec-11ea-b741-00000000092a.png,https://www.thermofisher.com/,A,High,BB,Medium,B,Medium,63,34,51,58,04/19/2022,BBB,High,97745
+tt,Trane Technologies PLC,https://static.finnhub.io/logo/a16640a1e06f4119b9995c996f11dc6ea7d1953abc843cced84c4755aa3a7497.png,https://www.tranetechnologies.com/,AA,Excellent,BB,Medium,BB,Medium,96,45,61,86,06/11/2022,A,High,1466258
+tsn,Tyson Foods Inc,https://static.finnhub.io/logo/8b141262-80ec-11ea-805e-00000000092a.png,https://www.tysonfoods.com/,A,High,BB,Medium,BB,Medium,64,42,66,69,04/19/2022,A,High,100493
+tyl,Tyler Technologies Inc,https://static.finnhub.io/logo/8f0155d4-80ec-11ea-a06e-00000000092a.png,https://www.tylertech.com/,BBB,High,BB,Medium,BB,Medium,39,29,57,44,04/19/2022,BBB,High,860731
+txt,Textron Inc,https://static.finnhub.io/logo/8d40143a-80ec-11ea-a456-00000000092a.png,https://www.textron.com/,A,High,BB,Medium,B,Medium,58,28,31,43,09/17/2022,BBB,High,217346
+unh,UnitedHealth Group Inc,https://static.finnhub.io/logo/91f38836-80ec-11ea-a5be-00000000092a.png,https://www.unitedhealthgroup.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/19/2022,BBB,High,731766
+ups,United Parcel Service Inc,https://static.finnhub.io/logo/938d3558-80ec-11ea-b87d-00000000092a.png,https://www.ups.com/,A,High,BB,Medium,B,Medium,66,42,42,60,04/19/2022,BBB,High,1090727
+udr,UDR Inc,https://static.finnhub.io/logo/900c0f4a-80ec-11ea-8d9b-00000000092a.png,https://www.udr.com/,B,Medium,BB,Medium,B,Medium,5,28,35,15,04/19/2022,B,Medium,74208
+uhs,Universal Health Services Inc,https://static.finnhub.io/logo/91358978-80ec-11ea-9330-00000000092a.png,https://uhs.com/,A,High,BB,Medium,BB,Medium,69,32,66,66,04/19/2022,A,High,352915
+mos,Mosaic Co,https://static.finnhub.io/logo/2d0284ee-80ec-11ea-9f28-00000000092a.png,https://www.mosaicco.com/,A,High,BB,Medium,BB,Medium,61,43,60,65,04/18/2022,A,High,1285785
+usb,US Bancorp,https://static.finnhub.io/logo/9490028a-80ec-11ea-bee6-00000000092a.png,https://www.usbank.com/,BB,Medium,BB,Medium,BB,Medium,26,31,56,38,04/19/2022,BBB,High,36104
+uri,United Rentals Inc,https://static.finnhub.io/logo/93d2840c-80ec-11ea-af66-00000000092a.png,https://www.unitedrentals.com/,BBB,High,BB,Medium,BB,Medium,52,31,56,52,04/19/2022,BBB,High,1067701
+vno,Vornado Realty Trust,https://static.finnhub.io/logo/9a0bc3a8-80ec-11ea-b356-00000000092a.png,https://www.vno.com/,A,High,BB,Medium,BB,Medium,66,33,62,63,04/19/2022,BBB,High,899689
+vlo,Valero Energy Corp,https://static.finnhub.io/logo/9895287e-80ec-11ea-9005-00000000092a.png,https://www.valero.com/,AA,Excellent,BB,Medium,BB,Medium,79,29,64,69,04/19/2022,A,High,1035002
+vfc,VF Corp,https://static.finnhub.io/logo/9740951a-80ec-11ea-ae98-00000000092a.png,https://www.vfc.com/,A,High,BB,Medium,BB,Medium,59,28,56,54,04/19/2022,BBB,High,103379
+v,Visa Inc,https://static.finnhub.io/logo/96a1dba6-80ec-11ea-8ab6-00000000092a.png,https://usa.visa.com/,A,High,BB,Medium,BB,Medium,59,41,59,62,04/19/2022,BBB,High,1403161
+vtr,Ventas Inc,https://static.finnhub.io/logo/e63599b4-8279-11ea-a58d-00000000092a.png,https://www.ventasreit.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/19/2022,BBB,High,740260
+vmc,Vulcan Materials Co,https://static.finnhub.io/logo/98e82364-80ec-11ea-91db-00000000092a.png,https://www.vulcanmaterials.com/,A,High,BB,Medium,BB,Medium,71,31,56,63,04/19/2022,BBB,High,1396009
+wec,WEC Energy Group Inc,https://static.finnhub.io/logo/9ed91c64-80ec-11ea-a88a-00000000092a.png,https://www.wecenergygroup.com/,AA,Excellent,BBB,High,BB,Medium,84,55,56,83,04/19/2022,A,High,783325
+well,Welltower OP LLC,https://static.finnhub.io/logo/f36a2b02-80eb-11ea-bd6a-00000000092a.png,https://welltower.com/,BBB,High,BB,Medium,BB,Medium,46,33,56,49,04/21/2022,BBB,High,766704
+wat,Waters Corp,https://static.finnhub.io/logo/0a5c3417481b22f5acd53469adf5c18e0c8d5a99e49bd245766818352728169f.png,https://www.waters.com/nextgen/us/en.html,B,Medium,B,Medium,B,Medium,13,26,40,21,04/19/2022,BB,Medium,1000697
+wm,Waste Management Inc,https://static.finnhub.io/logo/a3d670b8-80ec-11ea-bd29-00000000092a.png,https://www.wm.com/,AA,Excellent,BBB,High,B,Medium,80,49,52,75,04/19/2022,A,High,823768
+wab,Westinghouse Air Brake Technologies Corp,https://static.finnhub.io/logo/9c29d5da-80ec-11ea-a77b-00000000092a.png,https://www.wabteccorp.com/,AA,Excellent,BB,Medium,BB,Medium,78,30,61,68,04/19/2022,A,High,943452
+wmb,Williams Companies Inc,https://static.finnhub.io/logo/9c7840c7a4d838e2d8eb3e1244b180fbd5d2c11bdfe84ff0591b407ac5c4272c.png,https://www.williams.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/20/2022,BBB,High,107263
+wfc,Wells Fargo & Co,https://static.finnhub.io/logo/a108f354-80ec-11ea-a9e8-00000000092a.png,https://www.wellsfargo.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/19/2022,BBB,High,72971
+whr,Whirlpool Corp,https://static.finnhub.io/logo/144dfbd3d1545da3e390c36dbaecce8bef72e443a4cfd828c95c9fddc25dbee2.png,https://www.whirlpoolcorp.com/,A,High,BB,Medium,BB,Medium,58,28,56,54,04/20/2022,BBB,High,106640
+wst,West Pharmaceutical Services Inc,https://static.finnhub.io/logo/a8401906-80ec-11ea-b1a2-00000000092a.png,https://www.westpharma.com/,A,High,BB,Medium,BB,Medium,66,34,57,61,04/20/2022,BBB,High,105770
+wrb,W R Berkley Corp,https://static.finnhub.io/logo/740dcb527b61009b015033853e9bfbf73290277f9b9ea340f649eed255598acf.png,https://www.berkley.com,BB,Medium,B,Medium,BB,Medium,31,26,56,38,04/19/2022,BBB,High,11544
+wmt,Walmart Inc,https://static.finnhub.io/logo/52057505dd05a752d364065fcddf7772a700b31c47c39e9dcb41e393f6693d52.png,https://corporate.walmart.com,BB,Medium,B,Medium,B,Medium,21,24,36,23,04/19/2022,BB,Medium,104169
+wu,Western Union Co,https://static.finnhub.io/logo/a9014bda-80ec-11ea-8ebd-00000000092a.png,https://corporate.westernunion.com/,B,Medium,B,Medium,B,Medium,1,9,38,4,04/20/2022,B,Medium,1365135
+yum,Yum! Brands Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/YUM_4295905127.png,https://www.yum.com/wps/portal/yumbrands/Yumbrands,A,High,BB,Medium,BB,Medium,58,32,59,57,04/20/2022,BBB,High,1041061
+xyl,Xylem Inc,https://static.finnhub.io/logo/b7806a5bdc1a1644d60a225492aab173dfd95635750d7b9b45b8c0b294de1c6b.png,https://www.xylem.com/,BB,Medium,B,Medium,B,Medium,34,19,34,25,04/20/2022,BB,Medium,1524472
+wy,Weyerhaeuser Co,https://static.finnhub.io/logo/ac1dd6b8-80ec-11ea-997a-00000000092a.png,https://www.weyerhaeuser.com/,AA,Excellent,BB,Medium,BB,Medium,96,36,56,79,04/20/2022,A,High,106535
+wrk,Westrock Co,https://static.finnhub.io/logo/3f3f2482-80d2-11ea-a5a1-00000000092a.png,https://www.westrock.com/,A,High,BB,Medium,BB,Medium,68,32,57,62,04/20/2022,BBB,High,1732845
+xom,Exxon Mobil Corp,https://static.finnhub.io/logo/ae11c718-80ec-11ea-906c-00000000092a.png,https://corporate.exxonmobil.com/,A,High,BB,Medium,BB,Medium,65,32,60,61,04/17/2022,BBB,High,34088
+zbh,Zimmer Biomet Holdings Inc,https://static.finnhub.io/logo/af918252-80ec-11ea-8921-00000000092a.png,https://www.zimmerbiomet.com/en,A,High,BB,Medium,BB,Medium,62,34,59,60,04/20/2022,BBB,High,1136869
+zts,Zoetis Inc,https://static.finnhub.io/logo/aae505a6-80cd-11ea-ae5f-00000000092a.png,https://www.zoetis.com/,A,High,BB,Medium,BB,Medium,62,37,59,62,04/20/2022,BBB,High,1555280
+de,Deere & Co,https://static.finnhub.io/logo/bc1c82ca-80eb-11ea-9dab-00000000092a.png,https://www.deere.com/,A,High,BB,Medium,BB,Medium,69,35,57,65,04/17/2022,A,High,315189
+dd,Dupont De Nemours Inc,https://static.finnhub.io/logo/05ee38d2b79516f1f0e05cd3272ed2cc3d26a720403d97cd98489b65a8534c0b.png,https://www.dupont.com/,A,High,BB,Medium,B,Medium,67,36,55,63,04/17/2022,BBB,High,1666700
+d,Dominion Energy Inc,https://static.finnhub.io/logo/b8c87ccc-80eb-11ea-8353-00000000092a.png,https://www.dominionenergy.com/,A,High,BB,Medium,BB,Medium,65,33,59,61,04/17/2022,BBB,High,715957
+cvs,CVS Health Corp,https://static.finnhub.io/logo/967b7ec60c44b54789e6c3e49f85ba1dd1ced58138b383c35a17f1da367c3c20.png,https://cvshealth.com/,A,High,BB,Medium,BB,Medium,66,28,60,60,04/17/2022,BBB,High,64803
+dal,Delta Air Lines Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/DAL_4295903853.png,https://www.delta.com/,A,High,BB,Medium,BB,Medium,61,28,60,56,04/17/2022,BBB,High,27904
+crm,Salesforce Inc,https://static.finnhub.io/logo/5a800a68f67c85e1158caac04d7571fd645fadb4db02255a64f72805ff5c7e2a.png,https://www.salesforce.com/,B,Medium,B,Medium,B,Medium,3,16,31,6,04/19/2022,B,Medium,1108524
+cvx,Chevron Corp,https://static.finnhub.io/logo/b5214c2e-80eb-11ea-b823-00000000092a.png,https://www.chevron.com/,B,Medium,B,Medium,B,Medium,2,11,34,4,04/22/2022,B,Medium,93410
+ctva,Corteva Inc,https://static.finnhub.io/logo/5e5e239c-80da-11ea-9057-00000000092a.png,https://www.corteva.com,AA,Excellent,BB,Medium,BB,Medium,79,30,61,69,06/10/2022,A,High,1755672
+ctra,Coterra Energy Inc,https://static.finnhub.io/logo/aa49afec-80eb-11ea-b224-00000000092a.png,https://coterra.com/,A,High,BB,Medium,BB,Medium,68,33,59,63,06/11/2022,BBB,High,858470
+ctlt,Catalent Inc,https://static.finnhub.io/logo/c00dc57e-80cf-11ea-ae8f-00000000092a.png,https://www.catalent.com/,BBB,High,BB,Medium,BB,Medium,55,28,57,52,04/16/2022,BBB,High,1596783
+cpb,Campbell Soup Co,https://static.finnhub.io/logo/9d62e2c93777bb01219c94ccf5be76cac7e2963a98b4f91ad9f8af9a6d12c75c.png,https://www.campbellsoupcompany.com/,A,High,BB,Medium,BB,Medium,61,28,57,56,04/16/2022,BBB,High,16732
+crl,Charles River Laboratories International Inc,https://static.finnhub.io/logo/57255b65e8211290fea2a682499fcdb7655d9ae4fc6161e5286c0993044e6d57.png,https://www.criver.com/,A,High,BB,Medium,B,Medium,60,32,40,50,04/16/2022,BBB,High,1100682
+cop,Conocophillips,https://static.finnhub.io/logo/aacfcb5e-80eb-11ea-8e60-00000000092a.png,http://www.conocophillips.com/,AA,Excellent,A,High,BB,Medium,94,76,57,100,04/16/2022,A,High,1163165
+coo,Cooper Companies Inc,https://static.finnhub.io/logo/aa10fd64-80eb-11ea-8aad-00000000092a.png,https://www.coopercos.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/16/2022,BBB,High,711404
+cof,Capital One Financial Corp,https://static.finnhub.io/logo/aa81d530-80eb-11ea-aeeb-00000000092a.png,https://www.capitalone.com/,A,High,BB,Medium,BB,Medium,59,29,61,57,04/16/2022,BBB,High,927628
+cnc,Centene Corp,https://static.finnhub.io/logo/a829c2c2-80eb-11ea-a52a-00000000092a.png,https://www.centene.com/,A,High,BB,Medium,BB,Medium,67,38,60,66,04/16/2022,A,High,1071739
+cnp,CenterPoint Energy Inc,https://static.finnhub.io/logo/a983bcb0-80eb-11ea-96df-00000000092a.png,https://www.centerpointenergy.com/,A,High,BB,Medium,B,Medium,67,32,46,57,04/16/2022,BBB,High,1130310
+cms,CMS Energy Corp,https://static.finnhub.io/logo/a772ceae-80eb-11ea-ae8d-00000000092a.png,https://www.cmsenergy.com/,BBB,High,AA,Excellent,C,Low,48,100,0,63,04/16/2022,BBB,High,811156
+cmi,Cummins Inc,https://static.finnhub.io/logo/a612de46-80eb-11ea-b7ef-00000000092a.png,https://www.cummins.com/,A,High,BB,Medium,BB,Medium,60,32,56,57,04/17/2022,BBB,High,26172
+cl,Colgate-Palmolive Co,https://static.finnhub.io/logo/a1933f1c-80eb-11ea-b4c0-00000000092a.png,https://www.colgate.com/,A,High,BB,Medium,BB,Medium,62,30,59,58,04/16/2022,BBB,High,21665
+mmm,3M Co,https://static.finnhub.io/logo/2a1802fa-80ec-11ea-a0f5-00000000092a.png,https://www.3m.com/,A,High,BB,Medium,BB,Medium,63,30,57,58,04/16/2022,BBB,High,66740
+cfg,Citizens Financial Group Inc,https://static.finnhub.io/logo/7aa22fa8-80d0-11ea-b627-00000000092a.png,https://www.citizensbank.com/,B,Medium,B,Medium,B,Medium,6,11,32,5,04/16/2022,B,Medium,759944
+cag,Conagra Brands Inc,https://static.finnhub.io/logo/83636bb3e8284a86d2322a428a31f7eaed97d3effb350e6ebd5f39dfcd32f0e9.png,https://www.conagrabrands.com/,A,High,BB,Medium,BB,Medium,63,29,56,57,04/16/2022,BBB,High,23217
+ci,Cigna Corp,https://static.finnhub.io/logo/9eb85cf0-80eb-11ea-a6ed-00000000092a.png,https://www.cigna.com/,A,High,BB,Medium,BB,Medium,59,33,59,58,04/16/2022,BBB,High,1739940
+cah,Cardinal Health Inc,https://static.finnhub.io/logo/88511edda41b785295d9b638075a69a79c69e9ff3a1a46b0347f656c32cfb820.png,https://www.cardinalhealth.com/en.html,A,High,BB,Medium,BB,Medium,59,28,60,56,04/16/2022,BBB,High,721371
+ma,Mastercard Inc,https://static.finnhub.io/logo/96406588fb76d52e50bf7c2bc0f730206a19c4f08371ead195e22ca07da3f66f.png,https://investor.mastercard.com/investor-relations/default.aspx,B,Medium,B,Medium,B,Medium,2,14,35,6,04/18/2022,B,Medium,1141391
+lw,Lamb Weston Holdings Inc,https://static.finnhub.io/logo/7dd3316b07aaae0476f1aef88bc624d4c5c5182ca5aa592de10fd909d55f9d1c.png,https://www.lambweston.com/,BB,Medium,B,Medium,BB,Medium,28,19,56,32,06/10/2022,BBB,High,1679273
+maa,Mid-America Apartment Communities Inc,https://static.finnhub.io/logo/1e4096dc-80ec-11ea-b0aa-00000000092a.png,https://www.maac.com/,BB,Medium,B,Medium,B,Medium,22,20,34,20,04/18/2022,BB,Medium,912595
+mlm,Martin Marietta Materials Inc,https://static.finnhub.io/logo/287fe388-80ec-11ea-9de9-00000000092a.png,https://www.martinmarietta.com/,A,High,BB,Medium,BB,Medium,72,30,56,63,04/18/2022,BBB,High,916076
+luv,Southwest Airlines Co,https://static.finnhub.io/logo/b3772d81283effbcbc60d9f05a9d7e383119b5240c6c4d4cb4b5089d53e03cce.png,https://www.southwest.com/,B,Medium,BB,Medium,B,Medium,18,30,36,24,04/19/2022,BB,Medium,92380
+lnc,Lincoln National Corp,https://static.finnhub.io/logo/dea884d14549b34942f2a496ada88909d57dc5b723b77034599ff80aba0c22a4.png,https://www.lfg.com/,AA,Excellent,BB,Medium,BB,Medium,96,28,56,75,04/18/2022,A,High,59558
+len,Lennar Corp,https://static.finnhub.io/logo/16c7bb94-80ec-11ea-b498-00000000092a.png,https://www.lennar.com/,BB,Medium,BB,Medium,B,Medium,31,36,36,35,04/18/2022,BBB,High,920760
+pg,Procter & Gamble Co,https://static.finnhub.io/logo/3670fb2ffd852345681a233e48444f3dcf2001b5471cdc3eba3b486b02a42653.png,https://us.pg.com/,A,High,BBB,High,BB,Medium,69,52,59,74,04/18/2022,A,High,80424
+ogn,Organon & Co,https://static.finnhub.io/logo/647f8cc15494b0d5abe80b9c8d9b0cb033acf0961848639843b7538812029e0b.png,https://www.organon.com/,A,High,BB,Medium,BB,Medium,61,35,57,59,06/11/2022,BBB,High,1821825
+oxy,Occidental Petroleum Corp,https://static.finnhub.io/logo/4bd186a6-80ec-11ea-a3b4-00000000092a.png,https://www.oxy.com/,A,High,BB,Medium,BB,Medium,59,28,56,54,04/18/2022,BBB,High,797468
+dell,Dell Technologies Inc,https://static.finnhub.io/logo/970d18b8-80d4-11ea-8dc6-00000000092a.png,https://www.delltechnologies.com/,A,High,BB,Medium,B,Medium,58,31,50,53,06/10/2022,BBB,High,1571996
+payc,Paycom Software Inc,https://static.finnhub.io/logo/b628d340-80cf-11ea-98d8-00000000092a.png,https://www.paycom.com/,BBB,High,BB,Medium,BB,Medium,52,29,60,52,04/18/2022,BBB,High,1590955
+peg,Public Service Enterprise Group Inc,https://static.finnhub.io/logo/bd3fa8b3e81d439c73c3b9a41a0245b2f6290a78ba714a357aaad6b2d8bb6329.png,https://corporate.pseg.com/,A,High,BB,Medium,B,Medium,58,28,32,43,04/19/2022,BBB,High,788784
+oke,ONEOK Inc,https://static.finnhub.io/logo/bcc2fea52eb4ed3c09480c39a0f866f1ff14ceebca9b32d8e364cbc3a63d217b.png,https://www.oneok.com/,A,High,BB,Medium,BB,Medium,73,33,70,71,04/18/2022,A,High,1039684
+nrg,NRG Energy Inc,https://static.finnhub.io/logo/3ffb315a-80ec-11ea-bff8-00000000092a.png,https://www.nrg.com/,BB,Medium,BB,Medium,B,Medium,33,33,36,34,04/18/2022,BBB,High,1013871
+l,Loews Corp,https://static.finnhub.io/logo/497e1c10-80fc-11ea-a007-00000000092a.png,https://www.loews.com/,A,High,BB,Medium,BB,Medium,59,28,60,56,04/18/2022,BBB,High,60086
+omc,Omnicom Group Inc,https://static.finnhub.io/logo/4a76e650-80ec-11ea-8407-00000000092a.png,https://www.omnicomgroup.com/,A,High,BB,Medium,BB,Medium,66,34,57,62,04/18/2022,BBB,High,29989
+orcl,Oracle Corp,https://static.finnhub.io/logo/1f119542-80e1-11ea-8adf-00000000092a.png,https://www.oracle.com/,A,High,BB,Medium,B,Medium,58,28,31,43,09/17/2022,BBB,High,1341439
+o,Realty Income Corp,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/4295903058.jpeg,https://www.realtyincome.com/Home/default.aspx,A,High,BB,Medium,BB,Medium,58,28,56,53,04/19/2022,BBB,High,726728
+dpz,Domino's Pizza Inc,https://static.finnhub.io/logo/c30c7d98-80eb-11ea-ac1e-00000000092a.png,https://www.dominos.com/,B,Medium,B,Medium,B,Medium,1,9,31,1,04/17/2022,B,Medium,1286681
+t,AT&T Inc,https://static.finnhub.io/logo/7d20269e-80ec-11ea-9277-00000000092a.png,https://www.att.com/,B,Medium,B,Medium,BB,Medium,2,8,57,12,04/16/2022,B,Medium,732717
+unp,Union Pacific Corp,https://static.finnhub.io/logo/92d19634-80ec-11ea-b0ea-00000000092a.png,https://www.up.com/index.htm,B,Medium,B,Medium,B,Medium,17,19,42,21,04/19/2022,BB,Medium,100885
+nem,Newmont Corporation,https://static.finnhub.io/logo/39e32600-80ec-11ea-976b-00000000092a.png,https://newmont.com/,AA,Excellent,BB,Medium,BB,Medium,92,45,70,88,04/18/2022,A,High,1164727
+fdx,FedEx Corp,https://static.finnhub.io/logo/db346594-80eb-11ea-a0d5-00000000092a.png,https://www.fedex.com/,BB,Medium,B,Medium,B,Medium,26,23,45,29,04/17/2022,BB,Medium,1048911
+nke,Nike Inc,https://static.finnhub.io/logo/570aa3f1982c6fd2b7f22fab7a3cdb509c2b07a4ac0ccdcd293e4bbe9ab9089c.png,https://about.nike.com/,B,Medium,B,Medium,B,Medium,1,23,31,9,04/18/2022,B,Medium,320187
+f,Ford Motor Co,https://static.finnhub.io/logo/d7154282-80eb-11ea-bbcd-00000000092a.png,https://www.ford.com/,B,Medium,B,Medium,B,Medium,18,17,35,16,04/17/2022,BB,Medium,37996
+lmt,Lockheed Martin Corp,https://static.finnhub.io/logo/18803aba-80ec-11ea-b8be-00000000092a.png,https://www.lockheedmartin.com/,A,High,BB,Medium,BB,Medium,60,32,61,59,04/18/2022,BBB,High,936468
+rsg,Republic Services Inc,https://static.finnhub.io/logo/67eb5792-80ec-11ea-933b-00000000092a.png,https://www.republicservices.com/,B,Medium,B,Medium,B,Medium,18,15,35,15,04/19/2022,B,Medium,1060391
+enph,Enphase Energy Inc,https://static.finnhub.io/logo/3972ef64-80cb-11ea-b600-00000000092a.png,https://enphase.com/,A,High,BB,Medium,BB,Medium,70,31,56,62,04/17/2022,BBB,High,1463101
+exc,Exelon Corp,https://static.finnhub.io/logo/d63a05d0-80eb-11ea-817d-00000000092a.png,https://www.exeloncorp.com/,AA,Excellent,BBB,High,BB,Medium,95,48,60,87,04/17/2022,A,High,1109357
+expd,Expeditors International of Washington Inc,https://static.finnhub.io/logo/d6e89bca-80df-11ea-bc5e-00000000092a.png,https://www.expeditors.com/,A,High,BB,Medium,BB,Medium,60,28,56,55,04/17/2022,BBB,High,746515
+expe,Expedia Group Inc,https://static.finnhub.io/logo/d539d658-80df-11ea-b0d2-00000000092a.png,https://www.expediagroup.com/home/default.aspx,B,Medium,B,Medium,BB,Medium,5,16,57,18,04/17/2022,BB,Medium,1324424
+fast,Fastenal Co,https://static.finnhub.io/logo/d8a85892-80df-11ea-aa2a-00000000092a.png,https://www.fastenal.com/,B,Medium,BB,Medium,B,Medium,6,28,31,14,04/17/2022,B,Medium,815556
+ffiv,F5 Inc,https://static.finnhub.io/logo/013605e8-80e0-11ea-81f3-00000000092a.png,https://www.f5.com/,B,Medium,B,Medium,B,Medium,0,12,35,4,04/17/2022,B,Medium,1048695
+fisv,Fiserv Inc,https://static.finnhub.io/logo/00c11766-80e0-11ea-af10-00000000092a.png,https://www.fiserv.com/,BB,Medium,BB,Medium,BB,Medium,38,28,59,43,04/17/2022,BBB,High,798354
+eqix,Equinix Inc,https://static.finnhub.io/logo/2905ab26-80e0-11ea-9683-00000000092a.png,https://www.equinix.com/,A,High,BB,Medium,BB,Medium,61,32,60,59,04/17/2022,BBB,High,1101239
+ftnt,Fortinet Inc,https://static.finnhub.io/logo/4a69c7b4-80ff-11ea-8df0-00000000092a.png,https://www.fortinet.com/,A,High,BB,Medium,BB,Medium,58,29,57,55,04/17/2022,BBB,High,1262039
+etsy,ETSY Inc,https://static.finnhub.io/logo/94ad4538-80d1-11ea-9286-00000000092a.png,https://www.etsy.com/,B,Medium,B,Medium,B,Medium,7,16,40,12,04/17/2022,B,Medium,1370637
+ben,Franklin Resources Inc,https://static.finnhub.io/logo/8333d8a2-80eb-11ea-befe-00000000092a.png,https://www.franklinresources.com/,BB,Medium,BB,Medium,BB,Medium,23,37,59,41,04/17/2022,BBB,High,38777
+dlr,Digital Realty Trust Inc,https://static.finnhub.io/logo/c066b1b0-80eb-11ea-a98e-00000000092a.png,https://www.digitalrealty.com,A,High,BB,Medium,BB,Medium,66,31,56,60,04/17/2022,BBB,High,1297996
+dhr,Danaher Corp,https://static.finnhub.io/logo/f8702c9d5aa6591ddc26b5a9df478463a2f5d9bf3a81971882c4118325ae5792.png,https://www.danaher.com/,A,High,BB,Medium,BB,Medium,64,36,78,70,04/17/2022,A,High,313616
+efx,Equifax Inc,https://static.finnhub.io/logo/ca2b7d6c-80eb-11ea-8e3d-00000000092a.png,https://www.equifax.com/,BB,Medium,BB,Medium,BB,Medium,37,28,57,42,06/10/2022,BBB,High,33185
+el,Estee Lauder Companies Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/EL_4295903171.png,https://www.elcompanies.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,04/17/2022,BBB,High,1001250
+emn,Eastman Chemical Co,https://static.finnhub.io/logo/cca36ffe-80eb-11ea-969e-00000000092a.png,https://www.eastman.com/,A,High,BB,Medium,BB,Medium,74,40,59,70,04/17/2022,A,High,915389
+emr,Emerson Electric Co,https://static.finnhub.io/logo/3da53d6ce1faa9df36b6bf625f6167c9423423748fa11799b010bc2a1dae4c7b.png,https://www.emerson.com/en-us,AA,Excellent,BB,Medium,BB,Medium,78,32,60,69,04/17/2022,A,High,32604
+eog,EOG Resources Inc,https://static.finnhub.io/logo/ce6d8518-80eb-11ea-a7f0-00000000092a.png,https://www.eogresources.com/,A,High,B,Medium,B,Medium,67,18,41,47,04/17/2022,BBB,High,821189
+eqr,Equity Residential,https://static.finnhub.io/logo/cf2f5fcc-80eb-11ea-b4c6-00000000092a.png,https://www.equityapartments.com/,B,Medium,B,Medium,B,Medium,7,9,34,6,04/17/2022,B,Medium,906107
+es,Eversource Energy,https://static.finnhub.io/logo/41cde1b6-80ec-11ea-af1f-00000000092a.png,https://www.eversource.com/,A,High,BBB,High,BB,Medium,72,49,59,74,04/17/2022,A,High,72741
+ess,Essex Property Trust Inc,https://static.finnhub.io/logo/7d5e1cd06ed4171ad22780035054460da22bb8f81e75da91849ee24188876730.png,https://www.essexapartmenthomes.com/,BB,Medium,BB,Medium,B,Medium,34,28,34,31,04/17/2022,BB,Medium,920522
+fitb,Fifth Third Bancorp,https://static.finnhub.io/logo/e692c8b6-80df-11ea-8ea1-00000000092a.png,https://www.53.com/,BB,Medium,BB,Medium,B,Medium,22,28,35,24,04/17/2022,BB,Medium,35527
+etr,Entergy Corp,https://static.finnhub.io/logo/d3a911b0-80eb-11ea-b66b-00000000092a.png,https://www.entergy.com/,AA,Excellent,BB,Medium,BB,Medium,87,43,59,79,04/17/2022,A,High,65984
+exr,Extra Space Storage Inc,https://static.finnhub.io/logo/1c8d6d4d94bfda82d7f366c837fa91927dc004010c6994936e6a93d0aa3f63f7.png,https://www.extraspace.com/,A,High,B,Medium,B,Medium,72,25,38,52,04/17/2022,BBB,High,1289490
+ew,Edwards Lifesciences Corp,https://static.finnhub.io/logo/d54ba950-80eb-11ea-b652-00000000092a.png,https://www.edwards.com,B,Medium,BB,Medium,BB,Medium,17,34,57,35,04/17/2022,BBB,High,1099800
+foxa,Fox Corp,https://static.finnhub.io/logo/7cf20648-80da-11ea-983c-00000000092a.png,https://www.foxcorporation.com/,B,Medium,BB,Medium,BB,Medium,18,34,60,36,04/16/2022,BBB,High,1754301
+fcx,Freeport-McMoRan Inc,https://static.finnhub.io/logo/da60fbba-80eb-11ea-ad3e-00000000092a.png,https://www.fcx.com/,AA,Excellent,BB,Medium,BB,Medium,79,30,57,67,04/17/2022,A,High,831259
+fe,FirstEnergy Corp,https://static.finnhub.io/logo/db937e3a-80eb-11ea-a947-00000000092a.png,https://www.firstenergycorp.com/,A,High,BB,Medium,BB,Medium,60,28,56,55,04/17/2022,BBB,High,1031296
+flt,Fleetcor Technologies Inc,https://static.finnhub.io/logo/e8878f02-81a2-11ea-9883-00000000092a.png,https://www.fleetcor.com/,BBB,High,BB,Medium,BB,Medium,40,28,56,44,04/17/2022,BBB,High,1175454
+fis,Fidelity National Information Services Inc,https://static.finnhub.io/logo/3858d65e-8279-11ea-a7a4-00000000092a.png,https://www.fisglobal.com/,A,High,B,Medium,BB,Medium,64,27,59,57,04/17/2022,BBB,High,1136893
+frc,First Republic Bank,https://static.finnhub.io/logo/251ca7c8-80ca-11ea-81b8-00000000092a.png,https://www.firstrepublic.com/,BB,Medium,BB,Medium,B,Medium,33,34,53,42,04/17/2022,BBB,High,1132979
+fmc,FMC Corp,https://static.finnhub.io/logo/e072fb1c-80eb-11ea-8825-00000000092a.png,https://www.fmc.com/en,A,High,BB,Medium,BB,Medium,60,29,60,57,04/17/2022,BBB,High,37785
+frt,Federal Realty Investment Trust,https://static.finnhub.io/logo/c7740aaa7f4c67e7100b4c655ddd47f7c7993a579a808c7290169dcc9f9217e2.png,http://www.federalrealty.com/,A,High,BB,Medium,BB,Medium,63,28,56,56,04/17/2022,BBB,High,34903
+ftv,Fortive Corp,https://static.finnhub.io/logo/2a546f12-80d4-11ea-84b6-00000000092a.png,https://www.fortive.com/,A,High,BB,Medium,BB,Medium,66,33,57,61,04/17/2022,BBB,High,1659166
+gps,Gap Inc,https://static.finnhub.io/logo/369ce8f03ef2001ecf93ade3d70bf2c3019709a17446a106811fb59087e3a3c6.png,https://www.gapinc.com/,A,High,BB,Medium,BB,Medium,61,37,56,60,04/17/2022,BBB,High,39911
+grmn,Garmin Ltd,https://static.finnhub.io/logo/99414768-80e0-11ea-9385-00000000092a.png,https://www.garmin.com/,B,Medium,B,Medium,B,Medium,1,16,31,5,04/17/2022,B,Medium,1121788
+it,Gartner Inc,https://static.finnhub.io/logo/5262a1a6-8279-11ea-8550-00000000092a.png,https://www.gartner.com/en,A,High,BB,Medium,BB,Medium,58,31,60,57,04/17/2022,BBB,High,749251
+lly,Eli Lilly and Co,https://static.finnhub.io/logo/184cd942-80ec-11ea-91ce-00000000092a.png,https://www.lilly.com/,A,High,BB,Medium,BB,Medium,60,39,59,62,04/17/2022,BBB,High,59478
+re,Everest Re Group Ltd,https://static.finnhub.io/logo/5e8651fa-80ec-11ea-9759-00000000092a.png,https://www.everestre.com/,A,High,B,Medium,BB,Medium,59,23,57,52,04/17/2022,BBB,High,1095073
+evrg,Evergy Inc,https://static.finnhub.io/logo/a5c31cb4-80ec-11ea-9d72-00000000092a.png,https://investors.evergy.com/,A,High,BB,Medium,BB,Medium,68,30,56,60,06/10/2022,BBB,High,1711269
+fbhs,Fortune Brands Home & Security Inc,https://static.finnhub.io/logo/af502fc10da13efe152a8bab38ab27cb783098c050c8e612696741585879a659.png,https://www.fbhs.com/,A,High,BB,Medium,BB,Medium,60,28,56,55,04/17/2022,BBB,High,1519751
+gild,Gilead Sciences Inc,https://static.finnhub.io/logo/14041828-80e0-11ea-b2c0-00000000092a.png,https://www.gilead.com/,A,High,BB,Medium,BB,Medium,58,28,56,54,04/17/2022,BBB,High,882095
+holx,Hologic Inc,https://static.finnhub.io/logo/dea14800-80e0-11ea-8f94-00000000092a.png,https://www.hologic.com/,A,High,BB,Medium,BB,Medium,61,32,60,59,04/17/2022,BBB,High,859737
+hsic,Henry Schein Inc,https://static.finnhub.io/logo/e9c35f3a-80e0-11ea-be1a-00000000092a.png,https://www.henryschein.com/,B,Medium,B,Medium,B,Medium,2,9,31,2,04/17/2022,B,Medium,1000228
+hon,Honeywell International Inc,https://static.finnhub.io/logo/a9d0ab3dbb5cf97602536917732a79a73f10fca63631d75fb2db78695cd5b0bc.png,https://www.honeywell.com/,A,High,BB,Medium,BB,Medium,66,36,58,64,04/17/2022,BBB,High,773840
+hst,Host Hotels & Resorts Inc,https://static.finnhub.io/logo/ccad0eb06bed075abb06446bc4f61bea5d97856681e3ab98dccda30c6f7ecefc.png,https://www.hosthotels.com/,A,High,BB,Medium,BB,Medium,60,31,61,58,04/17/2022,BBB,High,1070750
+gd,General Dynamics Corp,https://static.finnhub.io/logo/22537545fad508a082f7c587450fabc47e56b2aeb4a94319c5279539d60097a6.png,https://www.gd.com,A,High,BB,Medium,BB,Medium,60,30,56,56,06/11/2022,BBB,High,40533
+has,Hasbro Inc,https://static.finnhub.io/logo/31ee88a5dc3f7a0f21bdfc2be90eb7ac405af6cab1f4c2641cb4d368bd7828f6.png,https://shop.hasbro.com/en-in,B,Medium,BB,Medium,BB,Medium,11,28,56,27,04/17/2022,BB,Medium,46080
+hban,Huntington Bancshares Inc,https://static.finnhub.io/logo/9a3ea734-80e0-11ea-be3c-00000000092a.png,https://www.huntington.com/,BB,Medium,BB,Medium,BB,Medium,21,28,56,33,04/17/2022,BBB,High,49196
+gl,Globe Life Inc,https://static.finnhub.io/logo/87ab9652-80ec-11ea-833e-00000000092a.png,https://www.torchmarkcorp.com/,B,Medium,B,Medium,B,Medium,3,15,35,7,06/07/2022,B,Medium,320335
+gpc,Genuine Parts Co,https://static.finnhub.io/logo/ed6a18e2-80eb-11ea-b245-00000000092a.png,https://www.genpt.com/,A,High,B,Medium,BB,Medium,65,13,57,50,04/17/2022,BBB,High,40987
+gnrc,Generac Holdings Inc,https://static.finnhub.io/logo/3007769e-8100-11ea-8961-00000000092a.png,http://investors.generac.com/,A,High,BB,Medium,B,Medium,65,30,44,53,04/17/2022,BBB,High,1474735
+gpn,Global Payments Inc,https://static.finnhub.io/logo/ee7044c8-80eb-11ea-8f9a-00000000092a.png,https://www.globalpayments.com/,BB,Medium,BB,Medium,B,Medium,21,36,48,34,04/17/2022,BBB,High,1123360
+hca,HCA Healthcare Inc,https://static.finnhub.io/logo/5528ed98-80ca-11ea-902b-00000000092a.png,https://hcahealthcare.com/,A,High,BB,Medium,BB,Medium,62,37,57,61,04/17/2022,BBB,High,860730
+hbi,HanesBrands Inc,https://static.finnhub.io/logo/36b2329a94acf5319eb2b32c6f727e89e5345a5e9afcc46eefeabb19c84e23ab.png,https://www.hanes.com/corporate,BB,Medium,B,Medium,BB,Medium,21,12,57,25,04/17/2022,BB,Medium,1359841
+hii,Huntington Ingalls Industries Inc,https://static.finnhub.io/logo/cd372f19d46a38088bc5547b3dc2a91dd4bedbc5609b6221b4f95fc42cfcaab9.png,https://www.huntingtoningalls.com/,A,High,BB,Medium,BB,Medium,66,31,60,61,04/17/2022,BBB,High,1501585
+hpe,Hewlett Packard Enterprise Co,https://static.finnhub.io/logo/fb96e13e-80d2-11ea-8716-00000000092a.png,https://investors.hpe.com/,B,Medium,BB,Medium,B,Medium,6,39,39,23,04/17/2022,BB,Medium,1645590
+hes,Hess Corp,https://static.finnhub.io/logo/532319c946c543025c26e36b019db12175bad56db7accce3e96ee76032c7cc2e.png,https://www.hess.com/,A,High,BB,Medium,BB,Medium,65,28,57,58,04/17/2022,BBB,High,4447
+hlt,Hilton Worldwide Holdings Inc,https://static.finnhub.io/logo/1ca8321a-80cf-11ea-bccb-00000000092a.png,https://www.hilton.com,B,Medium,B,Medium,B,Medium,18,8,32,10,04/17/2022,B,Medium,1585689
+hrl,Hormel Foods Corp,https://static.finnhub.io/logo/fc88924a-80eb-11ea-8c60-00000000092a.png,https://www.hormelfoods.com/,A,High,BB,Medium,BB,Medium,71,32,56,63,04/17/2022,BBB,High,48465
+hpq,HP Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/4295904170.png,https://investor.hp.com/,B,Medium,B,Medium,B,Medium,9,10,31,6,04/17/2022,B,Medium,47217
+hum,Humana Inc,https://static.finnhub.io/logo/feb04fd2-80eb-11ea-b264-00000000092a.png,https://www.humana.com/,BBB,High,BB,Medium,BB,Medium,50,28,56,49,04/17/2022,BBB,High,49071
+hwm,Howmet Aerospace Inc,https://static.finnhub.io/logo/a2081e1a9a1a03ebd504b5dd1bbd1630d116c5d274535b006710232b14114847.png,https://www.howmet.com/,A,High,BB,Medium,BB,Medium,63,31,61,60,06/10/2022,BBB,High,4281
+peak,Healthpeak Properties Inc,https://static.finnhub.io/logo/9ff758898d5fdf747e70dc0d68e588f7ca07566f438ffea2c7b847202270d33d.png,https://www.healthpeak.com/,A,High,BB,Medium,BB,Medium,65,34,65,64,06/11/2022,A,High,765880
+gis,General Mills Inc,https://static.finnhub.io/logo/eb28ff70-80eb-11ea-81fb-00000000092a.png,https://www.generalmills.com/,A,High,BB,Medium,BB,Medium,74,33,72,72,04/17/2022,A,High,40704
+ge,General Electric Co,https://static.finnhub.io/logo/e8784888-80eb-11ea-95e2-00000000092a.png,https://www.ge.com,A,High,BB,Medium,BB,Medium,64,28,56,57,06/10/2022,BBB,High,40545
+spot,Spotify Technology SA,https://static.finnhub.io/logo/cffd855af5f80fb905fa2a364945ef2e7130d3d60952eb91d9ba1ebb54c10a81.png,https://www.spotify.com,A,High,B,Medium,B,Medium,58,24,45,47,04/22/2022,BBB,High,1639920
+trtn,Triton International Ltd,https://static.finnhub.io/logo/d8f8c765099e25410d77d6e97db44ba0c15fb106e0b4fcd0f4add7d583ca6e2d.png,https://www.tritoninternational.com/,BBB,High,BB,Medium,BB,Medium,53,29,56,52,04/19/2022,BBB,High,1660734
+trtx,TPG RE Finance Trust Inc,https://static.finnhub.io/logo/b65451e4-80db-11ea-8f3c-00000000092a.png,https://www.tpgrefinance.com/,B,Medium,B,Medium,BB,Medium,6,16,56,18,06/11/2022,BB,Medium,1630472
+tru,TransUnion,https://static.finnhub.io/logo/3b251312-80d2-11ea-bca1-00000000092a.png,Url Not Provided,A,High,BB,Medium,BB,Medium,60,30,59,57,04/19/2022,BBB,High,1552033
+yeti,Yeti Holdings Inc,https://static.finnhub.io/logo/0aebcc9d893922905d4dfe5df11876799ebe829ec6f95211b7ad13b40ef8e950.png,https://www.yeti.com,B,Medium,B,Medium,BB,Medium,13,18,57,24,06/11/2022,BB,Medium,1670592
+yelp,Yelp Inc,https://static.finnhub.io/logo/51ef2134-80cc-11ea-9e31-00000000092a.png,https://www.yelp.com/,B,Medium,A,High,B,Medium,9,70,34,40,04/20/2022,BBB,High,1345016
+yext,Yext Inc,https://static.finnhub.io/logo/c2fec934-80db-11ea-bf15-00000000092a.png,https://www.yext.com/,BB,Medium,BB,Medium,BB,Medium,24,30,59,37,06/11/2022,BBB,High,1614178
+spr,Spirit AeroSystems Holdings Inc,https://static.finnhub.io/logo/74abb718-80ec-11ea-9f1c-00000000092a.png,https://www.spiritaero.com/,A,High,BB,Medium,BB,Medium,61,35,56,59,04/19/2022,BBB,High,1364885
+ysg,Yatsen Holding Ltd,Logo Not Provided,http://ir.yatsenglobal.com/,BB,Medium,B,Medium,BB,Medium,30,11,62,32,06/11/2022,BB,Medium,1819580
+yrd,Yiren Digital Ltd,https://static.finnhub.io/logo/58187a7e-80d3-11ea-ad3d-00000000092a.png,https://www.yirendai.com/,B,Medium,B,Medium,B,Medium,0,9,32,1,04/20/2022,B,Medium,1631761
+yumc,Yum China Holdings Inc,https://static.finnhub.io/logo/5273b318-81c3-11ea-a69e-00000000092a.png,http://www.yumchina.com,B,Medium,B,Medium,B,Medium,1,11,36,4,06/11/2022,B,Medium,1673358
+trox,Tronox Holdings PLC,https://static.finnhub.io/logo/cae7770c-80cc-11ea-b95f-00000000092a.png,https://www.tronox.com/,A,High,BB,Medium,BB,Medium,58,32,56,56,04/19/2022,BBB,High,1530804
+zepp,Zepp Health Corp,https://static.finnhub.io/logo/76bf855dbc6faa67fab51387ffafd3120d58e1bb6a8c9a59e6d6a992d3e7b8be.png,http://www.huami.com,B,Medium,B,Medium,B,Medium,0,10,55,11,06/11/2022,B,Medium,1720446
+zev,Lightning eMotors Inc,https://static.finnhub.io/logo/35ad49c91c00e7e5492b59000199a0ef966c447d105e5ad26ba84e1f5f00fe23.png,https://lightningemotors.com/,A,High,BB,Medium,B,Medium,65,46,41,60,06/11/2022,BBB,High,1802749
+zuo,Zuora Inc,https://static.finnhub.io/logo/181c3c26-80db-11ea-901d-00000000092a.png,https://www.zuora.com/,B,Medium,B,Medium,B,Medium,8,15,31,8,09/24/2022,B,Medium,1423774
+zim,ZIM Integrated Shipping Services Ltd,https://static.finnhub.io/logo/d067c52d242ed7ab58d82a81df7769e0e538d507b68b153fb1c9a18eb67ecd2b.png,https://www.zim.com,BB,Medium,BB,Medium,BB,Medium,25,38,61,43,04/20/2022,BBB,High,1654126
+zyme,Zymeworks Inc,https://static.finnhub.io/logo/d5054e357d522c9adb02dc0fb5076d2c88ce7defd56e0d136dafed54f38fd964.png,https://www.zymeworks.com/,B,Medium,BB,Medium,BB,Medium,8,33,57,29,06/11/2022,BB,Medium,1403752
+zws,Zurn Elkay Water Solutions Corp,https://static.finnhub.io/logo/166822dc-80c9-11ea-b523-00000000092a.png,https://zurnwatersolutions.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,06/11/2022,BBB,High,1439288
+you,Clear Secure Inc,https://static.finnhub.io/logo/54e1fcbc5be1e30e25364dc60f26bb7ff35678bc4bd277c164593937d62718b2.png,https://www.clearme.com,A,High,B,Medium,B,Medium,61,23,32,43,04/21/2022,BBB,High,1856314
+zen,Zendesk Inc,https://static.finnhub.io/logo/bf9c78c0-80cf-11ea-aefc-00000000092a.png,http://www.zendesk.com/,A,High,BB,Medium,BB,Medium,61,35,61,61,04/20/2022,BBB,High,1463172
+plxs,Plexus Corp,https://static.finnhub.io/logo/4786a932a20c2a53d2721dc74a687b047183c4a86ca554dbf0aa010120abeaa4.png,https://www.plexus.com/en-us/,A,High,BB,Medium,BB,Medium,60,28,56,54,04/18/2022,BBB,High,785786
+ship,Seanergy Maritime Holdings Corp,https://static.finnhub.io/logo/799d248c-80df-11ea-baa5-00000000092a.png,http://www.seanergymaritime.com/,BB,Medium,BB,Medium,BB,Medium,28,28,57,37,04/19/2022,BBB,High,1448397
+shls,Shoals Technologies Group Inc,https://static.finnhub.io/logo/3261c706cc0abbd34b8264351bbbf49ecc401561c39af9c3e0c1f0bf92b4833b.png,https://www.shoals.com/,B,Medium,B,Medium,BB,Medium,16,24,56,28,06/10/2022,BB,Medium,1831651
+shoo,Steven Madden Ltd,https://static.finnhub.io/logo/96d214d4-80e0-11ea-a2f8-00000000092a.png,https://www.stevemadden.com/,A,High,B,Medium,BB,Medium,59,14,56,47,04/19/2022,BBB,High,913241
+shyf,Shyft Group Inc,https://static.finnhub.io/logo/11778ef179dac4928d23461b3133c371a91f9d677da3fd90f72f07f7f34a8dc5.png,https://theshyftgroup.com/,A,High,BB,Medium,B,Medium,60,28,50,52,06/10/2022,BBB,High,743238
+sibn,SI-BONE Inc,https://static.finnhub.io/logo/06d1023edd1a769478b8f9546405855f3ef7a8b662f130c336cd801d4e17618a.png,https://si-bone.com/,B,Medium,B,Medium,B,Medium,4,13,34,6,06/10/2022,B,Medium,1459839
+sieb,Siebert Financial Corp,https://static.finnhub.io/logo/95a8686e-80e0-11ea-aad2-00000000092a.png,https://www.siebert.com/,BB,Medium,B,Medium,B,Medium,19,27,40,25,04/19/2022,BB,Medium,65596
+plya,Playa Hotels & Resorts NV,https://static.finnhub.io/logo/c97cc0f6-80db-11ea-811d-00000000092a.png,https://www.playaresorts.com/,B,Medium,B,Medium,B,Medium,2,8,32,2,06/10/2022,B,Medium,1692412
+wwe,World Wrestling Entertainment Inc,https://static.finnhub.io/logo/c85897976e6d121d3414864347aca8c1fa620453a2727bb30f6b89b8fdfc1098.png,https://corporate.wwe.com/,B,Medium,BB,Medium,BB,Medium,14,34,60,34,04/20/2022,BBB,High,1091907
+pmcb,PharmaCyte Biotech Inc,https://static.finnhub.io/logo/6be6c540-80f3-11ea-8213-00000000092a.png,http://pharmacyte.com/,B,Medium,B,Medium,BB,Medium,4,8,56,13,04/18/2022,B,Medium,1157075
+www,Wolverine World Wide Inc,https://static.finnhub.io/logo/2a65cdf0f3735b8dbbeeeec6f7c7d02cfe8ac7237d3f9c2eda2e6d035b8835e5.png,https://www.wolverineworldwide.com/,BB,Medium,B,Medium,BB,Medium,37,27,58,42,04/20/2022,BBB,High,110471
+xhr,Xenia Hotels & Resorts Inc,https://static.finnhub.io/logo/8de05614cc27f3a2ac51dce15cd2ddff7af1f25fdbf8568e132ec4baa5049b8e.png,https://xeniareit.com/,B,Medium,B,Medium,B,Medium,12,20,40,17,04/20/2022,BB,Medium,1616000
+x,United States Steel Corp,https://static.finnhub.io/logo/ac65e7a8-80ec-11ea-ae7c-00000000092a.png,https://www.ussteel.com/,A,High,BB,Medium,BB,Medium,65,40,56,64,04/19/2022,BBB,High,1163302
+xpev,Xpeng Inc,https://static.finnhub.io/logo/a051163b4bc9dd4531cecd3b4563cb4fbae4dfcca2a14cc34ad546c2b38c5389.png,https://www.xpeng.no,B,Medium,B,Medium,B,Medium,3,9,31,2,06/11/2022,B,Medium,1810997
+xpo,XPO Logistics Inc,https://static.finnhub.io/logo/67e2a608-826a-11ea-949d-00000000092a.png,https://www.xpo.com/,A,High,BB,Medium,BB,Medium,69,31,56,62,04/20/2022,BBB,High,1166003
+xin,Xinyuan Real Estate Co Ltd,https://static.finnhub.io/logo/adc7e60a-80ec-11ea-a045-00000000092a.png,http://ir.xyre.com/,B,Medium,B,Medium,BB,Medium,1,16,56,16,04/20/2022,B,Medium,1398453
+xl,XL Fleet Corp,https://static.finnhub.io/logo/c558526758aff6a234567f3ff1de8e2a1b357086485584308144a5592644ce0e.png,https://xlfleet.com/,B,Medium,B,Medium,B,Medium,0,8,31,0,04/22/2022,B,Medium,1772720
+xyf,X Financial,https://static.finnhub.io/logo/d39b1610-81ce-11ea-a434-00000000092a.png,https://www.xiaoyinggroup.com/,B,Medium,B,Medium,B,Medium,3,9,31,2,06/11/2022,B,Medium,1725033
+y,Alleghany Corp,https://static.finnhub.io/logo/87524d2a27c268d431041ce0a4d5e2f774512dddcaf1aa1629a2b711ec0cdea7.png,https://www.alleghany.com/,B,Medium,B,Medium,BB,Medium,3,16,56,17,04/16/2022,BB,Medium,775368
+yala,Yalla Group Ltd,https://static.finnhub.io/logo/94c350149330c8859cdb82394848c771d0569361dc8e2688e1bad4c22c7629d6.png,https://www.yallagroup.com/#/home,B,Medium,B,Medium,B,Medium,6,17,36,10,06/11/2022,B,Medium,1794350
+wts,Watts Water Technologies Inc,https://static.finnhub.io/logo/aa2f1922-80ec-11ea-b91b-00000000092a.png,https://www.watts.com/,BBB,High,BB,Medium,B,Medium,42,28,34,36,04/19/2022,BBB,High,795403
+sien,Sientra Inc,https://static.finnhub.io/logo/9ee55218-80d0-11ea-9a00-00000000092a.png,http://sientra.com/,B,Medium,BB,Medium,B,Medium,4,29,40,17,04/19/2022,BB,Medium,1551693
+hain,Hain Celestial Group Inc,https://static.finnhub.io/logo/1b3dedc6-80e0-11ea-ae2a-00000000092a.png,https://www.hain.com/,A,High,BB,Medium,BB,Medium,62,28,57,56,04/17/2022,BBB,High,910406
+mtc,MMTEC Inc,https://static.finnhub.io/logo/12f9059e-81d4-11ea-9b70-00000000092a.png,https://www.51mm.com/,B,Medium,B,Medium,BB,Medium,4,13,57,16,04/20/2022,BB,Medium,1742518
+mtcr,Metacrine Inc,https://static.finnhub.io/logo/b99ae0480d35baa3abd44cf7f3a58ee33cec963d4a16d93450e4df52683c5a32.png,https://www.metacrine.com,B,Medium,B,Medium,BB,Medium,2,9,64,16,06/10/2022,B,Medium,1634379
+mtem,Molecular Templates Inc,https://static.finnhub.io/logo/b628a328-80e0-11ea-ae1f-00000000092a.png,https://mtem.com/,BB,Medium,BB,Medium,BB,Medium,31,33,61,43,06/10/2022,BBB,High,1183765
+mtls,Materialise NV,https://static.finnhub.io/logo/d0dfa200-80cf-11ea-90b4-00000000092a.png,http://www.materialise.com,A,High,BB,Medium,BB,Medium,59,28,56,54,04/18/2022,BBB,High,1091223
+mtex,Mannatech Inc,https://static.finnhub.io/logo/8ac4ebd9873103f5885f174ae8773f5fe25e1cd18d4baf369f1928961c202d62.png,https://us.mannatech.com/,B,Medium,B,Medium,B,Medium,0,20,39,10,04/18/2022,B,Medium,1056358
+mtrx,Matrix Service Co,https://static.finnhub.io/logo/13c284070f5d7107a345b370190b26682734effb47965ee5534d78a58f48bcce.png,https://www.matrixservicecompany.com/,A,High,BB,Medium,B,Medium,75,45,50,70,04/18/2022,A,High,866273
+halo,Halozyme Therapeutics Inc,https://static.finnhub.io/logo/ecd60c64-80df-11ea-9c85-00000000092a.png,https://www.halozyme.com/,A,High,BB,Medium,BB,Medium,60,28,60,56,04/17/2022,BBB,High,1159036
+hall,Hallmark Financial Services Inc,https://static.finnhub.io/logo/fd68ca2c-80df-11ea-b8c2-00000000092a.png,http://www.hallmarkgrp.com/,B,Medium,B,Medium,BB,Medium,3,14,56,16,04/17/2022,B,Medium,819913
+mvbf,MVB Financial Corp,https://static.finnhub.io/logo/45ba96829f0302c20d3455c565aba295243a3c565cb9a67c24d80d4b8dde4ae1.png,https://ir.mvbbanking.com/CorporateProfile/,B,Medium,B,Medium,B,Medium,2,11,35,4,04/18/2022,B,Medium,1277902
+mvst,Microvast Holdings Inc,https://static.finnhub.io/logo/56accc4323ac6010d7cab3618df10f204a7b8350b68e8e17bbcf2a9f80600386.png,https://microvast.com/,B,Medium,B,Medium,B,Medium,5,24,34,12,06/11/2022,B,Medium,1760689
+mvis,MicroVision Inc,https://static.finnhub.io/logo/4ef2e4ae-80e1-11ea-a26e-00000000092a.png,https://www.microvision.com/,BBB,High,BB,Medium,BB,Medium,48,28,64,51,04/18/2022,BBB,High,65770
+mxct,MaxCyte Inc,https://static.finnhub.io/logo/c6e6e9be-80d3-11ea-8ffb-00000000092a.png,https://www.maxcyte.com/,B,Medium,BB,Medium,B,Medium,4,28,43,18,04/21/2022,BB,Medium,1287098
+mygn,Myriad Genetics Inc,https://static.finnhub.io/logo/4e7a8ca2-80e1-11ea-a073-00000000092a.png,https://myriad.com/,BB,Medium,BB,Medium,B,Medium,29,32,55,39,04/18/2022,BBB,High,899923
+myfw,First Western Financial Inc,https://static.finnhub.io/logo/d63d720da2c1ce27b4068a766f28f8af83b975b495e048f59d59b3f6e363a5e4.png,https://myfw.gcs-web.com/,BB,Medium,BB,Medium,B,Medium,29,28,40,31,06/10/2022,BB,Medium,1327607
+mxl,Maxlinear Inc,https://static.finnhub.io/logo/698085653aaaf77ffaf721bb1fc5a549ca4e9fc91bbb6b823d6e4a689c939334.png,https://www.maxlinear.com/,A,High,BB,Medium,BB,Medium,65,33,65,64,04/18/2022,BBB,High,1288469
+mymd,MyMD Pharmaceuticals Inc,https://static.finnhub.io/logo/5db2dee6-80cf-11ea-a23b-00000000092a.png,https://ir.mymd.com/,B,Medium,B,Medium,B,Medium,1,19,39,10,06/11/2022,B,Medium,1321834
+myps,Playstudios Inc,https://static.finnhub.io/logo/5295b962ca5b082296591d3bf503c720c413df08af470dca3bde1a037ec9f783.png,https://aciesacq.com/,B,Medium,B,Medium,B,Medium,1,8,31,1,06/11/2022,B,Medium,1823878
+mttr,Matterport Inc,https://static4.finnhub.io/file/publicdatany2/stock_logo/MTTR_5077893451.png,https://matterport.com/,BB,Medium,BB,Medium,B,Medium,28,33,46,35,06/11/2022,BBB,High,1819394
+mtsi,MACOM Technology Solutions Holdings Inc,https://static.finnhub.io/logo/d6dcdae6-80cb-11ea-b59b-00000000092a.png,https://www.macom.com/,BB,Medium,BB,Medium,B,Medium,34,29,45,36,04/18/2022,BBB,High,1493594
+clro,Clearone Inc,https://static.finnhub.io/logo/2eb1181c-80e0-11ea-866e-00000000092a.png,http://www.clearone.com/,BB,Medium,B,Medium,B,Medium,33,13,34,22,04/16/2022,BB,Medium,840715
+clsn,Celsion Corp,https://static.finnhub.io/logo/62e5ff86-80fc-11ea-974e-00000000092a.png,http://celsion.com/,B,Medium,B,Medium,BB,Medium,11,11,56,18,04/16/2022,BB,Medium,749647
+gure,Gulf Resources Inc,https://static.finnhub.io/logo/f43b6b8a-828d-11ea-be9e-00000000092a.png,http://www.gulfresourcesinc.com/,BBB,High,B,Medium,BB,Medium,40,9,56,34,04/17/2022,BBB,High,885462
+gvp,GSE Systems Inc,https://static.finnhub.io/logo/57b65608-80df-11ea-bafd-00000000092a.png,http://www.gses.com/,A,High,BB,Medium,B,Medium,59,29,42,49,04/17/2022,BBB,High,944480
+gyro,Gyrodyne LLC,Logo Not Provided,http://www.gyrodyne.com/,B,Medium,B,Medium,B,Medium,8,9,41,9,04/17/2022,B,Medium,1589061
+gwrs,Global Water Resources Inc,https://static.finnhub.io/logo/073b07d78f30190099a57fb66df825b0afbbccb6bb3d3b3389564acaabce4942.png,https://www.gwresources.com,BB,Medium,B,Medium,B,Medium,32,27,40,32,04/17/2022,BB,Medium,1434728
+ha,Hawaiian Holdings Inc,https://static.finnhub.io/logo/e1f8d338-80e0-11ea-9ce9-00000000092a.png,https://www.hawaiianairlines.com/,B,Medium,BB,Medium,B,Medium,0,32,31,13,04/17/2022,B,Medium,1172222
+clsk,CleanSpark Inc,https://static.finnhub.io/logo/e76a9728-80d9-11ea-9ab3-00000000092a.png,https://cleanspark.com/,A,High,BB,Medium,BB,Medium,71,33,59,65,06/10/2022,A,High,827876
+clsd,Clearside Biomedical Inc,https://static.finnhub.io/logo/11294928-80d4-11ea-bfe2-00000000092a.png,http://clearsidebio.com/,B,Medium,B,Medium,B,Medium,3,14,31,5,07/26/2022,B,Medium,1539029
+haac,Health Assurance Acquisition Corp,https://static.finnhub.io/logo/10782d05345d090968318541e01749311cc3c39a659e56b85eb2b4b525417568.png,https://www.healthassuranceacqcorp.com/,B,Medium,B,Medium,BB,Medium,0,19,56,17,06/10/2022,BB,Medium,1824013
+hafc,Hanmi Financial Corp,https://static.finnhub.io/logo/a38560a59c08d9820f0441540b932c2852bdac825c5ec9809f6272a278da20d4.png,https://investors.hanmi.com/,B,Medium,B,Medium,B,Medium,10,9,40,10,04/17/2022,B,Medium,1109242
+clst,Catalyst Bancorp Inc,Logo Not Provided,Url Not Provided,B,Medium,BB,Medium,B,Medium,12,37,48,30,06/11/2022,BB,Medium,1849867
+clwt,Euro Tech Holdings Company Ltd,Logo Not Provided,Url Not Provided,B,Medium,B,Medium,B,Medium,6,8,34,4,04/17/2022,B,Medium,1026662
+clxt,Calyxt Inc,https://static.finnhub.io/logo/97c944fe-80db-11ea-b039-00000000092a.png,http://www.calyxt.com/,A,High,BB,Medium,BB,Medium,65,32,62,62,06/10/2022,BBB,High,1705843
+cmbm,Cambium Networks Corp,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/CMBM.svg,Url Not Provided,A,High,BB,Medium,BB,Medium,59,35,56,58,06/10/2022,BBB,High,1738177
+cmco,Columbus McKinnon Corp,https://static.finnhub.io/logo/18ae4a40-80e0-11ea-a0be-00000000092a.png,https://www.columbusmckinnon.com/,B,Medium,BB,Medium,B,Medium,0,32,41,17,04/16/2022,BB,Medium,1005229
+evk,Ever-Glory International Group Inc,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/EVK.svg,http://www.everglorygroup.com,B,Medium,B,Medium,B,Medium,0,10,34,2,04/17/2022,B,Medium,943184
+clvs,Clovis Oncology Inc,https://static.finnhub.io/logo/4a95bb1a-80cb-11ea-a08d-00000000092a.png,https://clovisoncology.com/,B,Medium,B,Medium,BB,Medium,5,10,56,15,04/16/2022,B,Medium,1466301
+clvr,Clever Leaves Holdings Inc,Logo Not Provided,Url Not Provided,B,Medium,B,Medium,B,Medium,5,16,32,8,06/10/2022,B,Medium,1819615
+happ,Happiness Development Group Ltd,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/HAPP.svg,http://www.happ.org.cn/,B,Medium,B,Medium,BB,Medium,5,9,56,14,06/10/2022,B,Medium,1751876
+hbcp,Home Bancorp Inc,https://static.finnhub.io/logo/3a00ecdbf3696314778776f1cf99feac118b8f15cae98dc6bd3c65e519783a19.png,https://www.home24bank.com/,B,Medium,B,Medium,B,Medium,6,8,31,3,04/17/2022,B,Medium,1436425
+hbio,Harvard Bioscience Inc,https://static.finnhub.io/logo/2afc8d68-80e0-11ea-a78b-00000000092a.png,https://www.harvardbioscience.com/,B,Medium,B,Medium,BB,Medium,10,12,56,18,04/17/2022,BB,Medium,1123494
+hbnc,Horizon Bancorp Inc,https://static.finnhub.io/logo/b81a60c122a2a1d66ce8a8259aa0c3035ddeeab3ba5202e8ece90978b4b25260.png,https://www.horizonbank.com/,B,Medium,BB,Medium,B,Medium,11,32,40,22,04/17/2022,BB,Medium,706129
+hbt,HBT Financial Inc,https://static.finnhub.io/logo/ce6355c1d526b568214a46222e9a9152cbca3d0ff2a56c6abd8e43a7e9099103.png,https://ir.hbtfinancial.com/investor-relations,B,Medium,B,Medium,BB,Medium,9,23,56,24,06/10/2022,BB,Medium,775215
+hcat,Health Catalyst Inc,https://static.finnhub.io/logo/3674581a-80da-11ea-8625-00000000092a.png,https://www.healthcatalyst.com/,A,High,BB,Medium,BB,Medium,66,32,61,63,06/10/2022,BBB,High,1636422
+hcar,Healthcare Services Acquisition Corp,https://static.finnhub.io/logo/5de446295c78d793f321802ddf19b35eb0b0dcad6fd702aea8f76cdb18ba2bea.png,https://www.healthcarespac.com/,B,Medium,B,Medium,BB,Medium,9,9,56,16,06/10/2022,BB,Medium,1824846
+harp,Harpoon Therapeutics Inc,https://static.finnhub.io/logo/d8161c70-81d3-11ea-bb1a-00000000092a.png,https://www.harpoontx.com/,BBB,High,BB,Medium,BB,Medium,55,28,59,53,06/10/2022,BBB,High,1708493
+hayn,Haynes International Inc,https://static.finnhub.io/logo/99f0a598-80e0-11ea-b586-00000000092a.png,https://www.haynesintl.com/,A,High,BB,Medium,BB,Medium,58,28,56,54,04/17/2022,BBB,High,858655
+pnbk,Patriot National Bancorp Inc,https://static.finnhub.io/logo/2d926042-80e1-11ea-bae6-00000000092a.png,https://bankpatriot.com/,B,Medium,BB,Medium,B,Medium,1,28,34,12,04/18/2022,B,Medium,1098146
+hcdi,Harbor Custom Development Inc,https://static.finnhub.io/logo/5411ca1c162326159abc51913794bd21176437876133e6cc2c36fcccd2df0e57.png,https://harborcustomhomes.com/,B,Medium,B,Medium,B,Medium,4,12,33,5,06/10/2022,B,Medium,1784567
+hcci,Heritage-Crystal Clean Inc,https://static.finnhub.io/logo/55073054-80e0-11ea-adcc-00000000092a.png,https://www.crystal-clean.com/,A,High,BBB,High,BB,Medium,63,47,56,67,04/17/2022,A,High,1403431
+pnfp,Pinnacle Financial Partners Inc,https://static.finnhub.io/logo/2afb0138-80e1-11ea-821c-00000000092a.png,https://www.pnfp.com/,B,Medium,BB,Medium,B,Medium,14,33,44,27,11/08/2022,BB,Medium,1115055
+pnt,POINT Biopharma Global Inc,Logo Not Provided,https://www.pointbiopharma.com/,BB,Medium,B,Medium,B,Medium,23,12,52,24,06/11/2022,BB,Medium,1811764
+poai,Predictive Oncology Inc,https://static.finnhub.io/logo/ac0ee7f0-80d2-11ea-bd34-00000000092a.png,https://predictive-oncology.com/,B,Medium,B,Medium,B,Medium,15,27,36,21,06/10/2022,BB,Medium,1446159
+pola,Polar Power Inc,https://static.finnhub.io/logo/09caf854-81d9-11ea-8a6b-00000000092a.png,https://polarpower.com/,B,Medium,B,Medium,B,Medium,0,8,31,0,06/05/2022,B,Medium,1622345
+podd,Insulet Corp,https://static.finnhub.io/logo/bd79a7d8-826a-11ea-ba18-00000000092a.png,https://www.omnipod.com,B,Medium,B,Medium,B,Medium,3,14,32,6,11/07/2022,B,Medium,1145197
+powi,Power Integrations Inc,https://static.finnhub.io/logo/3a69d1d8-80e0-11ea-bdda-00000000092a.png,https://www.power.com/,A,High,B,Medium,BB,Medium,72,25,57,60,11/08/2022,BBB,High,833640
+poww,Ammo Inc,https://static.finnhub.io/logo/8decc6ca0564a89b50b985b73c3a3e17a402a1bec36567fa2649259eb21478db.png,https://ammoinc.com/,B,Medium,B,Medium,B,Medium,6,13,31,6,08/02/2022,B,Medium,1015383
+pnrg,Primeenergy Resources Corp,Logo Not Provided,http://www.primeenergy.com/,B,Medium,B,Medium,B,Medium,0,8,46,6,11/08/2022,B,Medium,56868
+pntg,Pennant Group Inc,https://static.finnhub.io/logo/a5056f5c-81d2-11ea-80af-00000000092a.png,https://www.pennantgroup.com/,B,Medium,BB,Medium,B,Medium,9,29,31,16,06/10/2022,BB,Medium,1766400
+ppbi,Pacific Premier Bancorp Inc,https://static.finnhub.io/logo/39fe4f30-80e0-11ea-942b-00000000092a.png,https://investors.ppbi.com/,A,High,BB,Medium,BB,Medium,70,33,60,65,11/08/2022,A,High,1028918
+ppih,Perma-Pipe International Holdings Inc,https://static.finnhub.io/logo/e963d356e0f2d994c438d84f1178d410188d07abe007ec02a410fc231e59af43.png,https://www.permapipe.com/,A,High,B,Medium,BB,Medium,58,20,56,49,06/10/2022,BBB,High,914122
+ppc,Pilgrims Pride Corp,https://static.finnhub.io/logo/eff7902c-80ff-11ea-83c9-00000000092a.png,https://www.pilgrims.com/,A,High,BB,Medium,B,Medium,58,28,36,45,11/08/2022,BBB,High,802481
+praa,PRA Group Inc,https://static.finnhub.io/logo/3adb3168-80e0-11ea-8a1f-00000000092a.png,https://www.pragroup.com/,BBB,High,BB,Medium,BB,Medium,53,32,59,54,11/08/2022,BBB,High,1185348
+ppsi,Pioneer Power Solutions Inc,https://static.finnhub.io/logo/96fb7918-80ce-11ea-bf9d-00000000092a.png,https://www.pioneerpowersolutions.com/,B,Medium,BB,Medium,BB,Medium,19,29,60,34,11/08/2022,BBB,High,1449792
+prax,Praxis Precision Medicines Inc,https://static.finnhub.io/logo/a4601b625da8200ca8351310241f144dd64941f2597d80dd864a111467156e56.png,https://praxismedicines.com/,B,Medium,B,Medium,B,Medium,0,11,35,3,06/10/2022,B,Medium,1689548
+prct,Procept Biorobotics Corp,https://static.finnhub.io/logo/b5c9e927973c66ebc5614e0c603b51b26632de3cff0d96898826fa18547d0791.png,https://www.procept-biorobotics.com/,B,Medium,B,Medium,BB,Medium,0,13,56,13,06/11/2022,B,Medium,1588978
+prch,Porch Group Inc,https://static.finnhub.io/logo/df7a9ba3225a11dffbd7593d22a4135a4f10e3c0b361032e1893411b0c310abc.png,https://porchgroup.com/,B,Medium,B,Medium,B,Medium,5,13,35,7,06/10/2022,B,Medium,1784535
+pre,Artisan Acquisition Corp,Logo Not Provided,Url Not Provided,B,Medium,B,Medium,B,Medium,9,8,48,12,04/22/2022,B,Medium,1876431
+prdo,Perdoceo Education Corp,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/PRDO.svg,https://www.perdoceoed.com/,BB,Medium,B,Medium,B,Medium,32,27,44,33,06/10/2022,BBB,High,1046568
+sisi,Shineco Inc,Logo Not Provided,http://www.tenetjove.com/,BB,Medium,BB,Medium,BB,Medium,27,37,57,42,06/11/2022,BBB,High,1300734
+sitm,SiTime Corp,https://static.finnhub.io/logo/fd3ab08a-80d9-11ea-baf4-00000000092a.png,https://www.sitime.com/,A,High,BB,Medium,BB,Medium,59,28,56,54,06/10/2022,BBB,High,1451809
+siri,Sirius XM Holdings Inc,https://static.finnhub.io/logo/8cbaf00cdf99a60a70367447a9b4aa8ffa3730892ebfeefc69f0df956c461770.png,https://www.siriusxm.com/corporate,B,Medium,BB,Medium,B,Medium,8,28,32,16,11/08/2022,B,Medium,908937
+sj,Scienjoy Holding Corp,Logo Not Provided,Url Not Provided,B,Medium,BB,Medium,B,Medium,12,32,41,24,06/10/2022,BB,Medium,1753673
+pow,Powered Brands,Logo Not Provided,Url Not Provided,B,Medium,B,Medium,B,Medium,7,14,44,12,04/20/2022,B,Medium,1829427
+powl,Powell Industries Inc,https://static.finnhub.io/logo/b847e6cec1cca2ab7a7efa1c72c329bd241481b5ba6c9cfec167a8ad98550779.png,https://www.powellind.com/,A,High,B,Medium,B,Medium,58,16,35,38,11/08/2022,BBB,High,80420
+upwk,Upwork Inc,https://static.finnhub.io/logo/04e63e39dfa2f0949f018d4f77b107a9bc8f105998ca37e338d26e0ba04e229a.png,https://www.upwork.com/,B,Medium,B,Medium,B,Medium,14,21,51,23,06/10/2022,BB,Medium,1627475
+usak,USA Truck Inc,https://static.finnhub.io/logo/d2ce5822-80e0-11ea-b2c6-00000000092a.png,https://www.usa-truck.com/,A,High,BB,Medium,BB,Medium,64,30,57,58,11/08/2022,BBB,High,883945
+usau,US Gold Corp,https://static.finnhub.io/logo/1557f6d0-80e0-11ea-8635-00000000092a.png,https://www.usgoldcorp.gold/,BBB,High,B,Medium,BB,Medium,39,16,56,36,06/10/2022,BBB,High,27093
+usap,Universal Stainless & Alloy Products Inc,https://static.finnhub.io/logo/6b133fbff9c5149d0ce77bd6e80075686db2446fed3d60ca37cecf755c9d042e.png,http://www.univstainless.com/,B,Medium,B,Medium,B,Medium,7,14,31,7,11/08/2022,B,Medium,931584
+useg,US Energy Corp,https://static.finnhub.io/logo/8a2928da3ce3c736d5ef6e38edcc15d961dd3bd9bf61d6cf6a7675e9619e5ce3.png,http://www.usnrg.com/,BBB,High,B,Medium,BB,Medium,46,21,60,45,11/08/2022,BBB,High,101594
+usio,Usio Inc,https://static.finnhub.io/logo/90f27168-80d2-11ea-a811-00000000092a.png,https://usio.com/,B,Medium,B,Medium,B,Medium,16,17,41,18,06/10/2022,BB,Medium,1088034
+uthr,United Therapeutics Corp,https://static.finnhub.io/logo/06244134-826b-11ea-9be7-00000000092a.png,https://www.unither.com/,B,Medium,B,Medium,BB,Medium,6,20,56,21,11/08/2022,BB,Medium,1082554
+urgn,Urogen Pharma Ltd,https://static.finnhub.io/logo/34ed2f05d06c4b4e38d817c2be35da0eb637d3ddf7a9cea83cec8a3c75a6b04c.png,https://www.urogen.com/,B,Medium,B,Medium,B,Medium,2,18,54,16,06/10/2022,BB,Medium,1668243
+urbn,Urban Outfitters Inc,https://static.finnhub.io/logo/1fafa21c-80e1-11ea-bd8f-00000000092a.png,https://www.urbn.com/,BB,Medium,BB,Medium,BB,Medium,26,28,56,36,11/08/2022,BBB,High,912615
+utme,Utime Ltd,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/950736446156.svg,http://www.utimemobile.com/,B,Medium,B,Medium,B,Medium,3,8,31,2,06/10/2022,B,Medium,1789299
+utrs,Minerva Surgical Inc,https://static.finnhub.io/logo/9ae26777350f9737497378ac417156f925648c223798be24150f41242013d415.png,https://minervasurgical.com/,B,Medium,B,Medium,B,Medium,1,8,34,2,06/11/2022,B,Medium,1452965
+utsi,UTStarcom Holdings Corp,https://static.finnhub.io/logo/04f8be36-826b-11ea-a446-00000000092a.png,http://www.utstar.com,BB,Medium,BB,Medium,BB,Medium,27,30,72,44,11/08/2022,BBB,High,1030471
+uxin,Uxin Ltd,https://static.finnhub.io/logo/9b01f9fe-81d5-11ea-b8c8-00000000092a.png,https://www.xin.com/,B,Medium,B,Medium,B,Medium,1,8,38,3,06/10/2022,B,Medium,1729173
+uvsp,Univest Financial Corp,https://static.finnhub.io/logo/20020ad0-80e1-11ea-bc7f-00000000092a.png,https://www.univest.net,BB,Medium,BB,Medium,BB,Medium,25,32,57,38,11/08/2022,BBB,High,102212
+cmcm,Cheetah Mobile Inc,https://static.finnhub.io/logo/d08f9310-80cf-11ea-a202-00000000092a.png,https://www.cmcm.com,B,Medium,B,Medium,B,Medium,1,11,35,4,11/07/2022,B,Medium,1597835
+cmc,Commercial Metals Co,https://static.finnhub.io/logo/a22fd99e-80eb-11ea-aca7-00000000092a.png,https://www.cmc.com,B,Medium,B,Medium,B,Medium,4,10,31,4,11/07/2022,B,Medium,22444
+uslm,United States Lime & Minerals Inc,https://static.finnhub.io/logo/fb391438-826a-11ea-93e6-00000000092a.png,http://www.uslm.com/,A,High,B,Medium,BB,Medium,58,14,56,46,11/08/2022,BBB,High,82020
+utmd,Utah Medical Products Inc,https://static.finnhub.io/logo/ebfeafbe-80e0-11ea-a1fd-00000000092a.png,http://www.utahmed.com,B,Medium,B,Medium,B,Medium,8,15,44,13,11/08/2022,B,Medium,706698
+cmp,Compass Minerals International Inc,https://static.finnhub.io/logo/a5b1f724-80eb-11ea-8678-00000000092a.png,https://www.compassminerals.com/,A,High,BB,Medium,BB,Medium,59,28,61,56,11/07/2022,BBB,High,1227654
+cnd,Concord Acquisition Corp,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/CND.svg,Url Not Provided,B,Medium,B,Medium,BB,Medium,1,19,56,17,11/12/2022,BB,Medium,1824301
+cnf,CNFinance Holdings Ltd,Logo Not Provided,http://ir.cashchina.cn/,B,Medium,B,Medium,B,Medium,0,8,36,2,06/10/2022,B,Medium,1733868
+cnmd,Conmed Corp,https://static.finnhub.io/logo/a4313e98075e7806fcfe430a4486dac21d6c4387ef886ad34ec082477aa32de0.png,https://www.conmed.com/,BBB,High,BB,Medium,B,Medium,46,28,49,44,11/07/2022,BBB,High,816956
+cnk,Cinemark Holdings Inc,https://static.finnhub.io/logo/a875eee6-80eb-11ea-896d-00000000092a.png,https://www.cinemark.com/,BB,Medium,BB,Medium,BB,Medium,25,28,56,35,11/07/2022,BBB,High,1385280
+cnne,Cannae Holdings Inc,https://static.finnhub.io/logo/228af830-81d7-11ea-85e8-00000000092a.png,https://www.cannaeholdings.com/,B,Medium,B,Medium,B,Medium,3,8,32,2,06/10/2022,B,Medium,1704720
+cno,CNO Financial Group Inc,https://static.finnhub.io/logo/a8e41f10-80eb-11ea-b750-00000000092a.png,https://www.cnoinc.com/,A,High,BB,Medium,BB,Medium,58,32,60,57,11/07/2022,BBB,High,1224608
+cna,CNA Financial Corp,https://static.finnhub.io/logo/a7e1209a-80eb-11ea-a594-00000000092a.png,https://www.cna.com/,A,High,BB,Medium,BB,Medium,66,33,66,65,11/07/2022,A,High,21175
+cmre,Costamare Inc,https://static.finnhub.io/logo/811544ec-81a2-11ea-b11f-00000000092a.png,https://www.costamare.com/,B,Medium,B,Medium,B,Medium,8,9,31,5,11/07/2022,B,Medium,1503584
+gva,Granite Construction Inc,https://static.finnhub.io/logo/f0d5c3ba-80eb-11ea-b752-00000000092a.png,https://www.graniteconstruction.com/,B,Medium,B,Medium,B,Medium,0,8,31,0,11/07/2022,B,Medium,861459
+fn,Fabrinet,https://static.finnhub.io/logo/e34b0be1a98befac76ad28cec81a1da747b9af72f2670c97b30b991474d7f9ab.png,https://fabrinet.com/,A,High,B,Medium,B,Medium,60,10,34,35,11/07/2022,BBB,High,1408710
+h,Hyatt Hotels Corp,https://static.finnhub.io/logo/304ce992-80ff-11ea-b93c-00000000092a.png,https://www.hyatt.com/,B,Medium,B,Medium,B,Medium,7,10,32,5,11/07/2022,B,Medium,1468174
+hasi,Hannon Armstrong Sustainable Infrastructure Capital Inc,https://static.finnhub.io/logo/e8712528-80cd-11ea-aef2-00000000092a.png,https://www.hannonarmstrong.com/,AA,Excellent,BBB,High,BB,Medium,86,48,60,82,11/07/2022,A,High,1561894
+hayw,Hayward Holdings Inc,https://static.finnhub.io/logo/f4c4442bcb167b30d5d20aa9f9deac9a9ee9f88681bcfb402c394287a0805e6c.png,https://www.hayward-pool.com/shop/en/pools,A,High,BB,Medium,BB,Medium,65,29,56,58,11/15/2022,BBB,High,1834622
+hbb,Hamilton Beach Brands Holding Co,https://static.finnhub.io/logo/8bd0236fbb75a62079aa6816e350637fb15ef687ca75d498ebb1069edf371df3.png,https://www.hamiltonbeachbrands.com/,B,Medium,B,Medium,B,Medium,9,22,39,16,11/15/2022,B,Medium,1709164
+hcc,Warrior Met Coal Inc,https://static.finnhub.io/logo/bfcf747a-80db-11ea-bca2-00000000092a.png,https://warriormetcoal.com/,B,Medium,B,Medium,B,Medium,3,8,31,2,11/09/2022,B,Medium,1691303
+hci,Hci Group Inc,https://static.finnhub.io/logo/f148e28e3880660f21e4bfa5e63c7e5de49b14abbf29520cecd447fd6cc23204.png,https://hcigroup.com/,B,Medium,B,Medium,BB,Medium,1,20,56,18,11/07/2022,BB,Medium,1400810
+he,Hawaiian Electric Industries Inc,https://static.finnhub.io/logo/f41ed734-80eb-11ea-b165-00000000092a.png,https://www.hei.com/,A,High,BB,Medium,BB,Medium,74,37,59,69,11/07/2022,A,High,354707
+gwre,Guidewire Software Inc,https://static.finnhub.io/logo/f210ffa6-80cb-11ea-abd4-00000000092a.png,https://www.guidewire.com/,A,High,BB,Medium,BB,Medium,67,32,64,64,11/07/2022,A,High,1528396
+hae,Haemonetics Corp,https://static.finnhub.io/logo/f25c246e-80eb-11ea-984f-00000000092a.png,https://www.haemonetics.com,BBB,High,BB,Medium,BB,Medium,48,28,57,49,11/07/2022,BBB,High,313143
+hep,Holly Energy Partners LP,https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/HEP_4295900027.png,http://www.hollyenergy.com/,A,High,B,Medium,B,Medium,60,13,35,38,11/07/2022,BBB,High,1283140
+hgv,Hilton Grand Vacations Inc,https://static.finnhub.io/logo/e51af146-80db-11ea-8e19-00000000092a.png,https://www.hiltongrandvacations.com/,BB,Medium,B,Medium,B,Medium,20,25,44,26,11/15/2022,BB,Medium,1674168
+hi,Hillenbrand Inc,https://static.finnhub.io/logo/f56bfd2c-80eb-11ea-ab9f-00000000092a.png,https://www.hillenbrand.com/,BBB,High,BB,Medium,BB,Medium,56,37,56,57,11/07/2022,BBB,High,1417398
+hhc,Howard Hughes Corp,https://static.finnhub.io/logo/6445e7f28561553b3938ebf0561b5c1b03bb8379d8ace28e7cae8dd7d5a2c878.png,https://www.howardhughes.com/,A,High,BB,Medium,BB,Medium,58,28,56,53,11/07/2022,BBB,High,1498828
+hubs,HubSpot Inc,https://static.finnhub.io/logo/62f8c2fa-80d0-11ea-aeb3-00000000092a.png,https://www.hubspot.com/,BBB,High,BB,Medium,BB,Medium,54,33,61,57,11/07/2022,BBB,High,1404655
+hesm,Hess Midstream LP,https://static.finnhub.io/logo/3a3f1306ad581fe2e596eaf3a480a1e683d9c562deaa753633f2d3f680150569.png,https://www.hessmidstream.com/,BB,Medium,B,Medium,B,Medium,21,19,45,23,11/15/2022,BB,Medium,1789832
+hei,HEICO Corp,https://static.finnhub.io/logo/f461d852-80eb-11ea-89b1-00000000092a.png,https://www.heico.com/,B,Medium,B,Medium,B,Medium,5,8,32,4,11/07/2022,B,Medium,46619
