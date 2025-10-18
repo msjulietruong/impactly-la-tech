@@ -6,6 +6,8 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import Modal from "../components/Modal";
 import BarcodeScanner from "../components/BarcodeScanner";
+import ESGScore from "../components/ESGScore";
+import ProductDetails from "../components/ProductDetails";
 
 export default function Home() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
@@ -37,6 +39,9 @@ export default function Home() {
         />
         <Button label="Search" onClick={handleSearch} />
         <Button label="Scan Barcode" onClick={() => setIsScannerOpen(true)} />
+
+          <ESGScore />
+          <ProductDetails />
       </main>
     
     {/* Barcode Scanner Modal */}
