@@ -10,7 +10,10 @@
         "bsonType": "objectId"
       },
       "brands": {
-        "bsonType": "string"
+        "bsonType": [
+          "string",
+          "long"
+        ]
       },
       "categories": {
         "bsonType": "string"
