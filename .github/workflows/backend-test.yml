@@ -20,6 +20,8 @@ concurrency:
 env:
   NODE_VERSION: ${{ secrets.NODE_VERSION }}
   MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  REDIS_URL: ${{ secrets.REDIS_URL }}
+  MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
 jobs:
   test:
