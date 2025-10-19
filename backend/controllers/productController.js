@@ -20,6 +20,197 @@ import Company from '../models/Company.js';
  * 5. Handle errors appropriately
  */
 
+
+// ============================================================================
+// BRAND TO COMPANY MAPPING
+// ============================================================================
+
+const COMPANY_BRAND_MAP = {
+  // Walmart brands
+  'walmart': 'Walmart',
+  'great value': 'Walmart',
+  "sam's choice": 'Walmart',
+  'marketside': 'Walmart',
+  'equate': 'Walmart',
+  
+  // Kroger brands
+  'kroger': 'Kroger',
+  'simple truth': 'Kroger',
+  'private selection': 'Kroger',
+  
+  // Target brands
+  'target': 'Target',
+  'good & gather': 'Target',
+  'market pantry': 'Target',
+  
+  // Costco brands
+  'costco': 'Costco',
+  'kirkland signature': 'Costco',
+  
+  // General Mills brands
+  'general mills': 'General Mills',
+  'cheerios': 'General Mills',
+  'nature valley': 'General Mills',
+  'yoplait': 'General Mills',
+  'lucky charms': 'General Mills',
+  'pillsbury': 'General Mills',
+  'haagen-dazs': 'General Mills',
+  'betty crocker': 'General Mills',
+  'old el paso': 'General Mills',
+  'totino': 'General Mills',
+  'trix': 'General Mills',
+  'cocoa puffs': 'General Mills',
+  'cinnamon toast crunch': 'General Mills',
+  'fiber one': 'General Mills',
+  'wheaties': 'General Mills',
+  
+  // PepsiCo brands
+  'pepsi': 'PepsiCo',
+  'pepsico': 'PepsiCo',
+  'frito-lay': 'PepsiCo',
+  "lay's": 'PepsiCo',
+  'lays': 'PepsiCo',
+  'doritos': 'PepsiCo',
+  'mountain dew': 'PepsiCo',
+  'gatorade': 'PepsiCo',
+  'tropicana': 'PepsiCo',
+  'quaker': 'PepsiCo',
+  'tostitos': 'PepsiCo',
+  'cheetos': 'PepsiCo',
+  'ruffles': 'PepsiCo',
+  
+  // Coca-Cola brands
+  'coca-cola': 'Coca-Cola',
+  'coke': 'Coca-Cola',
+  'sprite': 'Coca-Cola',
+  'fanta': 'Coca-Cola',
+  'dasani': 'Coca-Cola',
+  'minute maid': 'Coca-Cola',
+  'powerade': 'Coca-Cola',
+  'vitaminwater': 'Coca-Cola',
+  
+  // Nestlé brands
+  'nestle': 'Nestlé',
+  'nescafe': 'Nestlé',
+  'kit kat': 'Nestlé',
+  'pure life': 'Nestlé',
+  'gerber': 'Nestlé',
+  'stouffer': 'Nestlé',
+  'digiorno': 'Nestlé',
+  'hot pockets': 'Nestlé',
+  'lean cuisine': 'Nestlé',
+  'butterfinger': 'Nestlé',
+  'crunch': 'Nestlé',
+  
+  // Kellogg's brands
+  'kelloggs': "Kellogg's",
+  "kellogg's": "Kellogg's",
+  'pringles': "Kellogg's",
+  'cheez-it': "Kellogg's",
+  'frosted flakes': "Kellogg's",
+  'special k': "Kellogg's",
+  'pop-tarts': "Kellogg's",
+  'rice krispies': "Kellogg's",
+  'eggo': "Kellogg's",
+  'nutri-grain': "Kellogg's",
+  
+  // Mars brands
+  'mars': 'Mars',
+  "m&m's": 'Mars',
+  "m&m": 'Mars',
+  'snickers': 'Mars',
+  'twix': 'Mars',
+  'milky way': 'Mars',
+  'skittles': 'Mars',
+  'starburst': 'Mars',
+  
+  // Mondelez brands
+  'oreo': 'Mondelez',
+  'cadbury': 'Mondelez',
+  'ritz': 'Mondelez',
+  'trident': 'Mondelez',
+  'chips ahoy': 'Mondelez',
+  'wheat thins': 'Mondelez',
+  'triscuit': 'Mondelez',
+  
+  // Kraft Heinz brands
+  'kraft': 'Kraft Heinz',
+  'heinz': 'Kraft Heinz',
+  'oscar mayer': 'Kraft Heinz',
+  'philadelphia': 'Kraft Heinz',
+  'velveeta': 'Kraft Heinz',
+  'capri sun': 'Kraft Heinz',
+  'jell-o': 'Kraft Heinz',
+  'maxwell house': 'Kraft Heinz',
+  'planters': 'Kraft Heinz',
+  'lunchables': 'Kraft Heinz',
+  'kool-aid': 'Kraft Heinz',
+  
+  // ADD THESE MISSING ONES:
+  
+  // Campbell brands
+  'campbell': 'Campbell',
+  "campbell's": 'Campbell',
+  'pepperidge farm': 'Campbell',
+  'goldfish': 'Campbell',
+  'v8': 'Campbell',
+  'prego': 'Campbell',
+  'swanson': 'Campbell',
+  
+  // McCormick brands
+  'mccormick': 'McCormick',
+  'french': 'McCormick',
+  "french's": 'McCormick',
+  'old bay': 'McCormick',
+  'lawry': 'McCormick',
+  "lawry's": 'McCormick',
+  'casero': 'McCormick',
+  
+  // Hershey brands
+  'hershey': 'Hershey',
+  "hershey's": 'Hershey',
+  'reese': 'Hershey',
+  "reese's": 'Hershey',
+  'kisses': 'Hershey',
+  'jolly rancher': 'Hershey',
+  'ice breakers': 'Hershey',
+  
+  // ConAgra brands
+  'conagra': 'ConAgra',
+  'hunt': 'ConAgra',
+  "hunt's": 'ConAgra',
+  'reddi-wip': 'ConAgra',
+  'slim jim': 'ConAgra',
+  'healthy choice': 'ConAgra',
+  'marie callender': 'ConAgra',
+  "marie callender's": 'ConAgra',
+  'orville redenbacher': 'ConAgra',
+  'swiss miss': 'ConAgra',
+  'vlasic': 'ConAgra',
+  
+  // Hormel brands
+  'hormel': 'Hormel',
+  'spam': 'Hormel',
+  'skippy': 'Hormel',
+  'jennie-o': 'Hormel',
+  'applegate': 'Hormel',
+  
+  // Tyson brands
+  'tyson': 'Tyson',
+  'jimmy dean': 'Tyson',
+  'hillshire farm': 'Tyson',
+  'ball park': 'Tyson'
+};
+
+/**
+ * Convert brand name to parent company name
+ */
+function getBrandCompanyName(brandName) {
+  if (!brandName) return null;
+  const normalized = brandName.toLowerCase().trim();
+  return COMPANY_BRAND_MAP[normalized] || brandName; // Return original if no mapping
+}
+
 // ============================================================================
 // PRODUCT SEARCH AND LISTING
 // ============================================================================
@@ -229,6 +420,52 @@ const getProductByBarcode = async (req, res) => {
 };
 
 // ============================================================================
+// Internal Helper Function for Get Product Alternatives
+// ============================================================================
+
+
+/**
+ * Get company ESG data by brand name
+ * @param {string} brandName - The brand name from the product
+ * @param {object} esgCollection - MongoDB collection reference
+ * @returns {object|null} Company ESG data or null if not found
+ */
+// Helper function to get company ESG data
+async function getCompanyESG(brandName) {
+  if (!brandName) return null;
+  
+  // ✅ ADD THIS LINE - Map brand to parent company first
+  const companyName = getBrandCompanyName(brandName);
+  
+  // Clean up company name (remove extra spaces, commas, etc.)
+  const cleanName = companyName.split(',')[0].trim();
+  
+  // Try exact match first
+  let company = await esgCollection.findOne({
+    name: { $regex: new RegExp(`^${cleanName}`, 'i') }  // Changed from ^${cleanName}$ to be more flexible
+  });
+  
+  // If not found, try partial match
+  if (!company) {
+    company = await esgCollection.findOne({
+      name: { $regex: cleanName, $options: 'i' }
+    });
+  }
+  
+  if (!company) return null;
+  
+  return {
+    company_name: company.name,
+    ticker: company.ticker || null,
+    environment_score: company.environment_level || null,
+    social_score: company.social_level || null,
+    governance_score: company.governance_level || null,
+    total_score: company.total_level || null,
+    last_processing_date: company.last_processing_date || null
+  };
+}
+
+// ============================================================================
 // ESG DATA (Environmental, Social, Governance Scores)
 // ============================================================================
 
@@ -391,35 +628,197 @@ const getProductESG = async (req, res) => {
  * 
  * TODO: Implement vector search when live data is ready
  */
+
 const getProductAlternatives = async (req, res) => {
   try {
     const { id } = req.params;
     const limit = parseInt(req.query.limit) || 5;
 
-    // Get the original product
-    const cached = await ProductCache.findOne({ code: id });
-    let product;
-
-    if (cached) {
-      product = cached.data;
-    } else {
-      product = await lookupProductService({ upc: id });
+    // Import mongoose to access MongoDB directly
+    const mongoose = (await import('mongoose')).default;
+    const foodCollection = mongoose.connection.db.collection('food');
+    const esgCollection = mongoose.connection.db.collection('esg_scores');
+    
+    // Use the outer getCompanyESG helper that includes brand mapping
+    // Note: Make sure the outer getCompanyESG function has access to esgCollection
+    const getCompanyESGWithCollection = async (brandName) => {
+      if (!brandName) return null;
+      
+      // Map brand to parent company (e.g., "Great Value" → "Walmart")
+      const companyName = getBrandCompanyName(brandName);
+      
+      // Clean up company name (remove extra spaces, commas, etc.)
+      const cleanName = companyName.split(',')[0].trim();
+      
+      // Try exact match first
+      let company = await esgCollection.findOne({
+        name: { $regex: new RegExp(`^${cleanName}`, 'i') }
+      });
+      
+      // If not found, try partial match
+      if (!company) {
+        company = await esgCollection.findOne({
+          name: { $regex: cleanName, $options: 'i' }
+        });
+      }
+      
+      if (!company) return null;
+      
+      return {
+        company_name: company.name,
+        environment_score: company.environment_score || null,
+        social_score: company.social_score || null,
+        governance_score: company.governance_score || null,
+        total_score: company.total_score || null,
+        total_level: company.total_level || null,
+        last_processing_date: company.last_processing_date || null
+      };
+    };
+    
+    // Find product in food collection by code (barcode)
+    const product = await foodCollection.findOne({ code: parseInt(id) });
+    
+    if (!product) {
+      return res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: `Product not found with ID: ${id}`
+        }
+      });
     }
 
-    // TODO: Implement MongoDB vector search
-    // For now, return a placeholder response
+    // Check if product has embeddings
+    if (!product.embedding || product.embedding.length === 0) {
+      return res.json({
+        productId: id,
+        productName: product.product_name,
+        alternatives: [],
+        message: 'Product does not have embeddings yet. Generate embeddings by running: POST /api/food/generate'
+      });
+    }
+
+    // Get product's environmental grade
+    const GRADE_SCORES = { 'a': 5, 'b': 4, 'c': 3, 'd': 2, 'e': 1, 'unknown': 0, '': 0 };
+    const originalGrade = String(product.environmental_score_grade || '').toLowerCase();
+    const originalScore = GRADE_SCORES[originalGrade] || 0;
+    const isUnknownGrade = originalScore === 0;
+    
+    // Get categories - last one is most specific
+    const categories = product.categories ? product.categories.split(',').map(c => c.trim()) : [];
+    const specificCategory = categories.length > 0 ? categories[categories.length - 1] : '';
+    const broadCategory = categories.length > 1 ? categories[categories.length - 2] : '';
+    
+    // Build query with flexible category matching
+    const query = {
+      _id: { $ne: product._id },
+      embedding: { $exists: true, $ne: [] }
+    };
+    
+    // Only filter by category if product has a known grade
+    // Unknown products search ALL categories for any graded alternative
+    if (!isUnknownGrade && specificCategory) {
+      query.$or = [
+        { categories: { $regex: specificCategory, $options: 'i' } }
+      ];
+      if (broadCategory) {
+        query.$or.push({ categories: { $regex: broadCategory, $options: 'i' } });
+      }
+    }
+    
+    const candidates = await foodCollection.find(query).toArray();
+    
+    // Calculate cosine similarity
+    function cosineSimilarity(vecA, vecB) {
+      const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
+      const magnitudeA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
+      const magnitudeB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
+      return dotProduct / (magnitudeA * magnitudeB);
+    }
+    
+    // Use lower threshold for unknown grade products
+    const similarityThreshold = isUnknownGrade ? 0.65 : 0.75;
+    
+    // Find better alternatives
+    const alternatives = [];
+    
+    for (const candidate of candidates) {
+      const similarity = cosineSimilarity(product.embedding, candidate.embedding);
+      
+      // Use dynamic threshold based on whether product has grade
+      if (similarity > similarityThreshold) {
+        const candidateGrade = String(candidate.environmental_score_grade || '').toLowerCase();
+        const candidateScore = GRADE_SCORES[candidateGrade] || 0;
+        
+        // NEVER recommend unknown grade products as alternatives
+        if (candidateScore === 0) continue;
+        
+        // For unknown products: show any graded alternative
+        // For graded products: only show better grades
+        const shouldInclude = isUnknownGrade ? true : (candidateScore > originalScore);
+        
+        if (shouldInclude) {
+          alternatives.push({
+            code: candidate.code,
+            product_name: candidate.product_name,
+            brands: candidate.brands,
+            categories: candidate.categories,
+            environmental_score_grade: candidate.environmental_score_grade,
+            image_url: candidate.image_url,
+            similarity: Math.round(similarity * 100) / 100,
+            grade_improvement: isUnknownGrade ? candidateScore : (candidateScore - originalScore)
+          });
+        }
+      }
+    }
+    
+    // Sort by similarity first (most relevant), then grade improvement
+    alternatives.sort((a, b) => {
+      // Primary sort: similarity (higher is better)
+      if (Math.abs(b.similarity - a.similarity) > 0.05) {
+        return b.similarity - a.similarity;
+      }
+      // Secondary sort: grade improvement (or grade score for unknown products)
+      return b.grade_improvement - a.grade_improvement;
+    });
+
+    // Enrich alternatives with company ESG data
+    const enrichedAlternatives = await Promise.all(
+      alternatives.slice(0, limit).map(async (alt) => {
+        const companyESG = await getCompanyESGWithCollection(alt.brands);
+        
+        return {
+          ...alt,
+          company_esg: companyESG
+        };
+      })
+    );
+
+    // Also get ESG for the original product
+    const originalProductESG = await getCompanyESGWithCollection(product.brands);
+
     res.json({
       productId: id,
-      productName: product.name,
-      alternatives: [],
-      message: 'Vector search for alternatives will be implemented when live data is ready',
+      productName: product.product_name,
+      brand: product.brands,
+      environmental_score_grade: product.environmental_score_grade,
+      company_esg: originalProductESG,
+      alternatives: enrichedAlternatives,
+      count: enrichedAlternatives.length,
+      matchedCategory: isUnknownGrade ? 'all categories' : (specificCategory || broadCategory || 'all categories'),
+      isUnknownGrade: isUnknownGrade,
+      similarityThreshold: similarityThreshold,
+      message: isUnknownGrade ? 'Showing graded alternatives from all categories (original product has no environmental data)' : undefined,
       implementation: {
-        status: 'pending',
-        plannedFeatures: [
-          'MongoDB Atlas Vector Search',
-          'Similarity based on category, brand ethics, price, and nutrition',
-          'Configurable similarity threshold',
-          'Sorted by ethical score'
+        status: 'active',
+        method: 'Vector search using HuggingFace embeddings with ESG enrichment',
+        features: [
+          'Semantic similarity using AI embeddings (384-d vectors)',
+          isUnknownGrade ? 'Minimum 65% similarity for unknown products' : 'Minimum 75% similarity threshold for relevance',
+          'Filtered by better environmental grades',
+          'Never recommends unknown grade products',
+          isUnknownGrade ? 'Searches all categories for unknown products' : 'Specific category matching for graded products',
+          'Sorted by similarity and grade improvement',
+          'Enriched with company ESG scores with brand-to-company mapping'
         ]
       }
     });
@@ -430,72 +829,6 @@ const getProductAlternatives = async (req, res) => {
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to get product alternatives'
-      }
-    });
-  }
-};
-
-// ============================================================================
-// PRODUCT SUMMARIES (AI-GENERATED)
-// ============================================================================
-
-/**
- * Generate AI summary for a product using LangChain
- * 
- * Route: POST /api/products/:id/summary
- * URL params: id (product ID)
- * 
- * This endpoint:
- * 1. Gathers product data (ingredients, nutrition, ESG scores)
- * 2. Uses LangChain to generate a comprehensive summary
- * 3. Caches the summary for future retrieval
- * 4. Returns the generated summary
- * 
- * Example:
- *   POST /api/products/3274080005003/summary
- * 
- * TODO: Implement LangChain integration when ready
- */
-const generateProductSummary = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Get product details
-    const cached = await ProductCache.findOne({ code: id });
-    let product;
-
-    if (cached) {
-      product = cached.data;
-    } else {
-      product = await lookupProductService({ upc: id });
-    }
-
-    // TODO: Implement LangChain summary generation
-    // For now, return a placeholder response
-    const summary = {
-      productId: id,
-      productName: product.name,
-      summary: 'AI-generated summary will be available when LangChain integration is complete',
-      generatedAt: new Date().toISOString(),
-      implementation: {
-        status: 'pending',
-        plannedFeatures: [
-          'LangChain integration for AI summaries',
-          'Summary includes: product overview, ethical considerations, health info',
-          'Cached summaries with TTL',
-          'Support for multiple languages'
-        ]
-      }
-    };
-
-    res.json(summary);
-
-  } catch (error) {
-    console.error('Summary generation error:', error);
-    res.status(500).json({ 
-      error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Failed to generate product summary'
       }
     });
   }
@@ -556,8 +889,5 @@ export {
   getProductById,
   getProductByBarcode,
   getProductESG,
-  getProductAlternatives,
-  generateProductSummary,
-  getProductSummary
+  getProductAlternatives
 };
-

@@ -28,6 +28,7 @@ import express from "express";
 import * as healthController from '../controllers/healthController.js';
 import * as productController from '../controllers/productController.js';
 import * as companyController from '../controllers/companyController.js';
+import embeddingsRoutes from './embeddings.js';
 
 // Import middleware (helper code that runs before routes)
 import validateObjectId from '../middleware/validateObjectId.js';
@@ -123,9 +124,11 @@ router.get('/api/products/:id/alternatives', productController.getProductAlterna
  * How to use:
  *   POST /api/products/:id/summary   → Generate new summary
  *   GET /api/products/:id/summary    → Get existing summary
+ * 
+ * TODO: implement summary endpoints later
  */
-router.post('/api/products/:id/summary', productController.generateProductSummary);
-router.get('/api/products/:id/summary', productController.getProductSummary);
+// router.post('/api/products/:id/summary', productController.generateProductSummary);
+// router.get('/api/products/:id/summary', productController.getProductSummary);
 
 // ============================================================================
 // COMPANY ENDPOINTS
@@ -190,10 +193,11 @@ router.get('/v1/company/:id', validateObjectId('id'), companyController.getCompa
  *   - Confidence: How sure we are
  */
 router.get('/v1/score/:companyId', validateObjectId('companyId'), companyController.getCompanyScore);
-
+router.use('/api/food', embeddingsRoutes);
 // ============================================================================
 // EXPORT THE ROUTER
 // ============================================================================
 // Export so server.js can use all these routes
+
 
 export default router;

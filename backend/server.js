@@ -17,6 +17,7 @@ import routes from './routes/index.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { initializeEmbedder } from './controllers/embeddingsController.js';
 
 // ============================================================================
 // STEP 1: Load Environment Variables
@@ -106,6 +107,9 @@ async function connectDB() {
 async function startServer() {
     // First, connect to the database
     await connectDB();
+
+    // initializes embedding model
+    await initializeEmbedder();
     
     // Then start the server on the specified port
     app.listen(PORT, '0.0.0.0', () => {
