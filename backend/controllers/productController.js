@@ -426,7 +426,7 @@ const getProductAlternatives = async (req, res) => {
 
   } catch (error) {
     console.error('Alternatives lookup error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to get product alternatives'
@@ -439,108 +439,112 @@ const getProductAlternatives = async (req, res) => {
 // PRODUCT SUMMARIES (AI-GENERATED)
 // ============================================================================
 
-/**
- * Generate AI summary for a product using LangChain
- * 
- * Route: POST /api/products/:id/summary
- * URL params: id (product ID)
- * 
- * This endpoint:
- * 1. Gathers product data (ingredients, nutrition, ESG scores)
- * 2. Uses LangChain to generate a comprehensive summary
- * 3. Caches the summary for future retrieval
- * 4. Returns the generated summary
- * 
- * Example:
- *   POST /api/products/3274080005003/summary
- * 
- * TODO: Implement LangChain integration when ready
+/*
+ * HELPER FUNCTION
+ * Receives an id, and returns a newly generated summary.
+ *
  */
-const generateProductSummary = async (req, res) => {
-  try {
-    const { id } = req.params;
+const generateProductSummary = async (id) => {
+    try {
+        // Get product details
+        const cached = await ProductCache.findOne({ code: id });
+        let product;
 
-    // Get product details
-    const cached = await ProductCache.findOne({ code: id });
-    let product;
+        if (cached) {
+            product = cached.data;
+        } else {
+            product = await lookupProductService({ upc: id });
+        }
 
-    if (cached) {
-      product = cached.data;
-    } else {
-      product = await lookupProductService({ upc: id });
+        // TODO(liam): Implement LangChain summary generation
+        // const summary = await axios.get(
+        //     "http://example.com/data",
+        //     { params: { product } }
+        // );
+        const summary = {
+            productId: id,
+            productName: product.name,
+            summary: 'AI-generated summary will be available when LangChain integration is complete',
+            generatedAt: new Date().toISOString(),
+            implementation: {
+                status: 'pending',
+                plannedFeatures: [
+                    'LangChain integration for AI summaries',
+                    'Summary includes: product overview, ethical considerations, health info',
+                    'Cached summaries with TTL',
+                    'Support for multiple languages'
+                ]
+            }
+        };
+
+        await redisClient.setex("productsSummary", CACHE_TTL, JSON.stringify(summary));
+
+        return summary;
     }
-
-    // TODO: Implement LangChain summary generation
-    // For now, return a placeholder response
-    const summary = {
-      productId: id,
-      productName: product.name,
-      summary: 'AI-generated summary will be available when LangChain integration is complete',
-      generatedAt: new Date().toISOString(),
-      implementation: {
-        status: 'pending',
-        plannedFeatures: [
-          'LangChain integration for AI summaries',
-          'Summary includes: product overview, ethical considerations, health info',
-          'Cached summaries with TTL',
-          'Support for multiple languages'
-        ]
-      }
-    };
-
-    res.json(summary);
-
-  } catch (error) {
-    console.error('Summary generation error:', error);
-    res.status(500).json({ 
-      error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Failed to generate product summary'
-      }
-    });
-  }
+    catch (error) {
+        console.error('Summary generation error:', error);
+        throw new Error('Failed to generate product summary');
+    }
 };
 
 /**
- * Get cached AI summary for a product
- * 
+ * Gets an existing summary, or generates a new one for
+ * an existing product if not found.
+ *
  * Route: GET /api/products/:id/summary
  * URL params: id (product ID)
- * 
+ *
  * This endpoint retrieves a previously generated summary from cache.
- * If no cached summary exists, returns 404.
- * 
+ * If no cached summary exists, a new one is generated.
+ * If an error occurs, a 500 code is returned.
+ *
  * Example:
  *   GET /api/products/3274080005003/summary
- * 
- * TODO: Implement summary caching when LangChain is integrated
  */
 const getProductSummary = async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    // TODO: Implement summary retrieval from cache
-    // For now, return a placeholder response
-    res.status(404).json({
-      error: {
-        code: 'NOT_FOUND',
-        message: 'No cached summary found. Use POST /api/products/:id/summary to generate one.'
-      },
-      implementation: {
-        status: 'pending',
-        note: 'Summary caching will be implemented with LangChain integration'
-      }
-    });
+        redisClient.get('productsSummary', async (err, summary) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({
+                    error: {
+                        code: 'REDIS_ERROR',
+                        message: 'Redis read failed'
+                    }
+                });
+            }
 
-  } catch (error) {
-    console.error('Summary retrieval error:', error);
-    res.status(500).json({ 
-      error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Failed to retrieve product summary'
-      }
-    });
-  }
+            if (summary != null) {
+                return res.json(JSON.parse(summary));
+            }
+            else {
+                try {
+                    const newSummary = await generateProductSummary(id);
+                    return res.json(newSummary);
+                }
+                catch (err) {
+                    console.error(err);
+                    return res.status(500).json({
+                        error: {
+                            code: 'INTERNAL_ERROR',
+                            message: err.message
+                        }
+                    });
+                }
+            }
+        });
+    }
+    catch (error) {
+        console.error('Summary retrieval error:', error);
+        res.status(500).json({
+            error: {
+                code: 'INTERNAL_ERROR',
+                message: 'Failed to retrieve product summary'
+            }
+        });
+    }
 };
 
 // ============================================================================
@@ -557,7 +561,6 @@ export {
   getProductByBarcode,
   getProductESG,
   getProductAlternatives,
-  generateProductSummary,
   getProductSummary
 };
 

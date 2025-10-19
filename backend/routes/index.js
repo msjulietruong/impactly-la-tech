@@ -121,10 +121,8 @@ router.get('/api/products/:id/alternatives', productController.getProductAlterna
  * Status: Coming soon!
  * 
  * How to use:
- *   POST /api/products/:id/summary   → Generate new summary
- *   GET /api/products/:id/summary    → Get existing summary
+ *   GET /api/products/:id/summary    → Get existing or generate new summary
  */
-router.post('/api/products/:id/summary', productController.generateProductSummary);
 router.get('/api/products/:id/summary', productController.getProductSummary);
 
 // ============================================================================
