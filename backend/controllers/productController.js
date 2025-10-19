@@ -2,16 +2,20 @@ import { lookupProduct as lookupProductService } from '../services/openFoodFacts
 import ProductCache from '../models/ProductCache.js';
 import Company from '../models/Company.js';
 
+import axios from 'axios';
+import redisClient from '../utils/redisClient.js';
+import { CACHE_TTL } from '../utils/config.js';
+
 /**
  * PRODUCT CONTROLLER
- * 
+ *
  * This controller handles all product-related operations including:
  * - Searching and listing products
  * - Getting product details by ID or barcode
  * - Fetching ESG (Environmental, Social, Governance) data for products
  * - Managing product alternatives
  * - Generating and caching product summaries
- * 
+ *
  * All functions follow a standard format:
  * 1. Extract parameters from request
  * 2. Validate input
@@ -26,15 +30,15 @@ import Company from '../models/Company.js';
 
 /**
  * FUNCTION: Search for products or list products
- * 
+ *
  * What this does:
  * - Lets users search for products by typing words (like "chocolate")
  * - OR lets users scan a barcode to find a specific product
- * 
+ *
  * How to use it:
  *   GET /api/products?q=chocolate        (search for products with "chocolate")
  *   GET /api/products?upc=3274080005003  (find product with this barcode)
- * 
+ *
  * What you get back:
  *   - Product information (name, brand, image, etc.)
  *   - If we can't find it, you get an error message
@@ -74,17 +78,17 @@ const getAllProducts = async (req, res) => {
 
     // Error type 1: Product not found
     if (error.code === 'NOT_FOUND') {
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
           message: error.message
         }
       });
     }
-    
+
     // Error type 2: Bad request (user sent wrong information)
     if (error.code === 'INVALID_ARGUMENT') {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: {
           code: 'INVALID_ARGUMENT',
           message: error.message
@@ -94,7 +98,7 @@ const getAllProducts = async (req, res) => {
 
     // Error type 3: Something unexpected went wrong on our server
     console.error('Product search error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to search products'
@@ -109,17 +113,17 @@ const getAllProducts = async (req, res) => {
 
 /**
  * FUNCTION: Get detailed information about ONE specific product
- * 
+ *
  * What this does:
  * - Shows all the details about a single product
  * - Uses the product's ID (usually a barcode number)
  * - First checks our cache (saved data) for faster response
  * - If not in cache, fetches fresh data from the product database
- * 
+ *
  * How to use it:
  *   GET /api/products/3274080005003
  *   (The number at the end is the product ID)
- * 
+ *
  * What you get back:
  *   - Product name, brand, category, image
  *   - Ingredients and nutrition info
@@ -161,7 +165,7 @@ const getProductById = async (req, res) => {
 
     // Error: Product doesn't exist
     if (error.code === 'NOT_FOUND') {
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
           message: `Product not found with ID: ${req.params.id}`
@@ -171,7 +175,7 @@ const getProductById = async (req, res) => {
 
     // Error: Something went wrong on our end
     console.error('Product lookup error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to get product details'
@@ -182,10 +186,10 @@ const getProductById = async (req, res) => {
 
 /**
  * Get product by barcode
- * 
+ *
  * Route: GET /api/products/barcode/:code
  * URL params: code (barcode value)
- * 
+ *
  * Example:
  *   GET /api/products/barcode/3274080005003
  */
@@ -210,7 +214,7 @@ const getProductByBarcode = async (req, res) => {
 
   } catch (error) {
     if (error.code === 'NOT_FOUND') {
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
           message: `Product not found with barcode: ${req.params.code}`
@@ -219,7 +223,7 @@ const getProductByBarcode = async (req, res) => {
     }
 
     console.error('Barcode lookup error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to lookup product by barcode'
@@ -234,21 +238,21 @@ const getProductByBarcode = async (req, res) => {
 
 /**
  * FUNCTION: Get ESG scores for a product
- * 
+ *
  * What is ESG?
  * - E (Environment): How much does the company care about nature? (pollution, recycling, etc.)
  * - S (Social): How well does the company treat people? (workers, communities, etc.)
  * - G (Governance): How honest and fair is the company? (leadership, ethics, etc.)
- * 
+ *
  * What this does:
  * 1. Finds the product you're asking about
  * 2. Figures out which company makes it
  * 3. Looks up that company's ESG scores (ratings from 0-100)
  * 4. Sends back all three scores so you can see how ethical the company is
- * 
+ *
  * How to use it:
  *   GET /api/products/3274080005003/esg
- * 
+ *
  * What you get back:
  *   - Environment score (0-100): higher is better for the planet
  *   - Social score (0-100): higher means they treat people better
@@ -308,11 +312,11 @@ const getProductESG = async (req, res) => {
     const latestESG = company.esgSources.reduce((latest, source) => {
       // If we don't have a latest yet, use this one
       if (!latest) return source;
-      
+
       // Compare dates to find the newest
       const latestAsOf = latest.asOf || new Date().toISOString();
       const sourceAsOf = source.asOf || new Date().toISOString();
-      
+
       // Return whichever is newer
       return sourceAsOf > latestAsOf ? source : latest;
     });
@@ -349,7 +353,7 @@ const getProductESG = async (req, res) => {
 
     // Error: Couldn't find the data
     if (error.code === 'NOT_FOUND') {
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
           message: error.message
@@ -359,7 +363,7 @@ const getProductESG = async (req, res) => {
 
     // Error: Something went wrong on our server
     console.error('ESG lookup error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to get ESG data for product'
@@ -374,21 +378,21 @@ const getProductESG = async (req, res) => {
 
 /**
  * Get product alternatives using vector similarity search
- * 
+ *
  * Route: GET /api/products/:id/alternatives
  * URL params: id (product ID)
  * Query params: limit (optional, default 5)
- * 
+ *
  * This will use MongoDB vector search to find similar products
  * based on multiple factors:
  * - Product category
  * - Brand ethical ratings
  * - Price range
  * - Nutritional profile
- * 
+ *
  * Example:
  *   GET /api/products/3274080005003/alternatives?limit=5
- * 
+ *
  * TODO: Implement vector search when live data is ready
  */
 const getProductAlternatives = async (req, res) => {
