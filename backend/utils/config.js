@@ -10,3 +10,5 @@ export const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017
 
 export const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 export const CACHE_TTL = parseInt(process.env.CACHE_TTL, 10) || 36000;
+
+console.log('Redis URL (sanitized):', process.env.REDIS_URL?.replace(/:[^:]*@/, ':****@'));
