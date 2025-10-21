@@ -2,20 +2,20 @@
  * ========================================
  * ROUTES - The URL Map
  * ========================================
- * 
+ *
  * What this does:
  * - Maps URLs to functions (like a phone book maps names to numbers)
  * - When someone visits a URL, this file says "go to this function"
- * 
+ *
  * Example:
  *   User visits: GET /api/products?q=chocolate
  *   This file says: "Run the getAllProducts function!"
- * 
+ *
  * Route Organization:
  * - /api/* = New modern endpoints (use these!)
  * - /v1/* = Old legacy endpoints (for backwards compatibility)
  * - /health = Check if server is running
- * 
+ *
  * Controllers (The functions that do the work):
  * - healthController → Checks server health
  * - productController → Handles products (search, details, ESG)
@@ -43,9 +43,9 @@ const router = express.Router();
 
 /**
  * Health check endpoint
- * 
+ *
  * What it does: Tells you if the server is alive and working
- * 
+ *
  * Available at TWO URLs for convenience:
  *   - /health        (short and simple)
  *   - /api/health    (follows API naming pattern)
@@ -60,9 +60,9 @@ router.get('/api/health', healthController.getHealth);
 
 /**
  * ENDPOINT 1: Product search and listing
- * 
+ *
  * What it does: Finds products by name or barcode
- * 
+ *
  * How to use:
  *   GET /api/products?q=chocolate        → Search for "chocolate"
  *   GET /api/products?upc=123456789012   → Find exact product by barcode
@@ -71,9 +71,9 @@ router.get('/api/products', productController.getAllProducts);
 
 /**
  * ENDPOINT 2: Product details by ID
- * 
+ *
  * What it does: Shows ALL information about one specific product
- * 
+ *
  * How to use:
  *   GET /api/products/3274080005003   → Get details for product 3274080005003
  */
@@ -81,9 +81,9 @@ router.get('/api/products/:id', productController.getProductById);
 
 /**
  * Product lookup by barcode (alternative route)
- * 
+ *
  * What it does: Same as above, but different URL format
- * 
+ *
  * How to use:
  *   GET /api/products/barcode/3274080005003
  */
@@ -91,12 +91,12 @@ router.get('/api/products/barcode/:code', productController.getProductByBarcode)
 
 /**
  * ENDPOINT 3: Product ESG breakdown
- * 
+ *
  * What it does: Shows how ethical the company is (Environment, Social, Governance)
- * 
+ *
  * How to use:
  *   GET /api/products/3274080005003/esg   → Get ethics scores
- * 
+ *
  * What you get:
  *   - Environment score (0-100): How much they care about Earth
  *   - Social score (0-100): How well they treat people
@@ -106,10 +106,10 @@ router.get('/api/products/:id/esg', productController.getProductESG);
 
 /**
  * Product alternatives (Future feature - vector search)
- * 
+ *
  * What it will do: Find similar products that are more ethical
  * Status: Coming soon!
- * 
+ *
  * How to use:
  *   GET /api/products/:id/alternatives?limit=5
  */
@@ -117,18 +117,14 @@ router.get('/api/products/:id/alternatives', productController.getProductAlterna
 
 /**
  * Product summaries (Future feature - AI powered)
- * 
+ *
  * What it will do: Generate smart summaries using AI
  * Status: Coming soon!
- * 
+ *
  * How to use:
- *   POST /api/products/:id/summary   → Generate new summary
- *   GET /api/products/:id/summary    → Get existing summary
- * 
- * TODO: implement summary endpoints later
+ *   GET /api/products/:id/summary    → Get existing or generate new summary
  */
-// router.post('/api/products/:id/summary', productController.generateProductSummary);
-// router.get('/api/products/:id/summary', productController.getProductSummary);
+router.get('/api/products/:id/summary', productController.getProductSummary);
 
 // ============================================================================
 // COMPANY ENDPOINTS
@@ -137,12 +133,12 @@ router.get('/api/products/:id/alternatives', productController.getProductAlterna
 
 /**
  * Company details by ID
- * 
+ *
  * What it does: Gets all info about a company using its database ID
- * 
+ *
  * How to use:
  *   GET /api/companies/507f1f77bcf86cd799439011
- * 
+ *
  * Note: validateObjectId checks that the ID is valid before running
  */
 router.get('/api/companies/:id', validateObjectId('id'), companyController.getCompanyById);
@@ -156,9 +152,9 @@ router.get('/api/companies/:id', validateObjectId('id'), companyController.getCo
 
 /**
  * Legacy product lookup
- * 
+ *
  * Same as /api/products but older URL format
- * 
+ *
  * How to use:
  *   GET /v1/lookup?upc=123456789012   → Find by barcode
  *   GET /v1/lookup?q=chocolate        → Search by text
@@ -167,9 +163,9 @@ router.get('/v1/lookup', productController.getAllProducts);
 
 /**
  * Legacy company lookup
- * 
+ *
  * Find companies by ticker symbol, name, or ID
- * 
+ *
  * How to use:
  *   GET /v1/company?ticker=MSFT       → Find Microsoft by ticker
  *   GET /v1/company?q=microsoft       → Search for "microsoft"
@@ -180,12 +176,12 @@ router.get('/v1/company/:id', validateObjectId('id'), companyController.getCompa
 
 /**
  * Legacy ESG score endpoint
- * 
+ *
  * Gets the ESG score for a company
- * 
+ *
  * How to use:
  *   GET /v1/score/507f1f77bcf86cd799439011
- * 
+ *
  * What you get:
  *   - Overall score (0-100)
  *   - Breakdown: E, S, G scores

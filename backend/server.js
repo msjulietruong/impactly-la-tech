@@ -2,7 +2,7 @@
  * ========================================
  * SERVER
  * ========================================
- * 
+ *
  * It does these main things:
  * 1. Connects to our MongoDB database (where we store company & ESG data)
  * 2. Sets up our API routes (URLs that the frontend can call)
@@ -18,28 +18,16 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { initializeEmbedder } from './controllers/embeddingsController.js';
+import { PORT, MONGODB_URI } from './utils/config.js';
 
 // ============================================================================
-// STEP 1: Load Environment Variables
-// ============================================================================
-// Environment variables are secret settings stored in the .env file
-// (like database passwords, API keys, etc.)
-if (!process.env.CI) {
-    dotenv.config();
-}
-
-// ============================================================================
-// STEP 2: Create the Express App
+// STEP 1: Create the Express App
 // ============================================================================
 // Express is a tool that helps us build web servers easily
 const app = express();
 
-// What port (door number) should the server listen on?
-// We check these in order: PORT from .env → WEBSITES_PORT → default to 3001
-const PORT = process.env.PORT || process.env.WEBSITES_PORT || 3001;
-
 // ============================================================================
-// STEP 3: Set Up Middleware (Helpers)
+// STEP 2: Set Up Middleware (Helpers)
 // ============================================================================
 // Middleware = code that runs BEFORE our routes handle requests
 // Think of it like security checks before entering a building
@@ -59,14 +47,14 @@ app.use((req, res, next) => {
 });
 
 // ============================================================================
-// STEP 4: Set Up Routes (URL Endpoints)
+// STEP 3: Set Up Routes (URL Endpoints)
 // ============================================================================
 // Routes define what happens when someone visits different URLs
 // Example: GET /api/products → calls the product controller
 app.use('/', routes);
 
 // ============================================================================
-// STEP 5: Set Up Error Handling
+// STEP 4: Set Up Error Handling
 // ============================================================================
 // If someone visits a URL that doesn't exist, send a helpful 404 error
 app.use('*', notFoundHandler);
@@ -75,7 +63,7 @@ app.use('*', notFoundHandler);
 app.use(errorHandler);
 
 // ============================================================================
-// STEP 6: Connect to MongoDB Database
+// STEP 5: Connect to MongoDB Database
 // ============================================================================
 /**
  * This function connects to our MongoDB database
@@ -85,10 +73,8 @@ async function connectDB() {
     try {
         // Get the database connection URL from environment variables
         // If not set, use a local database as fallback
-        const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ethical-product-finder';
-        
         // Try to connect!
-        await mongoose.connect(mongoURI);
+        await mongoose.connect(MONGODB_URI);
         console.log('✅ MongoDB connected successfully');
     } catch (error) {
         // If connection fails, print error and stop the app
@@ -98,7 +84,7 @@ async function connectDB() {
 }
 
 // ============================================================================
-// STEP 7: Start the Server
+// STEP 6: Start the Server
 // ============================================================================
 /**
  * This function starts our server
@@ -110,7 +96,7 @@ async function startServer() {
 
     // initializes embedding model
     await initializeEmbedder();
-    
+
     // Then start the server on the specified port
     app.listen(PORT, '0.0.0.0', () => {
         console.log(`🚀 Server running on port ${PORT}`);
@@ -120,7 +106,7 @@ async function startServer() {
 }
 
 // ============================================================================
-// STEP 8: Handle Graceful Shutdown
+// STEP 7: Handle Graceful Shutdown
 // ============================================================================
 // These functions make sure we close the database connection properly
 // when the server stops (instead of just cutting it off)
@@ -142,7 +128,7 @@ process.on('SIGINT', () => {
 });
 
 // ============================================================================
-// STEP 9: Start the Server (Only if this file is run directly)
+// STEP 8: Start the Server (Only if this file is run directly)
 // ============================================================================
 // This checks if we're running this file directly (not importing it for tests)
 const __filename = fileURLToPath(import.meta.url);

@@ -2,16 +2,20 @@ import { lookupProduct as lookupProductService } from '../services/openFoodFacts
 import ProductCache from '../models/ProductCache.js';
 import Company from '../models/Company.js';
 
+import axios from 'axios';
+import redisClient from '../utils/redisClient.js';
+import { CACHE_TTL } from '../utils/config.js';
+
 /**
  * PRODUCT CONTROLLER
- * 
+ *
  * This controller handles all product-related operations including:
  * - Searching and listing products
  * - Getting product details by ID or barcode
  * - Fetching ESG (Environmental, Social, Governance) data for products
  * - Managing product alternatives
  * - Generating and caching product summaries
- * 
+ *
  * All functions follow a standard format:
  * 1. Extract parameters from request
  * 2. Validate input
@@ -32,21 +36,21 @@ const COMPANY_BRAND_MAP = {
   "sam's choice": 'Walmart',
   'marketside': 'Walmart',
   'equate': 'Walmart',
-  
+
   // Kroger brands
   'kroger': 'Kroger',
   'simple truth': 'Kroger',
   'private selection': 'Kroger',
-  
+
   // Target brands
   'target': 'Target',
   'good & gather': 'Target',
   'market pantry': 'Target',
-  
+
   // Costco brands
   'costco': 'Costco',
   'kirkland signature': 'Costco',
-  
+
   // General Mills brands
   'general mills': 'General Mills',
   'cheerios': 'General Mills',
@@ -63,7 +67,7 @@ const COMPANY_BRAND_MAP = {
   'cinnamon toast crunch': 'General Mills',
   'fiber one': 'General Mills',
   'wheaties': 'General Mills',
-  
+
   // PepsiCo brands
   'pepsi': 'PepsiCo',
   'pepsico': 'PepsiCo',
@@ -78,7 +82,7 @@ const COMPANY_BRAND_MAP = {
   'tostitos': 'PepsiCo',
   'cheetos': 'PepsiCo',
   'ruffles': 'PepsiCo',
-  
+
   // Coca-Cola brands
   'coca-cola': 'Coca-Cola',
   'coke': 'Coca-Cola',
@@ -88,7 +92,7 @@ const COMPANY_BRAND_MAP = {
   'minute maid': 'Coca-Cola',
   'powerade': 'Coca-Cola',
   'vitaminwater': 'Coca-Cola',
-  
+
   // Nestlé brands
   'nestle': 'Nestlé',
   'nescafe': 'Nestlé',
@@ -101,7 +105,7 @@ const COMPANY_BRAND_MAP = {
   'lean cuisine': 'Nestlé',
   'butterfinger': 'Nestlé',
   'crunch': 'Nestlé',
-  
+
   // Kellogg's brands
   'kelloggs': "Kellogg's",
   "kellogg's": "Kellogg's",
@@ -113,7 +117,7 @@ const COMPANY_BRAND_MAP = {
   'rice krispies': "Kellogg's",
   'eggo': "Kellogg's",
   'nutri-grain': "Kellogg's",
-  
+
   // Mars brands
   'mars': 'Mars',
   "m&m's": 'Mars',
@@ -123,7 +127,7 @@ const COMPANY_BRAND_MAP = {
   'milky way': 'Mars',
   'skittles': 'Mars',
   'starburst': 'Mars',
-  
+
   // Mondelez brands
   'oreo': 'Mondelez',
   'cadbury': 'Mondelez',
@@ -132,7 +136,7 @@ const COMPANY_BRAND_MAP = {
   'chips ahoy': 'Mondelez',
   'wheat thins': 'Mondelez',
   'triscuit': 'Mondelez',
-  
+
   // Kraft Heinz brands
   'kraft': 'Kraft Heinz',
   'heinz': 'Kraft Heinz',
@@ -145,9 +149,9 @@ const COMPANY_BRAND_MAP = {
   'planters': 'Kraft Heinz',
   'lunchables': 'Kraft Heinz',
   'kool-aid': 'Kraft Heinz',
-  
+
   // ADD THESE MISSING ONES:
-  
+
   // Campbell brands
   'campbell': 'Campbell',
   "campbell's": 'Campbell',
@@ -156,7 +160,7 @@ const COMPANY_BRAND_MAP = {
   'v8': 'Campbell',
   'prego': 'Campbell',
   'swanson': 'Campbell',
-  
+
   // McCormick brands
   'mccormick': 'McCormick',
   'french': 'McCormick',
@@ -165,7 +169,7 @@ const COMPANY_BRAND_MAP = {
   'lawry': 'McCormick',
   "lawry's": 'McCormick',
   'casero': 'McCormick',
-  
+
   // Hershey brands
   'hershey': 'Hershey',
   "hershey's": 'Hershey',
@@ -174,7 +178,7 @@ const COMPANY_BRAND_MAP = {
   'kisses': 'Hershey',
   'jolly rancher': 'Hershey',
   'ice breakers': 'Hershey',
-  
+
   // ConAgra brands
   'conagra': 'ConAgra',
   'hunt': 'ConAgra',
@@ -187,14 +191,14 @@ const COMPANY_BRAND_MAP = {
   'orville redenbacher': 'ConAgra',
   'swiss miss': 'ConAgra',
   'vlasic': 'ConAgra',
-  
+
   // Hormel brands
   'hormel': 'Hormel',
   'spam': 'Hormel',
   'skippy': 'Hormel',
   'jennie-o': 'Hormel',
   'applegate': 'Hormel',
-  
+
   // Tyson brands
   'tyson': 'Tyson',
   'jimmy dean': 'Tyson',
@@ -217,15 +221,15 @@ function getBrandCompanyName(brandName) {
 
 /**
  * FUNCTION: Search for products or list products
- * 
+ *
  * What this does:
  * - Lets users search for products by typing words (like "chocolate")
  * - OR lets users scan a barcode to find a specific product
- * 
+ *
  * How to use it:
  *   GET /api/products?q=chocolate        (search for products with "chocolate")
  *   GET /api/products?upc=3274080005003  (find product with this barcode)
- * 
+ *
  * What you get back:
  *   - Product information (name, brand, image, etc.)
  *   - If we can't find it, you get an error message
@@ -265,17 +269,17 @@ const getAllProducts = async (req, res) => {
 
     // Error type 1: Product not found
     if (error.code === 'NOT_FOUND') {
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
           message: error.message
         }
       });
     }
-    
+
     // Error type 2: Bad request (user sent wrong information)
     if (error.code === 'INVALID_ARGUMENT') {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: {
           code: 'INVALID_ARGUMENT',
           message: error.message
@@ -285,7 +289,7 @@ const getAllProducts = async (req, res) => {
 
     // Error type 3: Something unexpected went wrong on our server
     console.error('Product search error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to search products'
@@ -300,17 +304,17 @@ const getAllProducts = async (req, res) => {
 
 /**
  * FUNCTION: Get detailed information about ONE specific product
- * 
+ *
  * What this does:
  * - Shows all the details about a single product
  * - Uses the product's ID (usually a barcode number)
  * - First checks our cache (saved data) for faster response
  * - If not in cache, fetches fresh data from the product database
- * 
+ *
  * How to use it:
  *   GET /api/products/3274080005003
  *   (The number at the end is the product ID)
- * 
+ *
  * What you get back:
  *   - Product name, brand, category, image
  *   - Ingredients and nutrition info
@@ -352,7 +356,7 @@ const getProductById = async (req, res) => {
 
     // Error: Product doesn't exist
     if (error.code === 'NOT_FOUND') {
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
           message: `Product not found with ID: ${req.params.id}`
@@ -362,7 +366,7 @@ const getProductById = async (req, res) => {
 
     // Error: Something went wrong on our end
     console.error('Product lookup error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to get product details'
@@ -373,10 +377,10 @@ const getProductById = async (req, res) => {
 
 /**
  * Get product by barcode
- * 
+ *
  * Route: GET /api/products/barcode/:code
  * URL params: code (barcode value)
- * 
+ *
  * Example:
  *   GET /api/products/barcode/3274080005003
  */
@@ -401,7 +405,7 @@ const getProductByBarcode = async (req, res) => {
 
   } catch (error) {
     if (error.code === 'NOT_FOUND') {
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
           message: `Product not found with barcode: ${req.params.code}`
@@ -410,7 +414,7 @@ const getProductByBarcode = async (req, res) => {
     }
 
     console.error('Barcode lookup error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to lookup product by barcode'
@@ -433,27 +437,27 @@ const getProductByBarcode = async (req, res) => {
 // Helper function to get company ESG data
 async function getCompanyESG(brandName) {
   if (!brandName) return null;
-  
+
   // ✅ ADD THIS LINE - Map brand to parent company first
   const companyName = getBrandCompanyName(brandName);
-  
+
   // Clean up company name (remove extra spaces, commas, etc.)
   const cleanName = companyName.split(',')[0].trim();
-  
+
   // Try exact match first
   let company = await esgCollection.findOne({
     name: { $regex: new RegExp(`^${cleanName}`, 'i') }  // Changed from ^${cleanName}$ to be more flexible
   });
-  
+
   // If not found, try partial match
   if (!company) {
     company = await esgCollection.findOne({
       name: { $regex: cleanName, $options: 'i' }
     });
   }
-  
+
   if (!company) return null;
-  
+
   return {
     company_name: company.name,
     ticker: company.ticker || null,
@@ -471,21 +475,21 @@ async function getCompanyESG(brandName) {
 
 /**
  * FUNCTION: Get ESG scores for a product
- * 
+ *
  * What is ESG?
  * - E (Environment): How much does the company care about nature? (pollution, recycling, etc.)
  * - S (Social): How well does the company treat people? (workers, communities, etc.)
  * - G (Governance): How honest and fair is the company? (leadership, ethics, etc.)
- * 
+ *
  * What this does:
  * 1. Finds the product you're asking about
  * 2. Figures out which company makes it
  * 3. Looks up that company's ESG scores (ratings from 0-100)
  * 4. Sends back all three scores so you can see how ethical the company is
- * 
+ *
  * How to use it:
  *   GET /api/products/3274080005003/esg
- * 
+ *
  * What you get back:
  *   - Environment score (0-100): higher is better for the planet
  *   - Social score (0-100): higher means they treat people better
@@ -545,11 +549,11 @@ const getProductESG = async (req, res) => {
     const latestESG = company.esgSources.reduce((latest, source) => {
       // If we don't have a latest yet, use this one
       if (!latest) return source;
-      
+
       // Compare dates to find the newest
       const latestAsOf = latest.asOf || new Date().toISOString();
       const sourceAsOf = source.asOf || new Date().toISOString();
-      
+
       // Return whichever is newer
       return sourceAsOf > latestAsOf ? source : latest;
     });
@@ -586,7 +590,7 @@ const getProductESG = async (req, res) => {
 
     // Error: Couldn't find the data
     if (error.code === 'NOT_FOUND') {
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
           message: error.message
@@ -596,7 +600,7 @@ const getProductESG = async (req, res) => {
 
     // Error: Something went wrong on our server
     console.error('ESG lookup error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to get ESG data for product'
@@ -611,21 +615,21 @@ const getProductESG = async (req, res) => {
 
 /**
  * Get product alternatives using vector similarity search
- * 
+ *
  * Route: GET /api/products/:id/alternatives
  * URL params: id (product ID)
  * Query params: limit (optional, default 5)
- * 
+ *
  * This will use MongoDB vector search to find similar products
  * based on multiple factors:
  * - Product category
  * - Brand ethical ratings
  * - Price range
  * - Nutritional profile
- * 
+ *
  * Example:
  *   GET /api/products/3274080005003/alternatives?limit=5
- * 
+ *
  * TODO: Implement vector search when live data is ready
  */
 
@@ -638,32 +642,32 @@ const getProductAlternatives = async (req, res) => {
     const mongoose = (await import('mongoose')).default;
     const foodCollection = mongoose.connection.db.collection('food');
     const esgCollection = mongoose.connection.db.collection('esg_scores');
-    
+
     // Use the outer getCompanyESG helper that includes brand mapping
     // Note: Make sure the outer getCompanyESG function has access to esgCollection
     const getCompanyESGWithCollection = async (brandName) => {
       if (!brandName) return null;
-      
+
       // Map brand to parent company (e.g., "Great Value" → "Walmart")
       const companyName = getBrandCompanyName(brandName);
-      
+
       // Clean up company name (remove extra spaces, commas, etc.)
       const cleanName = companyName.split(',')[0].trim();
-      
+
       // Try exact match first
       let company = await esgCollection.findOne({
         name: { $regex: new RegExp(`^${cleanName}`, 'i') }
       });
-      
+
       // If not found, try partial match
       if (!company) {
         company = await esgCollection.findOne({
           name: { $regex: cleanName, $options: 'i' }
         });
       }
-      
+
       if (!company) return null;
-      
+
       return {
         company_name: company.name,
         environment_score: company.environment_score || null,
@@ -674,10 +678,10 @@ const getProductAlternatives = async (req, res) => {
         last_processing_date: company.last_processing_date || null
       };
     };
-    
+
     // Find product in food collection by code (barcode)
     const product = await foodCollection.findOne({ code: parseInt(id) });
-    
+
     if (!product) {
       return res.status(404).json({
         error: {
@@ -702,18 +706,18 @@ const getProductAlternatives = async (req, res) => {
     const originalGrade = String(product.environmental_score_grade || '').toLowerCase();
     const originalScore = GRADE_SCORES[originalGrade] || 0;
     const isUnknownGrade = originalScore === 0;
-    
+
     // Get categories - last one is most specific
     const categories = product.categories ? product.categories.split(',').map(c => c.trim()) : [];
     const specificCategory = categories.length > 0 ? categories[categories.length - 1] : '';
     const broadCategory = categories.length > 1 ? categories[categories.length - 2] : '';
-    
+
     // Build query with flexible category matching
     const query = {
       _id: { $ne: product._id },
       embedding: { $exists: true, $ne: [] }
     };
-    
+
     // Only filter by category if product has a known grade
     // Unknown products search ALL categories for any graded alternative
     if (!isUnknownGrade && specificCategory) {
@@ -724,9 +728,9 @@ const getProductAlternatives = async (req, res) => {
         query.$or.push({ categories: { $regex: broadCategory, $options: 'i' } });
       }
     }
-    
+
     const candidates = await foodCollection.find(query).toArray();
-    
+
     // Calculate cosine similarity
     function cosineSimilarity(vecA, vecB) {
       const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
@@ -734,28 +738,28 @@ const getProductAlternatives = async (req, res) => {
       const magnitudeB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
       return dotProduct / (magnitudeA * magnitudeB);
     }
-    
+
     // Use lower threshold for unknown grade products
     const similarityThreshold = isUnknownGrade ? 0.65 : 0.75;
-    
+
     // Find better alternatives
     const alternatives = [];
-    
+
     for (const candidate of candidates) {
       const similarity = cosineSimilarity(product.embedding, candidate.embedding);
-      
+
       // Use dynamic threshold based on whether product has grade
       if (similarity > similarityThreshold) {
         const candidateGrade = String(candidate.environmental_score_grade || '').toLowerCase();
         const candidateScore = GRADE_SCORES[candidateGrade] || 0;
-        
+
         // NEVER recommend unknown grade products as alternatives
         if (candidateScore === 0) continue;
-        
+
         // For unknown products: show any graded alternative
         // For graded products: only show better grades
         const shouldInclude = isUnknownGrade ? true : (candidateScore > originalScore);
-        
+
         if (shouldInclude) {
           alternatives.push({
             code: candidate.code,
@@ -770,7 +774,7 @@ const getProductAlternatives = async (req, res) => {
         }
       }
     }
-    
+
     // Sort by similarity first (most relevant), then grade improvement
     alternatives.sort((a, b) => {
       // Primary sort: similarity (higher is better)
@@ -785,7 +789,7 @@ const getProductAlternatives = async (req, res) => {
     const enrichedAlternatives = await Promise.all(
       alternatives.slice(0, limit).map(async (alt) => {
         const companyESG = await getCompanyESGWithCollection(alt.brands);
-        
+
         return {
           ...alt,
           company_esg: companyESG
@@ -825,7 +829,7 @@ const getProductAlternatives = async (req, res) => {
 
   } catch (error) {
     console.error('Alternatives lookup error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to get product alternatives'
@@ -834,46 +838,116 @@ const getProductAlternatives = async (req, res) => {
   }
 };
 
+// ============================================================================
+// PRODUCT SUMMARIES (AI-GENERATED)
+// ============================================================================
+
+/*
+ * HELPER FUNCTION
+ * Receives an id, and returns a newly generated summary.
+ *
+ */
+const generateProductSummary = async (id) => {
+    try {
+        // Get product details
+        const cached = await ProductCache.findOne({ code: id });
+        let product;
+
+        if (cached) {
+            product = cached.data;
+        } else {
+            product = await lookupProductService({ upc: id });
+        }
+
+        // TODO(liam): Implement LangChain summary generation
+        // const summary = await axios.get(
+        //     "http://example.com/data",
+        //     { params: { product } }
+        // );
+        const summary = {
+            productId: id,
+            productName: product.name,
+            summary: 'AI-generated summary will be available when LangChain integration is complete',
+            generatedAt: new Date().toISOString(),
+            implementation: {
+                status: 'pending',
+                plannedFeatures: [
+                    'LangChain integration for AI summaries',
+                    'Summary includes: product overview, ethical considerations, health info',
+                    'Cached summaries with TTL',
+                    'Support for multiple languages'
+                ]
+            }
+        };
+
+        await redisClient.setex("productsSummary", CACHE_TTL, JSON.stringify(summary));
+
+        return summary;
+    }
+    catch (error) {
+        console.error('Summary generation error:', error);
+        throw new Error('Failed to generate product summary');
+    }
+};
+
 /**
- * Get cached AI summary for a product
- * 
+ * Gets an existing summary, or generates a new one for
+ * an existing product if not found.
+ *
  * Route: GET /api/products/:id/summary
  * URL params: id (product ID)
- * 
+ *
  * This endpoint retrieves a previously generated summary from cache.
- * If no cached summary exists, returns 404.
- * 
+ * If no cached summary exists, a new one is generated.
+ * If an error occurs, a 500 code is returned.
+ *
  * Example:
  *   GET /api/products/3274080005003/summary
- * 
- * TODO: Implement summary caching when LangChain is integrated
  */
 const getProductSummary = async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    // TODO: Implement summary retrieval from cache
-    // For now, return a placeholder response
-    res.status(404).json({
-      error: {
-        code: 'NOT_FOUND',
-        message: 'No cached summary found. Use POST /api/products/:id/summary to generate one.'
-      },
-      implementation: {
-        status: 'pending',
-        note: 'Summary caching will be implemented with LangChain integration'
-      }
-    });
+        redisClient.get('productsSummary', async (err, summary) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({
+                    error: {
+                        code: 'REDIS_ERROR',
+                        message: 'Redis read failed'
+                    }
+                });
+            }
 
-  } catch (error) {
-    console.error('Summary retrieval error:', error);
-    res.status(500).json({ 
-      error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Failed to retrieve product summary'
-      }
-    });
-  }
+            if (summary != null) {
+                return res.json(JSON.parse(summary));
+            }
+            else {
+                try {
+                    const newSummary = await generateProductSummary(id);
+                    return res.json(newSummary);
+                }
+                catch (err) {
+                    console.error(err);
+                    return res.status(500).json({
+                        error: {
+                            code: 'INTERNAL_ERROR',
+                            message: err.message
+                        }
+                    });
+                }
+            }
+        });
+    }
+    catch (error) {
+        console.error('Summary retrieval error:', error);
+        res.status(500).json({
+            error: {
+                code: 'INTERNAL_ERROR',
+                message: 'Failed to retrieve product summary'
+            }
+        });
+    }
 };
 
 // ============================================================================
@@ -889,5 +963,6 @@ export {
   getProductById,
   getProductByBarcode,
   getProductESG,
-  getProductAlternatives
+  getProductAlternatives,
+  getProductSummary
 };
