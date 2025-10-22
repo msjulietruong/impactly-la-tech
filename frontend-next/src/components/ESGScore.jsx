@@ -13,7 +13,7 @@ export default function ESGScore({ esg }) {
  ).toFixed(0);
 
     return (
-        <div className="p-4 bg-[#F9FAFB] rounded-2xl border border-gray-200 w-full">
+        <div className="p-4 bg-[#F9FAFB] border border-gray-200 w-full">
             <h2 className="text-base font-semibold mb-3 text-gray-900">
                 ESG Score Breakdown 
             </h2>
@@ -23,7 +23,7 @@ export default function ESGScore({ esg }) {
                 <div className="flex justify-between items-center">
                     <span className="font-medium text-gray-700">Environmental</span>
                     <span className="font-semibold text-gray-900">
-                        {data.enviornmental}/100
+                        {data.environmental}/100
                 </span>
             </div>
 
