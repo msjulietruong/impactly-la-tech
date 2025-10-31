@@ -26,5 +26,6 @@ router.get('/v1/company/:id', validateObjectId('id'), companyController.getCompa
 
 // ESG score endpoint
 router.get('/v1/score/:companyId', validateObjectId('companyId'), scoreController.getScore);
+router.get('/api/products/:barcode/esg', scoreController.getScoreByBarcode);
 
 export default router;

@@ -1,4 +1,8 @@
+import mongoose from 'mongoose';
 import Company from '../models/Company.js';
+import ProductCache from '../models/ProductCache.js';
+import { lookupProduct } from '../services/openFoodFactsService.js';
+
 
 // Get ESG score for a company by ID
 export const getScore = async (req, res) => {
@@ -112,3 +116,51 @@ export const getScore = async (req, res) => {
     });
   }
 };
+
+// Get ESG score by barcode (UPC)
+export const getScoreByBarcode = async (req, res) => {
+  try {
+    const { barcode } = req.params;
+
+    // Check if the product is cached
+    const cached = await ProductCache.findOne({ code: barcode });
+    const product = cached ? cached.data : await lookupProduct({ upc: barcode });
+
+    if (!product || !product.brand) {
+      return res.status(404).json({
+        error: { 
+          code: 'NOT_FOUND', 
+          message: `Brand not found for barcode: ${barcode}` 
+        },
+      });
+    }
+
+    // Find the company by brand name
+    const company = await Company.findOne({
+      name: { $regex: product.brand, $options: 'i' },
+    });
+
+    if (!company) {
+      return res.status(404).json({
+        error: { 
+          code: 'NOT_FOUND', 
+          message: `No company found for brand: ${product.brand}` 
+        },
+      });
+    }
+
+    // Reuse the existing getScore function to return ESG data
+    req.params.companyId = company._id.toString();
+    return await getScore(req, res);
+
+  } catch (error) {
+    console.error('ESG lookup by barcode error:', error);
+    res.status(500).json({
+      error: { 
+        code: 'INTERNAL_ERROR', 
+        message: 'Failed to get ESG score by barcode' 
+      },
+    });
+  }
+};
+

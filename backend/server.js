@@ -14,6 +14,9 @@ if (!process.env.CI) {
 const app = express();
 const PORT = process.env.PORT || process.env.WEBSITES_PORT || 3000;
 
+app.use(cors());
+app.use(express.json());
+
 // Middleware setup
 app.use(cors());
 app.use(express.json());
