@@ -89,11 +89,16 @@ export async function lookupProduct(params) {
   }
 
   // STEP 3: Check our cache first (much faster than calling the API!)
-  // Cache key = whatever they're searching for (barcode or search term)
-  const cacheKey = upc || ean || gtin || q;
-  const cached = await getFromCache(cacheKey);
-  if (cached) {
-    return cached;  // Found it in cache! Return immediately
+  // NOTE: Only cache barcode lookups, NOT text searches (to avoid stale results)
+  const cacheKey = upc || ean || gtin;
+  let cached = null;
+  
+  if (cacheKey) {
+    // Only check cache for barcode lookups
+    cached = await getFromCache(cacheKey);
+    if (cached) {
+      return cached;  // Found it in cache! Return immediately
+    }
   }
 
   // STEP 4: Not in cache, so we need to call OpenFoodFacts API
@@ -102,22 +107,31 @@ export async function lookupProduct(params) {
   try {
     if (q) {
       // They gave us a search term like "chocolate"
-      result = await searchByText(q);
+      // searchByText now returns an array of products
+      const products = await searchByText(q);
+      
+      // Normalize all products and return as array
+      const normalizedProducts = products.map(product => 
+        normalizeProduct(product, product.code || q)
+      );
+      
+      // Don't cache search results (they change frequently)
+      return normalizedProducts;
     } else {
       // They gave us a barcode (upc, ean, or gtin)
       const barcode = upc || ean || gtin;
       result = await getByBarcode(barcode);
+
+      // STEP 5: Convert the OpenFoodFacts format to our standard format
+      // (OpenFoodFacts uses different field names than we do)
+      const product = normalizeProduct(result, barcode);
+
+      // STEP 6: Save to cache so next time is faster (only for barcodes)
+      await setCache(cacheKey, product);
+
+      // STEP 7: Return the product!
+      return product;
     }
-
-    // STEP 5: Convert the OpenFoodFacts format to our standard format
-    // (OpenFoodFacts uses different field names than we do)
-    const product = normalizeProduct(result, upc || ean || gtin || q);
-
-    // STEP 6: Save to cache so next time is faster
-    await setCache(cacheKey, product);
-
-    // STEP 7: Return the product!
-    return product;
 
   } catch (error) {
     // STEP 8: Handle different types of errors
@@ -182,7 +196,7 @@ async function searchByText(query) {
       ...API_CONFIG,
       params: {
         fields: 'code,product_name,brands,categories,image_url,image_front_url',
-        page_size: 10,
+        page_size: 20, // Increased from 10 to get more results
         search_terms: query
       }
     });
@@ -193,8 +207,8 @@ async function searchByText(query) {
       throw error;
     }
 
-    // Return the first matching product
-    return response.data.products[0];
+    // Return ALL matching products (not just the first one)
+    return response.data.products;
   } catch (error) {
     if (error.response?.status === 404) {
       const notFoundError = new Error(`No products found for query: ${query}`);

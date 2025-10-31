@@ -216,6 +216,69 @@ function getBrandCompanyName(brandName) {
 }
 
 // ============================================================================
+// HELPER FUNCTION: Get ESG data for a product
+// ============================================================================
+/**
+ * Helper function to get ESG data for a product by brand name
+ * Returns null if no ESG data is found
+ */
+async function getProductESGData(brandName) {
+  if (!brandName) return null;
+
+  try {
+    // Map brand to parent company (e.g., "Great Value" → "Walmart")
+    const companyName = getBrandCompanyName(brandName);
+    
+    // Find the company in our database
+    const company = await Company.findOne({
+      $or: [
+        { name: { $regex: companyName, $options: 'i' } },
+        { aliases: { $regex: companyName, $options: 'i' } }
+      ]
+    });
+
+    if (!company || !company.esgSources || company.esgSources.length === 0) {
+      return null;
+    }
+
+    // Get the most recent ESG data
+    const latestESG = company.esgSources.reduce((latest, source) => {
+      if (!latest) return source;
+      const latestAsOf = latest.asOf || new Date().toISOString();
+      const sourceAsOf = source.asOf || new Date().toISOString();
+      return sourceAsOf > latestAsOf ? source : latest;
+    });
+
+    // Extract scores
+    const E = latestESG.raw?.E ?? null;
+    const S = latestESG.raw?.S ?? null;
+    const G = latestESG.raw?.G ?? null;
+
+    // Calculate overall score (weighted average: 40% E, 40% S, 20% G)
+    let overall = null;
+    if (E !== null || S !== null || G !== null) {
+      const availableFactors = [E, S, G].filter(score => score !== null);
+      const weights = {
+        wE: E !== null ? (availableFactors.length === 3 ? 0.4 : 1.0 / availableFactors.length) : 0,
+        wS: S !== null ? (availableFactors.length === 3 ? 0.4 : 1.0 / availableFactors.length) : 0,
+        wG: G !== null ? (availableFactors.length === 3 ? 0.2 : 1.0 / availableFactors.length) : 0
+      };
+      overall = Math.round((E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG);
+    }
+
+    return {
+      environmental: E,
+      social: S,
+      governance: G,
+      overall: overall
+    };
+  } catch (error) {
+    console.error('Error fetching ESG data:', error);
+    return null;
+  }
+}
+
+// ============================================================================
 // PRODUCT SEARCH AND LISTING
 // ============================================================================
 
@@ -225,6 +288,7 @@ function getBrandCompanyName(brandName) {
  * What this does:
  * - Lets users search for products by typing words (like "chocolate")
  * - OR lets users scan a barcode to find a specific product
+ * - Enriches products with ESG scores when available
  *
  * How to use it:
  *   GET /api/products?q=chocolate        (search for products with "chocolate")
@@ -232,6 +296,7 @@ function getBrandCompanyName(brandName) {
  *
  * What you get back:
  *   - Product information (name, brand, image, etc.)
+ *   - ESG scores (environmental, social, governance, overall) if available
  *   - If we can't find it, you get an error message
  */
 const getAllProducts = async (req, res) => {
@@ -252,20 +317,43 @@ const getAllProducts = async (req, res) => {
       });
     }
 
-    // STEP 3: Look up the product using our OpenFoodFacts service
+    // STEP 3: Look up the product(s) using our OpenFoodFacts service
     // This service talks to a big database of food products
-    const product = await lookupProductService({
+    // Note: For text searches (q), this now returns an array of products
+    // For barcode searches, it returns a single product
+    const result = await lookupProductService({
       upc,    // Barcode number (if provided)
       ean,    // Another type of barcode (if provided)
       gtin,   // Yet another type of barcode (if provided)
       q       // Search words (if provided)
     });
 
-    // STEP 4: Send the product information back to whoever asked for it
-    res.json(product);
+    // STEP 4: Handle both single product (barcode) and array of products (text search)
+    const isArray = Array.isArray(result);
+    const products = isArray ? result : [result];
+
+    // STEP 5: Enrich each product with ESG data
+    const enrichedProducts = await Promise.all(
+      products.map(async (product) => {
+        const esgData = await getProductESGData(product.brand);
+        return {
+          ...product,
+          esg: esgData
+        };
+      })
+    );
+
+    // STEP 6: Send back the product(s) with ESG data
+    // If it was a single product (barcode), return single object
+    // If it was an array (text search), return array
+    if (isArray) {
+      res.json(enrichedProducts);
+    } else {
+      res.json(enrichedProducts[0]);
+    }
 
   } catch (error) {
-    // STEP 5: Handle errors - things that went wrong
+    // STEP 7: Handle errors - things that went wrong
 
     // Error type 1: Product not found
     if (error.code === 'NOT_FOUND') {
@@ -510,23 +598,30 @@ const getProductESG = async (req, res) => {
       product = cached.data;
     } else {
       // Not in cache - get fresh data from OpenFoodFacts
-      product = await lookupProductService({ upc: id });
+      // Try to lookup by barcode first, but handle non-numeric IDs gracefully
+      // Check if id is numeric (barcode)
+      if (/^\d+$/.test(id)) {
+        product = await lookupProductService({ upc: id });
+      } else {
+        // If not numeric, it might be a product code from OpenFoodFacts
+        product = await lookupProductService({ gtin: id });
+      }
     }
 
-    // STEP 3: Make sure we know which company makes this product
-    // Without company info, we can't look up ESG scores
-    if (!product.company || !product.company.companyId) {
+    // STEP 3: Make sure we have product brand information
+    // Without brand info, we can't look up ESG scores
+    if (!product || !product.brand) {
       return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
-          message: 'Company information not available for this product. ESG data cannot be retrieved.'
+          message: 'Brand information not available for this product. ESG data cannot be retrieved.'
         }
       });
     }
 
-    // STEP 4: Find the company in our database
-    // We search by the brand name (like "Nestle", "Coca-Cola", etc.)
-    const companyName = product.brand;
+    // STEP 4: Find the company in our database using brand name
+    // Map brand to parent company first (e.g., "Great Value" → "Walmart")
+    const companyName = getBrandCompanyName(product.brand);
     const company = await Company.findOne({
       $or: [
         { name: { $regex: companyName, $options: 'i' } },      // Search by company name
@@ -558,7 +653,24 @@ const getProductESG = async (req, res) => {
       return sourceAsOf > latestAsOf ? source : latest;
     });
 
-    // STEP 7: Format and send back the ESG scores
+    // STEP 7: Calculate overall ESG score
+    const E = latestESG.raw?.E ?? null;
+    const S = latestESG.raw?.S ?? null;
+    const G = latestESG.raw?.G ?? null;
+
+    // Calculate overall score (weighted average: 40% E, 40% S, 20% G)
+    let overall = null;
+    if (E !== null || S !== null || G !== null) {
+      const availableFactors = [E, S, G].filter(score => score !== null);
+      const weights = {
+        wE: E !== null ? (availableFactors.length === 3 ? 0.4 : 1.0 / availableFactors.length) : 0,
+        wS: S !== null ? (availableFactors.length === 3 ? 0.4 : 1.0 / availableFactors.length) : 0,
+        wG: G !== null ? (availableFactors.length === 3 ? 0.2 : 1.0 / availableFactors.length) : 0
+      };
+      overall = Math.round((E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG);
+    }
+
+    // STEP 8: Format and send back the ESG scores
     res.json({
       productId: id,
       productName: product.name,
@@ -567,18 +679,22 @@ const getProductESG = async (req, res) => {
       companyName: company.name,
       esgData: {
         environment: {
-          score: latestESG.raw.E,   // E = Environment score (0-100)
+          score: E,   // E = Environment score (0-100)
           description: 'Environmental impact score (0-100, higher is better for Earth)'
         },
         social: {
-          score: latestESG.raw.S,   // S = Social score (0-100)
+          score: S,   // S = Social score (0-100)
           description: 'Social responsibility score (0-100, higher means treats people better)'
         },
         governance: {
-          score: latestESG.raw.G,   // G = Governance score (0-100)
+          score: G,   // G = Governance score (0-100)
           description: 'Corporate governance score (0-100, higher means more trustworthy)'
         },
-        scale: latestESG.raw.scale || '0-100'
+        overall: {
+          score: overall,
+          description: 'Overall ESG score (weighted average of E, S, G)'
+        },
+        scale: latestESG.raw?.scale || '0-100'
       },
       dataSource: latestESG.source,              // Where we got this data from
       asOf: latestESG.asOf,                      // When this data was collected
@@ -680,13 +796,46 @@ const getProductAlternatives = async (req, res) => {
     };
 
     // Find product in food collection by code (barcode)
-    const product = await foodCollection.findOne({ code: parseInt(id) });
+    // Try to parse as integer first (for numeric barcodes)
+    let product = null;
+    const numericId = /^\d+$/.test(id) ? parseInt(id) : null;
+    
+    if (numericId !== null) {
+      product = await foodCollection.findOne({ code: numericId });
+    }
+    
+    // If not found in food collection, try to look it up via OpenFoodFacts
+    if (!product) {
+      try {
+        const lookupResult = await lookupProductService(
+          numericId !== null ? { upc: id } : { gtin: id }
+        );
+        
+        // If we got a result, try to find it in food collection by product name or code
+        if (lookupResult && !Array.isArray(lookupResult)) {
+          const productCode = lookupResult.id || lookupResult.barcode?.value;
+          if (productCode && /^\d+$/.test(productCode)) {
+            product = await foodCollection.findOne({ code: parseInt(productCode) });
+          }
+          
+          // If still not found, try by product name
+          if (!product && lookupResult.name) {
+            product = await foodCollection.findOne({ 
+              product_name: { $regex: lookupResult.name, $options: 'i' } 
+            });
+          }
+        }
+      } catch (error) {
+        // If lookup fails, continue and return error below
+        console.error('Failed to lookup product:', error);
+      }
+    }
 
     if (!product) {
       return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
-          message: `Product not found with ID: ${id}`
+          message: `Product not found with ID: ${id}. Product may not be in the food database.`
         }
       });
     }
