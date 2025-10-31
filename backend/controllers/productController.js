@@ -873,102 +873,106 @@ const getProductAlternatives = async (req, res) => {
  *
  */
 const generateProductSummary = async (id) => {
-  try {
-    // Get product details
-    const cached = await ProductCache.findOne({ code: id });
-    let product;
+    try {
+        // Get product details
+        const cached = await ProductCache.findOne({ code: id });
+        let product;
 
-    if (cached) {
-      product = cached.data;
-    } else {
-      try {
-        product = await lookupProductService({ upc: id });
-      } catch (lookupErr) {
-        // Don't fail the entire summary generation if product lookup fails.
-        // Log the error and continue; the agent can still run using product_identifier only.
-        console.error(
-          "Product lookup failed inside generateProductSummary:",
-          lookupErr
+        if (cached) {
+            product = cached.data;
+        } else {
+            try {
+                product = await lookupProductService({ upc: id });
+            } catch (lookupErr) {
+                // Don't fail the entire summary generation if product lookup fails.
+                // Log the error and continue; the agent can still run using product_identifier only.
+                console.error(
+                    "Product lookup failed inside generateProductSummary:",
+                    lookupErr
+                );
+                product = null;
+            }
+        }
+
+        const agentBase = process.env.AGENT_API_ENDPOINT || "http://localhost:8000";
+        const agentUrl = `${agentBase.replace(/\/$/, "")}/workflow/run`;
+
+        const headers = {};
+        // If an internal agent API key is configured, send it as x-internal-key
+        if (process.env.AGENT_API_KEY) {
+            headers["x-internal-key"] = process.env.AGENT_API_KEY;
+        }
+
+        const payload = {
+            product_identifier: String(id),
+        };
+
+        console.info(
+            "Calling summary agent:",
+            agentUrl,
+            "payload keys:",
+            Object.keys(payload)
         );
-        product = null;
-      }
+        const resp = await axios.post(agentUrl, payload, {
+            headers,
+            timeout: 100000,
+        });
+
+        if (!resp || !resp.data) {
+            throw new Error("Empty response from agent");
+        }
+
+        // Normalize agent response to a consistent summary object
+        const agentData = resp.data;
+        const finalReport = agentData.final_report || {};
+
+        const normalized = {
+            productId: finalReport.product_id || String(id),
+            productName:
+            finalReport.product_name ||
+            (product && (product.name || product.product_name)) ||
+            "",
+            brand:
+            finalReport.brand ||
+            (product && (product.brands || product.brand)) ||
+            "",
+            summary: finalReport.summary || [],
+            metadata: finalReport.metadata || {},
+            generatedAt: new Date().toISOString(),
+        };
+
+        // Compute per-company cache key (use normalized.brand first)
+        const companyRaw =
+            normalized.brand ||
+            (product && (product.brands || product.brand)) ||
+            String(id);
+        const companyKey =
+            encodeURIComponent(
+                String(companyRaw)
+                .split(",")[0]
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, "_")
+            ) || String(id);
+        const cacheKey = `brandSummary:${companyKey}`;
+
+        // Cache the normalized summary in Redis under per-company key
+        console.log(`[redis] caching with key: '${cacheKey}'`)
+
+        await redisClient.set(cacheKey, JSON.stringify(normalized), {
+            EX: CACHE_TTL,
+        });
+
+        return normalized;
+    } catch (error) {
+        const details = error?.response?.data ?? error.message ?? String(error);
+        console.error("Summary generation error:", details);
+        throw new Error(
+            `Failed to generate product summary: ${
+                typeof details === "string" ? details : JSON.stringify(details)
+            }`
+        );
     }
-
-    const agentBase = process.env.AGENT_API_ENDPOINT || "http://localhost:8000";
-    const agentUrl = `${agentBase.replace(/\/$/, "")}/workflow/run`;
-
-    const headers = {};
-    // If an internal agent API key is configured, send it as x-internal-key
-    if (process.env.AGENT_API_KEY) {
-      headers["x-internal-key"] = process.env.AGENT_API_KEY;
-    }
-
-    const payload = {
-      product_identifier: String(id),
-    };
-
-    console.info(
-      "Calling summary agent:",
-      agentUrl,
-      "payload keys:",
-      Object.keys(payload)
-    );
-    const resp = await axios.post(agentUrl, payload, {
-      headers,
-      timeout: 60000,
-    });
-
-    if (!resp || !resp.data) {
-      throw new Error("Empty response from agent");
-    }
-
-    // Normalize agent response to a consistent summary object
-    const agentData = resp.data;
-    const finalReport = agentData.final_report || {};
-
-    const normalized = {
-      productId: finalReport.product_id || String(id),
-      productName:
-        finalReport.product_name ||
-        (product && (product.name || product.product_name)) ||
-        "",
-      brand:
-        finalReport.brand ||
-        (product && (product.brands || product.brand)) ||
-        "",
-      summary: finalReport.summary || [],
-      metadata: finalReport.metadata || {},
-      generatedAt: new Date().toISOString(),
-    };
-
-    // Compute per-company cache key (use normalized.brand first)
-    const companyRaw =
-      normalized.brand ||
-      (product && (product.brands || product.brand)) ||
-      String(id);
-    const companyKey =
-      encodeURIComponent(
-        String(companyRaw)
-          .split(",")[0]
-          .trim()
-          .toLowerCase()
-          .replace(/\s+/g, "_")
-      ) || String(id);
-    const cacheKey = `productsSummary:${companyKey}`;
-
-    // Cache the normalized summary in Redis under per-company key
-    await redisClient.setex(cacheKey, CACHE_TTL, JSON.stringify(normalized));
-
-    return normalized;
-  } catch (error) {
-    const details = error?.response?.data ?? error.message ?? String(error);
-    console.error("Summary generation error:", details);
-    throw new Error(
-      `Failed to generate product summary: ${
-        typeof details === "string" ? details : JSON.stringify(details)
-      }`
-    );
-  }
 };
 
 /**
@@ -986,46 +990,72 @@ const generateProductSummary = async (id) => {
  *   GET /api/products/3274080005003/summary
  */
 const getProductSummary = async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    redisClient.get("productsSummary", async (err, summary) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({
-          error: {
-            code: "REDIS_ERROR",
-            message: "Redis read failed",
-          },
-        });
-      }
+        const cached = await ProductCache.findOne({ code: id });
+        let product = null;
 
-      if (summary != null) {
-        return res.json(JSON.parse(summary));
-      } else {
-        try {
-          const newSummary = await generateProductSummary(id);
-          return res.json(newSummary);
-        } catch (err) {
-          console.error(err);
-          return res.status(500).json({
-            error: {
-              code: "INTERNAL_ERROR",
-              message: err.message,
-            },
-          });
+        if (cached) {
+            product = cached.data;
         }
-      }
-    });
-  } catch (error) {
-    console.error("Summary retrieval error:", error);
-    res.status(500).json({
-      error: {
-        code: "INTERNAL_ERROR",
-        message: "Failed to retrieve product summary",
-      },
-    });
-  }
+        else {
+            try {
+                product = await lookupProductService({ upc: id });
+            }
+            catch (lookupErr) {
+                console.error(lookupErr);
+            }
+        }
+
+        const companyRaw =
+            (product && (product.brands || product.brand)) || String(id);
+        const companyKey =
+            encodeURIComponent(
+                String(companyRaw)
+                .split(",")[0]
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, "_")
+            ) || String(id);
+        const cacheKey = `brandSummary:${companyKey}`;
+
+        console.log(`[redis] checking cache with key: '${cacheKey}'`);
+
+        const redisCached = await redisClient.get(cacheKey);
+
+        if (redisCached) {
+            console.log("[redis] Cache hit:", JSON.parse(redisCached));
+
+            return res.json(JSON.parse(redisCached));
+        }
+        else {
+            console.log("[redis] Cache miss!");
+
+            // NOTE(liam): generates new summary.
+            try {
+                const newSummary = await generateProductSummary(id);
+                return res.json(newSummary);
+            } catch (err) {
+                console.error(err);
+                return res.status(500).json({
+                    error: {
+                        code: "INTERNAL_ERROR",
+                        message: err.message,
+                    },
+                });
+            }
+        }
+    }
+    catch (error) {
+        console.error("Summary retrieval error:", error);
+        res.status(500).json({
+            error: {
+                code: "INTERNAL_ERROR",
+                message: "Failed to retrieve product summary",
+            },
+        });
+    }
 };
 
 // ============================================================================
