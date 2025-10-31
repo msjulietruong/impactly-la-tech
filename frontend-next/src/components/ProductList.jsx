@@ -55,17 +55,26 @@ const data = [
   },
 ];
 
-export default function ProductList() {
+export default function ProductList({ products = [] }) {
   const score_color = (score) => {
     if (score > 80) return "#A4B782"; // Green
     if (score > 50) return "#E3C271"; // Amber
     return "#BE5D5D"; // Red
   };
+  
+  if (!products || products.length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        No products found
+      </div>
+    );
+  }
+
   return (
     <div>
       <ul>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4">
-          {data.map((product, index) => (
+          {products.map((product, index) => (
             <li key={index}>
               <div className="border-[var(--theme-color-tertiary)]/20 border-2 rounded-2xl p-4 flex my-2 bg-[#f9f9f9]/50 md:p-6 md:flex-col ">
                 <img
