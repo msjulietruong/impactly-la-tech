@@ -439,7 +439,122 @@ describe('API Smoke Tests', () => {
   });
 
   // ============================================================================
-  // TEST GROUP 5: Error Handling
+  // TEST GROUP 5: Product Search Fixes (Recent Fixes)
+  // ============================================================================
+  
+  describe('GET /api/products (Product Search Fixes)', () => {
+    
+    // TEST: Text search returns array of products (not just "Sidi Ali")
+    it('should return array of products for text search', async () => {
+      const response = await request(app)
+        .get('/api/products')
+        .query({ q: 'chocolate' })
+        .expect(200);
+
+      // Should return an array, not a single object
+      expect(Array.isArray(response.body)).toBe(true);
+      expect(response.body.length).toBeGreaterThan(0);
+      
+      // Check first product structure
+      const firstProduct = response.body[0];
+      expect(firstProduct).toHaveProperty('id');
+      expect(firstProduct).toHaveProperty('name');
+      expect(firstProduct).toHaveProperty('brand');
+      
+      // Should include ESG data
+      expect(firstProduct).toHaveProperty('esg');
+      
+      if (firstProduct.esg) {
+        // ESG should have overall score
+        expect(firstProduct.esg).toHaveProperty('overall');
+        expect(firstProduct.esg.overall === null || typeof firstProduct.esg.overall === 'number').toBe(true);
+      }
+    }, 90000); // 90 second timeout (external API)
+
+    // TEST: Different searches return different products
+    it('should return different products for different search queries', async () => {
+      const searches = ['chocolate', 'bottle', 'water'];
+      const results = {};
+      
+      for (const query of searches) {
+        const response = await request(app)
+          .get('/api/products')
+          .query({ q: query });
+        
+        if (response.status === 200 && Array.isArray(response.body) && response.body.length > 0) {
+          results[query] = response.body[0].name || response.body[0].product_name;
+        }
+      }
+      
+      const productNames = Object.values(results).filter(Boolean);
+      const uniqueNames = [...new Set(productNames)];
+      
+      // Should have at least 2 different products
+      expect(uniqueNames.length).toBeGreaterThan(1);
+    }, 120000); // 2 minute timeout (multiple API calls)
+
+    // TEST: Barcode search returns single product with ESG
+    it('should return single product object with ESG data for barcode search', async () => {
+      const response = await request(app)
+        .get('/api/products')
+        .query({ upc: '3274080005003' })
+        .expect(200);
+
+      // Should return single object, not array
+      expect(Array.isArray(response.body)).toBe(false);
+      expect(response.body).toHaveProperty('id');
+      expect(response.body).toHaveProperty('name');
+      expect(response.body).toHaveProperty('brand');
+      
+      // Should include ESG data
+      expect(response.body).toHaveProperty('esg');
+      
+      if (response.body.esg) {
+        expect(response.body.esg).toHaveProperty('overall');
+        expect(response.body.esg.overall === null || typeof response.body.esg.overall === 'number').toBe(true);
+        expect(response.body.esg).toHaveProperty('environmental');
+        expect(response.body.esg).toHaveProperty('social');
+        expect(response.body.esg).toHaveProperty('governance');
+      }
+    }, 90000); // 90 second timeout
+
+    // TEST: ESG endpoint includes overall score
+    it('should return ESG data with overall score', async () => {
+      const response = await request(app)
+        .get('/api/products/3274080005003/esg');
+      
+      // Accept both 200 (found) and 404 (not in DB) as valid responses
+      if (response.status === 200) {
+        expect(response.body).toHaveProperty('esgData');
+        expect(response.body.esgData).toHaveProperty('overall');
+        
+        if (response.body.esgData.overall) {
+          expect(response.body.esgData.overall).toHaveProperty('score');
+          expect(typeof response.body.esgData.overall.score === 'number').toBe(true);
+        }
+      } else {
+        // If 404, that's OK - product might not be in database
+        expect(response.status).toBe(404);
+      }
+    }, 90000);
+
+    // TEST: Alternatives endpoint handles errors gracefully
+    it('should handle alternatives endpoint gracefully', async () => {
+      const response = await request(app)
+        .get('/api/products/3274080005003/alternatives');
+      
+      // Accept both 200 (found) and 404 (not in food DB) as valid
+      expect([200, 404]).toContain(response.status);
+      
+      if (response.status === 404) {
+        expect(response.body).toHaveProperty('error');
+        expect(response.body.error).toHaveProperty('code', 'NOT_FOUND');
+      }
+    }, 90000);
+  });
+
+  // ============================================================================
+  // TEST GROUP 6: Error Handling
   // ============================================================================
   
   describe('Error handling', () => {
