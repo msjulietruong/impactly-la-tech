@@ -1,20 +1,26 @@
 FROM python:3.12-slim
 
-WORKDIR /app
+ENV PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    \
+    POETRY_HOME="/opt/poetry" \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_NO_INTERACTION=1 \
+    \
+    PYSETUP_PATH="/opt/pysetup" \
+    VENV_PATH="/opt/pysetup/.venv"
+
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+
 RUN apt-get update && apt-get install -y curl build-essential && rm -rf /var/lib/apt/lists/*
-RUN curl -sSL https://install.python-poetry.org | python3 -
-ENV PATH="/root/.local/bin:$PATH"
 
-# Copy Poetry files first (for better caching)
-COPY pyproject.toml poetry.lock* ./
+RUN curl -sSL https://install.python-poetry.org | python -
 
-# Install dependencies (main only, skip dev for production)
-RUN poetry install --no-root --only main
+WORKDIR $PYSETUP_PATH
+COPY pyproject.toml poetry.lock ./
 
-# Copy the rest of the project
-COPY . .
+RUN poetry install --no-root
 
-# Ensure Poetry doesn't create a virtual environment inside container
-ENV POETRY_VIRTUALENVS_CREATE=false
-
+COPY . /app/
+WORKDIR /app
 CMD ["poetry", "run", "uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
