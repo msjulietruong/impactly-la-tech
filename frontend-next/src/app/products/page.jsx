@@ -77,10 +77,6 @@ export default function Products() {
           </h2>
           {Array.isArray(product) ? (
             <>
-              <h2 className="text-lg font-semibold my-4 text-[var(--theme-color-primary)] md:text-xl">
-                Search results for "
-                {searchParams.get("query") || searchParams.get("upc")}":
-              </h2>
               <ProductList products={product} />
             </>
           ) : product ? (
