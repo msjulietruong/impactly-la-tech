@@ -1,10 +1,10 @@
-import { lookupProduct as lookupProductService } from '../services/openFoodFactsService.js';
-import ProductCache from '../models/ProductCache.js';
-import Company from '../models/Company.js';
+import { lookupProduct as lookupProductService } from "../services/openFoodFactsService.js";
+import ProductCache from "../models/ProductCache.js";
+import Company from "../models/Company.js";
 
-import axios from 'axios';
-import redisClient from '../utils/redisClient.js';
-import { CACHE_TTL } from '../utils/config.js';
+import axios from "axios";
+import redisClient from "../utils/redisClient.js";
+import { CACHE_TTL } from "../utils/config.js";
 
 /**
  * PRODUCT CONTROLLER
@@ -24,186 +24,183 @@ import { CACHE_TTL } from '../utils/config.js';
  * 5. Handle errors appropriately
  */
 
-
 // ============================================================================
 // BRAND TO COMPANY MAPPING
 // ============================================================================
 
 const COMPANY_BRAND_MAP = {
   // Walmart brands
-  'walmart': 'Walmart',
-  'great value': 'Walmart',
-  "sam's choice": 'Walmart',
-  'marketside': 'Walmart',
-  'equate': 'Walmart',
+  walmart: "Walmart Inc",
+  "great value": "Walmart Inc",
+  "sam's choice": "Walmart Inc",
+  marketside: "Walmart Inc",
+  equate: "Walmart Inc",
 
   // Kroger brands
-  'kroger': 'Kroger',
-  'simple truth': 'Kroger',
-  'private selection': 'Kroger',
+  kroger: "Kroger",
+  "simple truth": "Kroger",
+  "private selection": "Kroger",
 
   // Target brands
-  'target': 'Target',
-  'good & gather': 'Target',
-  'market pantry': 'Target',
+  target: "Target",
+  "good & gather": "Target",
+  "market pantry": "Target",
 
   // Costco brands
-  'costco': 'Costco',
-  'kirkland signature': 'Costco',
+  costco: "Costco",
+  "kirkland signature": "Costco",
 
   // General Mills brands
-  'general mills': 'General Mills',
-  'cheerios': 'General Mills',
-  'nature valley': 'General Mills',
-  'yoplait': 'General Mills',
-  'lucky charms': 'General Mills',
-  'pillsbury': 'General Mills',
-  'haagen-dazs': 'General Mills',
-  'betty crocker': 'General Mills',
-  'old el paso': 'General Mills',
-  'totino': 'General Mills',
-  'trix': 'General Mills',
-  'cocoa puffs': 'General Mills',
-  'cinnamon toast crunch': 'General Mills',
-  'fiber one': 'General Mills',
-  'wheaties': 'General Mills',
+  "general mills": "General Mills",
+  cheerios: "General Mills",
+  "nature valley": "General Mills",
+  yoplait: "General Mills",
+  "lucky charms": "General Mills",
+  pillsbury: "General Mills",
+  "haagen-dazs": "General Mills",
+  "betty crocker": "General Mills",
+  "old el paso": "General Mills",
+  totino: "General Mills",
+  trix: "General Mills",
+  "cocoa puffs": "General Mills",
+  "cinnamon toast crunch": "General Mills",
+  "fiber one": "General Mills",
+  wheaties: "General Mills",
 
   // PepsiCo brands
-  'pepsi': 'PepsiCo',
-  'pepsico': 'PepsiCo',
-  'frito-lay': 'PepsiCo',
-  "lay's": 'PepsiCo',
-  'lays': 'PepsiCo',
-  'doritos': 'PepsiCo',
-  'mountain dew': 'PepsiCo',
-  'gatorade': 'PepsiCo',
-  'tropicana': 'PepsiCo',
-  'quaker': 'PepsiCo',
-  'tostitos': 'PepsiCo',
-  'cheetos': 'PepsiCo',
-  'ruffles': 'PepsiCo',
+  pepsi: "PepsiCo",
+  pepsico: "PepsiCo",
+  "frito-lay": "PepsiCo",
+  "lay's": "PepsiCo",
+  lays: "PepsiCo",
+  doritos: "PepsiCo",
+  "mountain dew": "PepsiCo",
+  gatorade: "PepsiCo",
+  tropicana: "PepsiCo",
+  quaker: "PepsiCo",
+  tostitos: "PepsiCo",
+  cheetos: "PepsiCo",
+  ruffles: "PepsiCo",
 
   // Coca-Cola brands
-  'coca-cola': 'Coca-Cola',
-  'coke': 'Coca-Cola',
-  'sprite': 'Coca-Cola',
-  'fanta': 'Coca-Cola',
-  'dasani': 'Coca-Cola',
-  'minute maid': 'Coca-Cola',
-  'powerade': 'Coca-Cola',
-  'vitaminwater': 'Coca-Cola',
+  "coca-cola": "Coca-Cola",
+  coke: "Coca-Cola",
+  sprite: "Coca-Cola",
+  fanta: "Coca-Cola",
+  dasani: "Coca-Cola",
+  "minute maid": "Coca-Cola",
+  powerade: "Coca-Cola",
+  vitaminwater: "Coca-Cola",
 
   // Nestlé brands
-  'nestle': 'Nestlé',
-  'nescafe': 'Nestlé',
-  'kit kat': 'Nestlé',
-  'pure life': 'Nestlé',
-  'gerber': 'Nestlé',
-  'stouffer': 'Nestlé',
-  'digiorno': 'Nestlé',
-  'hot pockets': 'Nestlé',
-  'lean cuisine': 'Nestlé',
-  'butterfinger': 'Nestlé',
-  'crunch': 'Nestlé',
+  nestle: "Nestlé",
+  nescafe: "Nestlé",
+  "kit kat": "Nestlé",
+  "pure life": "Nestlé",
+  gerber: "Nestlé",
+  stouffer: "Nestlé",
+  digiorno: "Nestlé",
+  "hot pockets": "Nestlé",
+  "lean cuisine": "Nestlé",
+  butterfinger: "Nestlé",
+  crunch: "Nestlé",
 
   // Kellogg's brands
-  'kelloggs': "Kellogg's",
+  kelloggs: "Kellogg's",
   "kellogg's": "Kellogg's",
-  'pringles': "Kellogg's",
-  'cheez-it': "Kellogg's",
-  'frosted flakes': "Kellogg's",
-  'special k': "Kellogg's",
-  'pop-tarts': "Kellogg's",
-  'rice krispies': "Kellogg's",
-  'eggo': "Kellogg's",
-  'nutri-grain': "Kellogg's",
+  pringles: "Kellogg's",
+  "cheez-it": "Kellogg's",
+  "frosted flakes": "Kellogg's",
+  "special k": "Kellogg's",
+  "pop-tarts": "Kellogg's",
+  "rice krispies": "Kellogg's",
+  eggo: "Kellogg's",
+  "nutri-grain": "Kellogg's",
 
   // Mars brands
-  'mars': 'Mars',
-  "m&m's": 'Mars',
-  "m&m": 'Mars',
-  'snickers': 'Mars',
-  'twix': 'Mars',
-  'milky way': 'Mars',
-  'skittles': 'Mars',
-  'starburst': 'Mars',
+  mars: "Mars",
+  "m&m's": "Mars",
+  "m&m": "Mars",
+  snickers: "Mars",
+  twix: "Mars",
+  "milky way": "Mars",
+  skittles: "Mars",
+  starburst: "Mars",
 
   // Mondelez brands
-  'oreo': 'Mondelez',
-  'cadbury': 'Mondelez',
-  'ritz': 'Mondelez',
-  'trident': 'Mondelez',
-  'chips ahoy': 'Mondelez',
-  'wheat thins': 'Mondelez',
-  'triscuit': 'Mondelez',
+  oreo: "Mondelez",
+  cadbury: "Mondelez",
+  ritz: "Mondelez",
+  trident: "Mondelez",
+  "chips ahoy": "Mondelez",
+  "wheat thins": "Mondelez",
+  triscuit: "Mondelez",
 
   // Kraft Heinz brands
-  'kraft': 'Kraft Heinz',
-  'heinz': 'Kraft Heinz',
-  'oscar mayer': 'Kraft Heinz',
-  'philadelphia': 'Kraft Heinz',
-  'velveeta': 'Kraft Heinz',
-  'capri sun': 'Kraft Heinz',
-  'jell-o': 'Kraft Heinz',
-  'maxwell house': 'Kraft Heinz',
-  'planters': 'Kraft Heinz',
-  'lunchables': 'Kraft Heinz',
-  'kool-aid': 'Kraft Heinz',
-
-  // ADD THESE MISSING ONES:
+  kraft: "Kraft Heinz",
+  heinz: "Kraft Heinz",
+  "oscar mayer": "Kraft Heinz",
+  philadelphia: "Kraft Heinz",
+  velveeta: "Kraft Heinz",
+  "capri sun": "Kraft Heinz",
+  "jell-o": "Kraft Heinz",
+  "maxwell house": "Kraft Heinz",
+  planters: "Kraft Heinz",
+  lunchables: "Kraft Heinz",
+  "kool-aid": "Kraft Heinz",
 
   // Campbell brands
-  'campbell': 'Campbell',
-  "campbell's": 'Campbell',
-  'pepperidge farm': 'Campbell',
-  'goldfish': 'Campbell',
-  'v8': 'Campbell',
-  'prego': 'Campbell',
-  'swanson': 'Campbell',
+  campbell: "Campbell",
+  "campbell's": "Campbell",
+  "pepperidge farm": "Campbell",
+  goldfish: "Campbell",
+  v8: "Campbell",
+  prego: "Campbell",
+  swanson: "Campbell",
 
   // McCormick brands
-  'mccormick': 'McCormick',
-  'french': 'McCormick',
-  "french's": 'McCormick',
-  'old bay': 'McCormick',
-  'lawry': 'McCormick',
-  "lawry's": 'McCormick',
-  'casero': 'McCormick',
+  mccormick: "McCormick",
+  french: "McCormick",
+  "french's": "McCormick",
+  "old bay": "McCormick",
+  lawry: "McCormick",
+  "lawry's": "McCormick",
+  casero: "McCormick",
 
   // Hershey brands
-  'hershey': 'Hershey',
-  "hershey's": 'Hershey',
-  'reese': 'Hershey',
-  "reese's": 'Hershey',
-  'kisses': 'Hershey',
-  'jolly rancher': 'Hershey',
-  'ice breakers': 'Hershey',
+  hershey: "Hershey",
+  "hershey's": "Hershey",
+  reese: "Hershey",
+  "reese's": "Hershey",
+  kisses: "Hershey",
+  "jolly rancher": "Hershey",
+  "ice breakers": "Hershey",
 
   // ConAgra brands
-  'conagra': 'ConAgra',
-  'hunt': 'ConAgra',
-  "hunt's": 'ConAgra',
-  'reddi-wip': 'ConAgra',
-  'slim jim': 'ConAgra',
-  'healthy choice': 'ConAgra',
-  'marie callender': 'ConAgra',
-  "marie callender's": 'ConAgra',
-  'orville redenbacher': 'ConAgra',
-  'swiss miss': 'ConAgra',
-  'vlasic': 'ConAgra',
+  conagra: "ConAgra",
+  hunt: "ConAgra",
+  "hunt's": "ConAgra",
+  "reddi-wip": "ConAgra",
+  "slim jim": "ConAgra",
+  "healthy choice": "ConAgra",
+  "marie callender": "ConAgra",
+  "marie callender's": "ConAgra",
+  "orville redenbacher": "ConAgra",
+  "swiss miss": "ConAgra",
+  vlasic: "ConAgra",
 
   // Hormel brands
-  'hormel': 'Hormel',
-  'spam': 'Hormel',
-  'skippy': 'Hormel',
-  'jennie-o': 'Hormel',
-  'applegate': 'Hormel',
+  hormel: "Hormel",
+  spam: "Hormel",
+  skippy: "Hormel",
+  "jennie-o": "Hormel",
+  applegate: "Hormel",
 
   // Tyson brands
-  'tyson': 'Tyson',
-  'jimmy dean': 'Tyson',
-  'hillshire farm': 'Tyson',
-  'ball park': 'Tyson'
+  tyson: "Tyson",
+  "jimmy dean": "Tyson",
+  "hillshire farm": "Tyson",
+  "ball park": "Tyson",
 };
 
 /**
@@ -212,7 +209,7 @@ const COMPANY_BRAND_MAP = {
 function getBrandCompanyName(brandName) {
   if (!brandName) return null;
   const normalized = brandName.toLowerCase().trim();
-  return COMPANY_BRAND_MAP[normalized] || brandName; // Return original if no mapping
+  return COMPANY_BRAND_MAP[normalized] || brandName;
 }
 
 // ============================================================================
@@ -221,59 +218,67 @@ function getBrandCompanyName(brandName) {
 /**
  * Helper function to get ESG data for a product by brand name
  * Returns null if no ESG data is found
+ *
  */
 async function getProductESGData(brandName) {
   if (!brandName) return null;
 
   try {
-    // Map brand to parent company (e.g., "Great Value" → "Walmart")
+    // Map brand to parent company (e.g., "Great Value" → "Walmart Inc")
     const companyName = getBrandCompanyName(brandName);
-    
+
     // Find the company in our database
     const company = await Company.findOne({
-      $or: [
-        { name: { $regex: companyName, $options: 'i' } },
-        { aliases: { $regex: companyName, $options: 'i' } }
-      ]
+      name: { $regex: companyName, $options: "i" },
     });
 
-    if (!company || !company.esgSources || company.esgSources.length === 0) {
+    if (!company) {
       return null;
     }
 
-    // Get the most recent ESG data
-    const latestESG = company.esgSources.reduce((latest, source) => {
-      if (!latest) return source;
-      const latestAsOf = latest.asOf || new Date().toISOString();
-      const sourceAsOf = source.asOf || new Date().toISOString();
-      return sourceAsOf > latestAsOf ? source : latest;
-    });
+    // ✅ NEW: Extract scores from flat structure
+    const E = company.environment_score ?? null;
+    const S = company.social_score ?? null;
+    const G = company.governance_score ?? null;
 
-    // Extract scores
-    const E = latestESG.raw?.E ?? null;
-    const S = latestESG.raw?.S ?? null;
-    const G = latestESG.raw?.G ?? null;
+    // Calculate overall score (use total_score if available, otherwise calculate)
+    let overall = company.total_score ?? null;
 
-    // Calculate overall score (weighted average: 40% E, 40% S, 20% G)
-    let overall = null;
-    if (E !== null || S !== null || G !== null) {
-      const availableFactors = [E, S, G].filter(score => score !== null);
+    if (overall === null && (E !== null || S !== null || G !== null)) {
+      const availableFactors = [E, S, G].filter((score) => score !== null);
       const weights = {
-        wE: E !== null ? (availableFactors.length === 3 ? 0.4 : 1.0 / availableFactors.length) : 0,
-        wS: S !== null ? (availableFactors.length === 3 ? 0.4 : 1.0 / availableFactors.length) : 0,
-        wG: G !== null ? (availableFactors.length === 3 ? 0.2 : 1.0 / availableFactors.length) : 0
+        wE:
+          E !== null
+            ? availableFactors.length === 3
+              ? 0.4
+              : 1.0 / availableFactors.length
+            : 0,
+        wS:
+          S !== null
+            ? availableFactors.length === 3
+              ? 0.4
+              : 1.0 / availableFactors.length
+            : 0,
+        wG:
+          G !== null
+            ? availableFactors.length === 3
+              ? 0.2
+              : 1.0 / availableFactors.length
+            : 0,
       };
-      overall = Math.round((E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG);
+      overall = Math.round(
+        (E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG
+      );
     }
 
     return {
       environmental: E,
       social: S,
       governance: G,
-      overall: overall
+      overall: overall,
     };
   } catch (error) {
-    console.error('Error fetching ESG data:', error);
+    console.error("Error fetching ESG data:", error);
     return null;
   }
 }
@@ -282,133 +287,92 @@ async function getProductESGData(brandName) {
 // PRODUCT SEARCH AND LISTING
 // ============================================================================
 
-/**
- * FUNCTION: Search for products or list products
- *
- * What this does:
- * - Lets users search for products by typing words (like "chocolate")
- * - OR lets users scan a barcode to find a specific product
- * - Enriches products with ESG scores when available
- *
- * How to use it:
- *   GET /api/products?q=chocolate        (search for products with "chocolate")
- *   GET /api/products?upc=3274080005003  (find product with this barcode)
- *
- * What you get back:
- *   - Product information (name, brand, image, etc.)
- *   - ESG scores (environmental, social, governance, overall) if available
- *   - If we can't find it, you get an error message
- */
 const getAllProducts = async (req, res) => {
   try {
-    // STEP 1: Get the search information from the URL
-    // Example: if URL is "/api/products?q=chocolate", then q = "chocolate"
     const { upc, ean, gtin, q } = req.query;
 
-    // STEP 2: Make sure the user provided at least one way to search
-    // They need to give us either a barcode (upc/ean/gtin) OR a search word (q)
     if (!upc && !ean && !gtin && !q) {
-      // Send back an error saying "you forgot to tell us what to search for!"
       return res.status(400).json({
         error: {
-          code: 'INVALID_ARGUMENT',
-          message: 'Missing required parameters. Provide either upc, ean, gtin, or q for search'
-        }
+          code: "INVALID_ARGUMENT",
+          message:
+            "Missing required parameters. Provide either upc, ean, gtin, or q for search",
+        },
       });
     }
 
-    // STEP 3: Look up the product(s) using our product lookup service
-    // This service queries our MongoDB database of food products
-    // Note: For text searches (q), this now returns an array of products
-    // For barcode searches, it returns a single product
     let result;
     try {
-      result = await lookupProductService({
-        upc,    // Barcode number (if provided)
-        ean,    // Another type of barcode (if provided)
-        gtin,   // Yet another type of barcode (if provided)
-        q       // Search words (if provided)
-      });
+      result = await lookupProductService({ upc, ean, gtin, q });
     } catch (error) {
-      // If lookup fails, re-throw to be handled by error handler below
       throw error;
     }
 
-    // STEP 4: Handle both single product (barcode) and array of products (text search)
-    // Ensure text searches always return arrays
     const isArray = Array.isArray(result);
     const products = isArray ? result : [result];
-    
-    // Safety check: if it's a text search, result should be an array
+
     if (q && !isArray) {
-      console.warn('Text search returned non-array result, converting to array');
+      console.warn(
+        "Text search returned non-array result, converting to array"
+      );
       return res.status(500).json({
         error: {
-          code: 'INTERNAL_ERROR',
-          message: 'Invalid search result format'
-        }
+          code: "INTERNAL_ERROR",
+          message: "Invalid search result format",
+        },
       });
     }
 
-    // STEP 5: Enrich each product with ESG data
     const enrichedProducts = await Promise.all(
       products.map(async (product) => {
         const esgData = await getProductESGData(product.brand);
-        
-        // Format ESG data to match frontend expectations
-        const esgFormatted = esgData ? {
-          environmental: esgData.environmental,
-          social: esgData.social,
-          governance: esgData.governance,
-          overall: esgData.overall
-        } : null;
-        
+
+        const esgFormatted = esgData
+          ? {
+              environmental: esgData.environmental,
+              social: esgData.social,
+              governance: esgData.governance,
+              overall: esgData.overall,
+            }
+          : null;
+
         return {
           ...product,
-          esg: esgFormatted
+          esg: esgFormatted,
         };
       })
     );
 
-    // STEP 6: Send back the product(s) with ESG data
-    // For text searches, always return array
-    // For barcode searches, return single object
     if (isArray) {
       res.json(enrichedProducts);
     } else {
       res.json(enrichedProducts[0]);
     }
-
   } catch (error) {
-    // STEP 7: Handle errors - things that went wrong
-
-    // Error type 1: Product not found
-    if (error.code === 'NOT_FOUND') {
+    if (error.code === "NOT_FOUND") {
       return res.status(404).json({
         error: {
-          code: 'NOT_FOUND',
-          message: error.message
-        }
+          code: "NOT_FOUND",
+          message: error.message,
+        },
       });
     }
 
-    // Error type 2: Bad request (user sent wrong information)
-    if (error.code === 'INVALID_ARGUMENT') {
+    if (error.code === "INVALID_ARGUMENT") {
       return res.status(400).json({
         error: {
-          code: 'INVALID_ARGUMENT',
-          message: error.message
-        }
+          code: "INVALID_ARGUMENT",
+          message: error.message,
+        },
       });
     }
 
-    // Error type 3: Something unexpected went wrong on our server
-    console.error('Product search error:', error);
+    console.error("Product search error:", error);
     res.status(500).json({
       error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Failed to search products'
-      }
+        code: "INTERNAL_ERROR",
+        message: "Failed to search products",
+      },
     });
   }
 };
@@ -417,157 +381,97 @@ const getAllProducts = async (req, res) => {
 // PRODUCT DETAILS
 // ============================================================================
 
-/**
- * FUNCTION: Get detailed information about ONE specific product
- *
- * What this does:
- * - Shows all the details about a single product
- * - Uses the product's ID (usually a barcode number)
- * - First checks our cache (saved data) for faster response
- * - If not in cache, fetches fresh data from the product database
- *
- * How to use it:
- *   GET /api/products/3274080005003
- *   (The number at the end is the product ID)
- *
- * What you get back:
- *   - Product name, brand, category, image
- *   - Ingredients and nutrition info
- *   - Company information
- */
 const getProductById = async (req, res) => {
   try {
-    // STEP 1: Get the product ID from the URL
-    // Example: in "/api/products/3274080005003", the id is "3274080005003"
     const { id } = req.params;
 
-    // STEP 2: Make sure they actually gave us an ID
     if (!id) {
       return res.status(400).json({
         error: {
-          code: 'INVALID_ARGUMENT',
-          message: 'Product ID is required'
-        }
+          code: "INVALID_ARGUMENT",
+          message: "Product ID is required",
+        },
       });
     }
 
-    // STEP 3: Check our cache first (cache = saved data for faster loading)
-    // This is like checking your notebook before looking in a big textbook
     const cached = await ProductCache.findOne({ code: id });
     if (cached) {
-      // Found it in cache! Send it back immediately (faster!)
       return res.json(cached.data);
     }
 
-    // STEP 4: Not in cache, so get fresh data from the database
-    // This takes a bit longer but ensures we have the latest info
     const product = await lookupProductService({ upc: id });
-
-    // STEP 5: Send the product details back
     res.json(product);
-
   } catch (error) {
-    // Handle errors
-
-    // Error: Product doesn't exist
-    if (error.code === 'NOT_FOUND') {
+    if (error.code === "NOT_FOUND") {
       return res.status(404).json({
         error: {
-          code: 'NOT_FOUND',
-          message: `Product not found with ID: ${req.params.id}`
-        }
+          code: "NOT_FOUND",
+          message: `Product not found with ID: ${req.params.id}`,
+        },
       });
     }
 
-    // Error: Something went wrong on our end
-    console.error('Product lookup error:', error);
+    console.error("Product lookup error:", error);
     res.status(500).json({
       error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Failed to get product details'
-      }
+        code: "INTERNAL_ERROR",
+        message: "Failed to get product details",
+      },
     });
   }
 };
 
-/**
- * Get product by barcode
- *
- * Route: GET /api/products/barcode/:code
- * URL params: code (barcode value)
- *
- * Example:
- *   GET /api/products/barcode/3274080005003
- */
 const getProductByBarcode = async (req, res) => {
   try {
     const { code } = req.params;
 
-    // Validate barcode parameter
     if (!code) {
       return res.status(400).json({
         error: {
-          code: 'INVALID_ARGUMENT',
-          message: 'Barcode is required'
-        }
+          code: "INVALID_ARGUMENT",
+          message: "Barcode is required",
+        },
       });
     }
 
-    // Get product data using barcode
     const product = await lookupProductService({ upc: code });
-
     res.json(product);
-
   } catch (error) {
-    if (error.code === 'NOT_FOUND') {
+    if (error.code === "NOT_FOUND") {
       return res.status(404).json({
         error: {
-          code: 'NOT_FOUND',
-          message: `Product not found with barcode: ${req.params.code}`
-        }
+          code: "NOT_FOUND",
+          message: `Product not found with barcode: ${req.params.code}`,
+        },
       });
     }
 
-    console.error('Barcode lookup error:', error);
+    console.error("Barcode lookup error:", error);
     res.status(500).json({
       error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Failed to lookup product by barcode'
-      }
+        code: "INTERNAL_ERROR",
+        message: "Failed to lookup product by barcode",
+      },
     });
   }
 };
 
 // ============================================================================
-// Internal Helper Function for Get Product Alternatives
+// HELPER FUNCTION: Get company ESG with collection
 // ============================================================================
-
-
-/**
- * Get company ESG data by brand name
- * @param {string} brandName - The brand name from the product
- * @param {object} esgCollection - MongoDB collection reference
- * @returns {object|null} Company ESG data or null if not found
- */
-// Helper function to get company ESG data
-async function getCompanyESG(brandName) {
+async function getCompanyESGWithCollection(brandName, esgCollection) {
   if (!brandName) return null;
 
-  // ✅ ADD THIS LINE - Map brand to parent company first
   const companyName = getBrandCompanyName(brandName);
+  const cleanName = companyName.split(",")[0].trim();
 
-  // Clean up company name (remove extra spaces, commas, etc.)
-  const cleanName = companyName.split(',')[0].trim();
-
-  // Try exact match first
   let company = await esgCollection.findOne({
-    name: { $regex: new RegExp(`^${cleanName}`, 'i') }  // Changed from ^${cleanName}$ to be more flexible
+    name: { $regex: new RegExp(`^${cleanName}`, "i") },
   });
 
-  // If not found, try partial match
   if (!company) {
     company = await esgCollection.findOne({
-      name: { $regex: cleanName, $options: 'i' }
+      name: { $regex: cleanName, $options: "i" },
     });
   }
 
@@ -576,11 +480,15 @@ async function getCompanyESG(brandName) {
   return {
     company_name: company.name,
     ticker: company.ticker || null,
-    environment_score: company.environment_level || null,
-    social_score: company.social_level || null,
-    governance_score: company.governance_level || null,
-    total_score: company.total_level || null,
-    last_processing_date: company.last_processing_date || null
+    environment_score: company.environment_score || null,
+    environment_level: company.environment_level || null,
+    social_score: company.social_score || null,
+    social_level: company.social_level || null,
+    governance_score: company.governance_score || null,
+    governance_level: company.governance_level || null,
+    total_score: company.total_score || null,
+    total_level: company.total_level || null,
+    last_processing_date: company.last_processing_date || null,
   };
 }
 
@@ -588,126 +496,87 @@ async function getCompanyESG(brandName) {
 // ESG DATA (Environmental, Social, Governance Scores)
 // ============================================================================
 
-/**
- * FUNCTION: Get ESG scores for a product
- *
- * What is ESG?
- * - E (Environment): How much does the company care about nature? (pollution, recycling, etc.)
- * - S (Social): How well does the company treat people? (workers, communities, etc.)
- * - G (Governance): How honest and fair is the company? (leadership, ethics, etc.)
- *
- * What this does:
- * 1. Finds the product you're asking about
- * 2. Figures out which company makes it
- * 3. Looks up that company's ESG scores (ratings from 0-100)
- * 4. Sends back all three scores so you can see how ethical the company is
- *
- * How to use it:
- *   GET /api/products/3274080005003/esg
- *
- * What you get back:
- *   - Environment score (0-100): higher is better for the planet
- *   - Social score (0-100): higher means they treat people better
- *   - Governance score (0-100): higher means more trustworthy company
- */
 const getProductESG = async (req, res) => {
   try {
-    // STEP 1: Get the product ID from the URL
     const { id } = req.params;
 
-    // STEP 2: Find the product information
-    // First, check our cache (faster)
     const cached = await ProductCache.findOne({ code: id });
     let product;
 
     if (cached) {
-      // Found in cache - use it!
       product = cached.data;
     } else {
-      // Not in cache - get fresh data from the database
-      // Try to lookup by barcode first, but handle non-numeric IDs gracefully
-      // Check if id is numeric (barcode)
       try {
         if (/^\d+$/.test(id)) {
           product = await lookupProductService({ upc: id });
         } else {
-          // If not numeric, it might be a product code from the database
           product = await lookupProductService({ gtin: id });
         }
-        
-        // Ensure we got a single product, not an array
+
         if (Array.isArray(product)) {
-          product = product[0]; // Take first result if array
+          product = product[0];
         }
       } catch (error) {
-        // If lookup fails, handle it below
         throw error;
       }
     }
 
-    // STEP 3: Make sure we have product brand information
-    // Without brand info, we can't look up ESG scores
     if (!product || !product.brand) {
       return res.status(404).json({
         error: {
-          code: 'NOT_FOUND',
-          message: 'Brand information not available for this product. ESG data cannot be retrieved.'
-        }
+          code: "NOT_FOUND",
+          message:
+            "Brand information not available for this product. ESG data cannot be retrieved.",
+        },
       });
     }
 
-    // STEP 4: Find the company in our database using brand name
-    // Map brand to parent company first (e.g., "Great Value" → "Walmart")
     const companyName = getBrandCompanyName(product.brand);
     const company = await Company.findOne({
-      $or: [
-        { name: { $regex: companyName, $options: 'i' } },      // Search by company name
-        { aliases: { $regex: companyName, $options: 'i' } }    // Or by alternative names
-      ]
+      name: { $regex: companyName, $options: "i" },
     });
 
-    // STEP 5: Make sure the company has ESG data
-    if (!company || !company.esgSources || company.esgSources.length === 0) {
+    if (!company) {
       return res.status(404).json({
         error: {
-          code: 'NOT_FOUND',
-          message: `No ESG data found for product brand: ${companyName}`
-        }
+          code: "NOT_FOUND",
+          message: `No ESG data found for product brand: ${companyName}`,
+        },
       });
     }
 
-    // STEP 6: Get the most recent ESG data
-    // Companies can have multiple ESG reports - we want the newest one
-    const latestESG = company.esgSources.reduce((latest, source) => {
-      // If we don't have a latest yet, use this one
-      if (!latest) return source;
+    const E = company.environment_score ?? null;
+    const S = company.social_score ?? null;
+    const G = company.governance_score ?? null;
+    let overall = company.total_score ?? null;
 
-      // Compare dates to find the newest
-      const latestAsOf = latest.asOf || new Date().toISOString();
-      const sourceAsOf = source.asOf || new Date().toISOString();
-
-      // Return whichever is newer
-      return sourceAsOf > latestAsOf ? source : latest;
-    });
-
-    // STEP 7: Calculate overall ESG score
-    const E = latestESG.raw?.E ?? null;
-    const S = latestESG.raw?.S ?? null;
-    const G = latestESG.raw?.G ?? null;
-
-    // Calculate overall score (weighted average: 40% E, 40% S, 20% G)
-    let overall = null;
-    if (E !== null || S !== null || G !== null) {
-      const availableFactors = [E, S, G].filter(score => score !== null);
+    if (overall === null && (E !== null || S !== null || G !== null)) {
+      const availableFactors = [E, S, G].filter((score) => score !== null);
       const weights = {
-        wE: E !== null ? (availableFactors.length === 3 ? 0.4 : 1.0 / availableFactors.length) : 0,
-        wS: S !== null ? (availableFactors.length === 3 ? 0.4 : 1.0 / availableFactors.length) : 0,
-        wG: G !== null ? (availableFactors.length === 3 ? 0.2 : 1.0 / availableFactors.length) : 0
+        wE:
+          E !== null
+            ? availableFactors.length === 3
+              ? 0.4
+              : 1.0 / availableFactors.length
+            : 0,
+        wS:
+          S !== null
+            ? availableFactors.length === 3
+              ? 0.4
+              : 1.0 / availableFactors.length
+            : 0,
+        wG:
+          G !== null
+            ? availableFactors.length === 3
+              ? 0.2
+              : 1.0 / availableFactors.length
+            : 0,
       };
-      overall = Math.round((E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG);
+      overall = Math.round(
+        (E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG
+      );
     }
 
-    // STEP 8: Format and send back the ESG scores
     res.json({
       productId: id,
       productName: product.name,
@@ -716,48 +585,53 @@ const getProductESG = async (req, res) => {
       companyName: company.name,
       esgData: {
         environment: {
-          score: E,   // E = Environment score (0-100)
-          description: 'Environmental impact score (0-100, higher is better for Earth)'
+          score: E,
+          grade: company.environment_grade || null,
+          level: company.environment_level || null,
+          description:
+            "Environmental impact score (0-100, higher is better for Earth)",
         },
         social: {
-          score: S,   // S = Social score (0-100)
-          description: 'Social responsibility score (0-100, higher means treats people better)'
+          score: S,
+          grade: company.social_grade || null,
+          level: company.social_level || null,
+          description:
+            "Social responsibility score (0-100, higher means treats people better)",
         },
         governance: {
-          score: G,   // G = Governance score (0-100)
-          description: 'Corporate governance score (0-100, higher means more trustworthy)'
+          score: G,
+          grade: company.governance_grade || null,
+          level: company.governance_level || null,
+          description:
+            "Corporate governance score (0-100, higher means more trustworthy)",
         },
         overall: {
           score: overall,
-          description: 'Overall ESG score (weighted average of E, S, G)'
+          grade: company.total_grade || null,
+          level: company.total_level || null,
+          description: "Overall ESG score (weighted average of E, S, G)",
         },
-        scale: latestESG.raw?.scale || '0-100'
+        scale: "0-100",
       },
-      dataSource: latestESG.source,              // Where we got this data from
-      asOf: latestESG.asOf,                      // When this data was collected
-      lastUpdated: new Date().toISOString()      // Right now (when we sent this)
+      lastProcessingDate: company.last_processing_date,
+      lastUpdated: new Date().toISOString(),
     });
-
   } catch (error) {
-    // Handle errors
-
-    // Error: Couldn't find the data
-    if (error.code === 'NOT_FOUND') {
+    if (error.code === "NOT_FOUND") {
       return res.status(404).json({
         error: {
-          code: 'NOT_FOUND',
-          message: error.message
-        }
+          code: "NOT_FOUND",
+          message: error.message,
+        },
       });
     }
 
-    // Error: Something went wrong on our server
-    console.error('ESG lookup error:', error);
+    console.error("ESG lookup error:", error);
     res.status(500).json({
       error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Failed to get ESG data for product'
-      }
+        code: "INTERNAL_ERROR",
+        message: "Failed to get ESG data for product",
+      },
     });
   }
 };
@@ -766,166 +640,108 @@ const getProductESG = async (req, res) => {
 // PRODUCT ALTERNATIVES (VECTOR SEARCH)
 // ============================================================================
 
-/**
- * Get product alternatives using vector similarity search
- *
- * Route: GET /api/products/:id/alternatives
- * URL params: id (product ID)
- * Query params: limit (optional, default 5)
- *
- * This will use MongoDB vector search to find similar products
- * based on multiple factors:
- * - Product category
- * - Brand ethical ratings
- * - Price range
- * - Nutritional profile
- *
- * Example:
- *   GET /api/products/3274080005003/alternatives?limit=5
- *
- * TODO: Implement vector search when live data is ready
- */
-
 const getProductAlternatives = async (req, res) => {
   try {
     const { id } = req.params;
     const limit = parseInt(req.query.limit) || 5;
 
-    // Import mongoose to access MongoDB directly
-    const mongoose = (await import('mongoose')).default;
-    const foodCollection = mongoose.connection.db.collection('food');
-    const esgCollection = mongoose.connection.db.collection('esg_scores');
+    const mongoose = (await import("mongoose")).default;
+    const foodCollection = mongoose.connection.db.collection("food");
+    const esgCollection = mongoose.connection.db.collection("esg_scores");
 
-    // Use the outer getCompanyESG helper that includes brand mapping
-    // Note: Make sure the outer getCompanyESG function has access to esgCollection
-    const getCompanyESGWithCollection = async (brandName) => {
-      if (!brandName) return null;
-
-      // Map brand to parent company (e.g., "Great Value" → "Walmart")
-      const companyName = getBrandCompanyName(brandName);
-
-      // Clean up company name (remove extra spaces, commas, etc.)
-      const cleanName = companyName.split(',')[0].trim();
-
-      // Try exact match first
-      let company = await esgCollection.findOne({
-        name: { $regex: new RegExp(`^${cleanName}`, 'i') }
-      });
-
-      // If not found, try partial match
-      if (!company) {
-        company = await esgCollection.findOne({
-          name: { $regex: cleanName, $options: 'i' }
-        });
-      }
-
-      if (!company) return null;
-
-      return {
-        company_name: company.name,
-        environment_score: company.environment_score || null,
-        social_score: company.social_score || null,
-        governance_score: company.governance_score || null,
-        total_score: company.total_score || null,
-        total_level: company.total_level || null,
-        last_processing_date: company.last_processing_date || null
-      };
-    };
-
-    // Find product in food collection by code (barcode)
-    // Try to parse as integer first (for numeric barcodes)
     let product = null;
     const numericId = /^\d+$/.test(id) ? parseInt(id) : null;
-    
+
     if (numericId !== null) {
       product = await foodCollection.findOne({ code: numericId });
     }
-    
-    // If not found in food collection, try to look it up via the product lookup service
+
     if (!product) {
       try {
         const lookupResult = await lookupProductService(
           numericId !== null ? { upc: id } : { gtin: id }
         );
-        
-        // If we got a result (single product, not array), try to find it in food collection
+
         if (lookupResult && !Array.isArray(lookupResult)) {
           const productCode = lookupResult.id || lookupResult.barcode?.value;
           if (productCode && /^\d+$/.test(productCode.toString())) {
-            product = await foodCollection.findOne({ code: parseInt(productCode) });
+            product = await foodCollection.findOne({
+              code: parseInt(productCode),
+            });
           }
-          
-          // If still not found, try by product name
+
           if (!product && lookupResult.name) {
-            product = await foodCollection.findOne({ 
-              product_name: { $regex: lookupResult.name, $options: 'i' } 
+            product = await foodCollection.findOne({
+              product_name: { $regex: lookupResult.name, $options: "i" },
             });
           }
         } else if (Array.isArray(lookupResult) && lookupResult.length > 0) {
-          // If array, take the first result
           const firstResult = lookupResult[0];
           const productCode = firstResult.id || firstResult.barcode?.value;
           if (productCode && /^\d+$/.test(productCode.toString())) {
-            product = await foodCollection.findOne({ code: parseInt(productCode) });
+            product = await foodCollection.findOne({
+              code: parseInt(productCode),
+            });
           }
         }
       } catch (error) {
-        // If lookup fails (product not found in database), continue and return error below
-        // This is expected if the product doesn't exist
-        console.log(`Product ${id} not found via lookup service:`, error.message);
+        console.log(
+          `Product ${id} not found via lookup service:`,
+          error.message
+        );
       }
     }
 
     if (!product) {
       return res.status(404).json({
         error: {
-          code: 'NOT_FOUND',
-          message: `Product not found with ID: ${id}. Product may not be in the food database.`
-        }
+          code: "NOT_FOUND",
+          message: `Product not found with ID: ${id}. Product may not be in the food database.`,
+        },
       });
     }
 
-    // Check if product has embeddings
     if (!product.embedding || product.embedding.length === 0) {
       return res.json({
         productId: id,
         productName: product.product_name,
         alternatives: [],
-        message: 'Product does not have embeddings yet. Generate embeddings by running: POST /api/food/generate'
+        message:
+          "Product does not have embeddings yet. Generate embeddings by running: POST /api/food/generate",
       });
     }
 
-    // Get product's environmental grade
-    const GRADE_SCORES = { 'a': 5, 'b': 4, 'c': 3, 'd': 2, 'e': 1, 'unknown': 0, '': 0 };
-    const originalGrade = String(product.environmental_score_grade || '').toLowerCase();
+    const GRADE_SCORES = { a: 5, b: 4, c: 3, d: 2, e: 1, unknown: 0, "": 0 };
+    const originalGrade = String(
+      product.environmental_score_grade || ""
+    ).toLowerCase();
     const originalScore = GRADE_SCORES[originalGrade] || 0;
     const isUnknownGrade = originalScore === 0;
 
-    // Get categories - last one is most specific
-    const categories = product.categories ? product.categories.split(',').map(c => c.trim()) : [];
-    const specificCategory = categories.length > 0 ? categories[categories.length - 1] : '';
-    const broadCategory = categories.length > 1 ? categories[categories.length - 2] : '';
+    const categories = product.categories
+      ? product.categories.split(",").map((c) => c.trim())
+      : [];
+    const specificCategory =
+      categories.length > 0 ? categories[categories.length - 1] : "";
+    const broadCategory =
+      categories.length > 1 ? categories[categories.length - 2] : "";
 
-    // Build query with flexible category matching
     const query = {
       _id: { $ne: product._id },
-      embedding: { $exists: true, $ne: [] }
+      embedding: { $exists: true, $ne: [] },
     };
 
-    // Only filter by category if product has a known grade
-    // Unknown products search ALL categories for any graded alternative
     if (!isUnknownGrade && specificCategory) {
-      query.$or = [
-        { categories: { $regex: specificCategory, $options: 'i' } }
-      ];
+      query.$or = [{ categories: { $regex: specificCategory, $options: "i" } }];
       if (broadCategory) {
-        query.$or.push({ categories: { $regex: broadCategory, $options: 'i' } });
+        query.$or.push({
+          categories: { $regex: broadCategory, $options: "i" },
+        });
       }
     }
 
     const candidates = await foodCollection.find(query).toArray();
 
-    // Calculate cosine similarity
     function cosineSimilarity(vecA, vecB) {
       const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
       const magnitudeA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
@@ -933,26 +749,26 @@ const getProductAlternatives = async (req, res) => {
       return dotProduct / (magnitudeA * magnitudeB);
     }
 
-    // Use lower threshold for unknown grade products
     const similarityThreshold = isUnknownGrade ? 0.65 : 0.75;
-
-    // Find better alternatives
     const alternatives = [];
 
     for (const candidate of candidates) {
-      const similarity = cosineSimilarity(product.embedding, candidate.embedding);
+      const similarity = cosineSimilarity(
+        product.embedding,
+        candidate.embedding
+      );
 
-      // Use dynamic threshold based on whether product has grade
       if (similarity > similarityThreshold) {
-        const candidateGrade = String(candidate.environmental_score_grade || '').toLowerCase();
+        const candidateGrade = String(
+          candidate.environmental_score_grade || ""
+        ).toLowerCase();
         const candidateScore = GRADE_SCORES[candidateGrade] || 0;
 
-        // NEVER recommend unknown grade products as alternatives
         if (candidateScore === 0) continue;
 
-        // For unknown products: show any graded alternative
-        // For graded products: only show better grades
-        const shouldInclude = isUnknownGrade ? true : (candidateScore > originalScore);
+        const shouldInclude = isUnknownGrade
+          ? true
+          : candidateScore > originalScore;
 
         if (shouldInclude) {
           alternatives.push({
@@ -963,36 +779,38 @@ const getProductAlternatives = async (req, res) => {
             environmental_score_grade: candidate.environmental_score_grade,
             image_url: candidate.image_url,
             similarity: Math.round(similarity * 100) / 100,
-            grade_improvement: isUnknownGrade ? candidateScore : (candidateScore - originalScore)
+            grade_improvement: isUnknownGrade
+              ? candidateScore
+              : candidateScore - originalScore,
           });
         }
       }
     }
 
-    // Sort by similarity first (most relevant), then grade improvement
     alternatives.sort((a, b) => {
-      // Primary sort: similarity (higher is better)
       if (Math.abs(b.similarity - a.similarity) > 0.05) {
         return b.similarity - a.similarity;
       }
-      // Secondary sort: grade improvement (or grade score for unknown products)
       return b.grade_improvement - a.grade_improvement;
     });
 
-    // Enrich alternatives with company ESG data
     const enrichedAlternatives = await Promise.all(
       alternatives.slice(0, limit).map(async (alt) => {
-        const companyESG = await getCompanyESGWithCollection(alt.brands);
-
+        const companyESG = await getCompanyESGWithCollection(
+          alt.brands,
+          esgCollection
+        );
         return {
           ...alt,
-          company_esg: companyESG
+          company_esg: companyESG,
         };
       })
     );
 
-    // Also get ESG for the original product
-    const originalProductESG = await getCompanyESGWithCollection(product.brands);
+    const originalProductESG = await getCompanyESGWithCollection(
+      product.brands,
+      esgCollection
+    );
 
     res.json({
       productId: id,
@@ -1002,32 +820,40 @@ const getProductAlternatives = async (req, res) => {
       company_esg: originalProductESG,
       alternatives: enrichedAlternatives,
       count: enrichedAlternatives.length,
-      matchedCategory: isUnknownGrade ? 'all categories' : (specificCategory || broadCategory || 'all categories'),
+      matchedCategory: isUnknownGrade
+        ? "all categories"
+        : specificCategory || broadCategory || "all categories",
       isUnknownGrade: isUnknownGrade,
       similarityThreshold: similarityThreshold,
-      message: isUnknownGrade ? 'Showing graded alternatives from all categories (original product has no environmental data)' : undefined,
+      message: isUnknownGrade
+        ? "Showing graded alternatives from all categories (original product has no environmental data)"
+        : undefined,
       implementation: {
-        status: 'active',
-        method: 'Vector search using HuggingFace embeddings with ESG enrichment',
+        status: "active",
+        method:
+          "Vector search using HuggingFace embeddings with ESG enrichment",
         features: [
-          'Semantic similarity using AI embeddings (384-d vectors)',
-          isUnknownGrade ? 'Minimum 65% similarity for unknown products' : 'Minimum 75% similarity threshold for relevance',
-          'Filtered by better environmental grades',
-          'Never recommends unknown grade products',
-          isUnknownGrade ? 'Searches all categories for unknown products' : 'Specific category matching for graded products',
-          'Sorted by similarity and grade improvement',
-          'Enriched with company ESG scores with brand-to-company mapping'
-        ]
-      }
+          "Semantic similarity using AI embeddings (384-d vectors)",
+          isUnknownGrade
+            ? "Minimum 65% similarity for unknown products"
+            : "Minimum 75% similarity threshold for relevance",
+          "Filtered by better environmental grades",
+          "Never recommends unknown grade products",
+          isUnknownGrade
+            ? "Searches all categories for unknown products"
+            : "Specific category matching for graded products",
+          "Sorted by similarity and grade improvement",
+          "Enriched with company ESG scores with brand-to-company mapping",
+        ],
+      },
     });
-
   } catch (error) {
-    console.error('Alternatives lookup error:', error);
+    console.error("Alternatives lookup error:", error);
     res.status(500).json({
       error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Failed to get product alternatives'
-      }
+        code: "INTERNAL_ERROR",
+        message: "Failed to get product alternatives",
+      },
     });
   }
 };
@@ -1036,127 +862,99 @@ const getProductAlternatives = async (req, res) => {
 // PRODUCT SUMMARIES (AI-GENERATED)
 // ============================================================================
 
-/*
- * HELPER FUNCTION
- * Receives an id, and returns a newly generated summary.
- *
- */
 const generateProductSummary = async (id) => {
-    try {
-        // Get product details
-        const cached = await ProductCache.findOne({ code: id });
-        let product;
+  try {
+    const cached = await ProductCache.findOne({ code: id });
+    let product;
 
-        if (cached) {
-            product = cached.data;
-        } else {
-            product = await lookupProductService({ upc: id });
-        }
-
-        // TODO(liam): Implement LangChain summary generation
-        // const summary = await axios.get(
-        //     "http://example.com/data",
-        //     { params: { product } }
-        // );
-        const summary = {
-            productId: id,
-            productName: product.name,
-            summary: 'AI-generated summary will be available when LangChain integration is complete',
-            generatedAt: new Date().toISOString(),
-            implementation: {
-                status: 'pending',
-                plannedFeatures: [
-                    'LangChain integration for AI summaries',
-                    'Summary includes: product overview, ethical considerations, health info',
-                    'Cached summaries with TTL',
-                    'Support for multiple languages'
-                ]
-            }
-        };
-
-        await redisClient.setex("productsSummary", CACHE_TTL, JSON.stringify(summary));
-
-        return summary;
+    if (cached) {
+      product = cached.data;
+    } else {
+      product = await lookupProductService({ upc: id });
     }
-    catch (error) {
-        console.error('Summary generation error:', error);
-        throw new Error('Failed to generate product summary');
-    }
+
+    const summary = {
+      productId: id,
+      productName: product.name,
+      summary:
+        "AI-generated summary will be available when LangChain integration is complete",
+      generatedAt: new Date().toISOString(),
+      implementation: {
+        status: "pending",
+        plannedFeatures: [
+          "LangChain integration for AI summaries",
+          "Summary includes: product overview, ethical considerations, health info",
+          "Cached summaries with TTL",
+          "Support for multiple languages",
+        ],
+      },
+    };
+
+    await redisClient.setex(
+      "productsSummary",
+      CACHE_TTL,
+      JSON.stringify(summary)
+    );
+
+    return summary;
+  } catch (error) {
+    console.error("Summary generation error:", error);
+    throw new Error("Failed to generate product summary");
+  }
 };
 
-/**
- * Gets an existing summary, or generates a new one for
- * an existing product if not found.
- *
- * Route: GET /api/products/:id/summary
- * URL params: id (product ID)
- *
- * This endpoint retrieves a previously generated summary from cache.
- * If no cached summary exists, a new one is generated.
- * If an error occurs, a 500 code is returned.
- *
- * Example:
- *   GET /api/products/3274080005003/summary
- */
 const getProductSummary = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-        redisClient.get('productsSummary', async (err, summary) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({
-                    error: {
-                        code: 'REDIS_ERROR',
-                        message: 'Redis read failed'
-                    }
-                });
-            }
-
-            if (summary != null) {
-                return res.json(JSON.parse(summary));
-            }
-            else {
-                try {
-                    const newSummary = await generateProductSummary(id);
-                    return res.json(newSummary);
-                }
-                catch (err) {
-                    console.error(err);
-                    return res.status(500).json({
-                        error: {
-                            code: 'INTERNAL_ERROR',
-                            message: err.message
-                        }
-                    });
-                }
-            }
+    redisClient.get("productsSummary", async (err, summary) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({
+          error: {
+            code: "REDIS_ERROR",
+            message: "Redis read failed",
+          },
         });
-    }
-    catch (error) {
-        console.error('Summary retrieval error:', error);
-        res.status(500).json({
+      }
+
+      if (summary != null) {
+        return res.json(JSON.parse(summary));
+      } else {
+        try {
+          const newSummary = await generateProductSummary(id);
+          return res.json(newSummary);
+        } catch (err) {
+          console.error(err);
+          return res.status(500).json({
             error: {
-                code: 'INTERNAL_ERROR',
-                message: 'Failed to retrieve product summary'
-            }
-        });
-    }
+              code: "INTERNAL_ERROR",
+              message: err.message,
+            },
+          });
+        }
+      }
+    });
+  } catch (error) {
+    console.error("Summary retrieval error:", error);
+    res.status(500).json({
+      error: {
+        code: "INTERNAL_ERROR",
+        message: "Failed to retrieve product summary",
+      },
+    });
+  }
 };
 
 // ============================================================================
 // EXPORTS
 // ============================================================================
 
-/**
- * Export all controller functions
- * These will be imported by the routes file and mapped to endpoints
- */
 export {
   getAllProducts,
   getProductById,
   getProductByBarcode,
   getProductESG,
   getProductAlternatives,
-  getProductSummary
+  getProductSummary,
 };
