@@ -317,35 +317,62 @@ const getAllProducts = async (req, res) => {
       });
     }
 
-    // STEP 3: Look up the product(s) using our OpenFoodFacts service
-    // This service talks to a big database of food products
+    // STEP 3: Look up the product(s) using our product lookup service
+    // This service queries our MongoDB database of food products
     // Note: For text searches (q), this now returns an array of products
     // For barcode searches, it returns a single product
-    const result = await lookupProductService({
-      upc,    // Barcode number (if provided)
-      ean,    // Another type of barcode (if provided)
-      gtin,   // Yet another type of barcode (if provided)
-      q       // Search words (if provided)
-    });
+    let result;
+    try {
+      result = await lookupProductService({
+        upc,    // Barcode number (if provided)
+        ean,    // Another type of barcode (if provided)
+        gtin,   // Yet another type of barcode (if provided)
+        q       // Search words (if provided)
+      });
+    } catch (error) {
+      // If lookup fails, re-throw to be handled by error handler below
+      throw error;
+    }
 
     // STEP 4: Handle both single product (barcode) and array of products (text search)
+    // Ensure text searches always return arrays
     const isArray = Array.isArray(result);
     const products = isArray ? result : [result];
+    
+    // Safety check: if it's a text search, result should be an array
+    if (q && !isArray) {
+      console.warn('Text search returned non-array result, converting to array');
+      return res.status(500).json({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'Invalid search result format'
+        }
+      });
+    }
 
     // STEP 5: Enrich each product with ESG data
     const enrichedProducts = await Promise.all(
       products.map(async (product) => {
         const esgData = await getProductESGData(product.brand);
+        
+        // Format ESG data to match frontend expectations
+        const esgFormatted = esgData ? {
+          environmental: esgData.environmental,
+          social: esgData.social,
+          governance: esgData.governance,
+          overall: esgData.overall
+        } : null;
+        
         return {
           ...product,
-          esg: esgData
+          esg: esgFormatted
         };
       })
     );
 
     // STEP 6: Send back the product(s) with ESG data
-    // If it was a single product (barcode), return single object
-    // If it was an array (text search), return array
+    // For text searches, always return array
+    // For barcode searches, return single object
     if (isArray) {
       res.json(enrichedProducts);
     } else {
@@ -432,7 +459,7 @@ const getProductById = async (req, res) => {
       return res.json(cached.data);
     }
 
-    // STEP 4: Not in cache, so get fresh data from OpenFoodFacts
+    // STEP 4: Not in cache, so get fresh data from the database
     // This takes a bit longer but ensures we have the latest info
     const product = await lookupProductService({ upc: id });
 
@@ -597,14 +624,24 @@ const getProductESG = async (req, res) => {
       // Found in cache - use it!
       product = cached.data;
     } else {
-      // Not in cache - get fresh data from OpenFoodFacts
+      // Not in cache - get fresh data from the database
       // Try to lookup by barcode first, but handle non-numeric IDs gracefully
       // Check if id is numeric (barcode)
-      if (/^\d+$/.test(id)) {
-        product = await lookupProductService({ upc: id });
-      } else {
-        // If not numeric, it might be a product code from OpenFoodFacts
-        product = await lookupProductService({ gtin: id });
+      try {
+        if (/^\d+$/.test(id)) {
+          product = await lookupProductService({ upc: id });
+        } else {
+          // If not numeric, it might be a product code from the database
+          product = await lookupProductService({ gtin: id });
+        }
+        
+        // Ensure we got a single product, not an array
+        if (Array.isArray(product)) {
+          product = product[0]; // Take first result if array
+        }
+      } catch (error) {
+        // If lookup fails, handle it below
+        throw error;
       }
     }
 
@@ -804,17 +841,17 @@ const getProductAlternatives = async (req, res) => {
       product = await foodCollection.findOne({ code: numericId });
     }
     
-    // If not found in food collection, try to look it up via OpenFoodFacts
+    // If not found in food collection, try to look it up via the product lookup service
     if (!product) {
       try {
         const lookupResult = await lookupProductService(
           numericId !== null ? { upc: id } : { gtin: id }
         );
         
-        // If we got a result, try to find it in food collection by product name or code
+        // If we got a result (single product, not array), try to find it in food collection
         if (lookupResult && !Array.isArray(lookupResult)) {
           const productCode = lookupResult.id || lookupResult.barcode?.value;
-          if (productCode && /^\d+$/.test(productCode)) {
+          if (productCode && /^\d+$/.test(productCode.toString())) {
             product = await foodCollection.findOne({ code: parseInt(productCode) });
           }
           
@@ -824,10 +861,18 @@ const getProductAlternatives = async (req, res) => {
               product_name: { $regex: lookupResult.name, $options: 'i' } 
             });
           }
+        } else if (Array.isArray(lookupResult) && lookupResult.length > 0) {
+          // If array, take the first result
+          const firstResult = lookupResult[0];
+          const productCode = firstResult.id || firstResult.barcode?.value;
+          if (productCode && /^\d+$/.test(productCode.toString())) {
+            product = await foodCollection.findOne({ code: parseInt(productCode) });
+          }
         }
       } catch (error) {
-        // If lookup fails, continue and return error below
-        console.error('Failed to lookup product:', error);
+        // If lookup fails (product not found in database), continue and return error below
+        // This is expected if the product doesn't exist
+        console.log(`Product ${id} not found via lookup service:`, error.message);
       }
     }
 
