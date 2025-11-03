@@ -21,6 +21,7 @@ env:
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
   TF_VAR_mongodb_uri: ${{ secrets.MONGODB_URI }}
+  TF_VAR_redis_url: ${{ secrets.REDIS_URL }}
 
 jobs:
   terraform:

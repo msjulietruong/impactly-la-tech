@@ -1,85 +1,103 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-// ESG score data structure
-const esgSourceSchema = new mongoose.Schema({
-  source: {
-    type: String,
-    required: true,
-    description: 'Data source identifier (e.g., kaggle-public-company-esg)'
+// Main company/ESG schema
+const companySchema = new mongoose.Schema(
+  {
+    ticker: {
+      type: String,
+      required: true,
+      description: 'Stock ticker symbol (e.g., "gm")',
+    },
+    name: {
+      type: String,
+      required: true,
+      description: 'Official company name (e.g., "General Motors Co")',
+    },
+    logo: {
+      type: String,
+      description: "Company logo URL",
+    },
+    weburl: {
+      type: String,
+      description: "Company website URL",
+    },
+    environment_grade: {
+      type: String,
+      description: "Environmental grade (A, B, C, etc.)",
+    },
+    environment_level: {
+      type: String,
+      description: "Environmental level (High, Medium, Low)",
+    },
+    social_grade: {
+      type: String,
+      description: "Social grade (A, B, C, etc.)",
+    },
+    social_level: {
+      type: String,
+      description: "Social level (High, Medium, Low)",
+    },
+    governance_grade: {
+      type: String,
+      description: "Governance grade (A, B, C, etc.)",
+    },
+    governance_level: {
+      type: String,
+      description: "Governance level (High, Medium, Low)",
+    },
+    environment_score: {
+      type: Number,
+      min: 0,
+      max: 100,
+      description: "Environmental score (0-100)",
+    },
+    social_score: {
+      type: Number,
+      min: 0,
+      max: 100,
+      description: "Social score (0-100)",
+    },
+    governance_score: {
+      type: Number,
+      min: 0,
+      max: 100,
+      description: "Governance score (0-100)",
+    },
+    total_score: {
+      type: Number,
+      min: 0,
+      max: 100,
+      description: "Total ESG score (0-100)",
+    },
+    last_processing_date: {
+      type: String,
+      description: 'Date when ESG data was last processed (e.g., "04/17/2022")',
+    },
+    total_grade: {
+      type: String,
+      description: "Overall grade (A, BBB, etc.)",
+    },
+    total_level: {
+      type: String,
+      description: "Overall level (High, Medium, Low)",
+    },
+    cik: {
+      type: Number,
+      description: "SEC Central Index Key number",
+    },
   },
-  asOf: {
-    type: String, // ISO date string
-    required: true,
-    description: 'Date when ESG data was collected'
-  },
-  raw: {
-    E: { 
-      type: Number, 
-      min: 0, 
-      max: 100,
-      description: 'Environmental score (0-100)'
-    },
-    S: { 
-      type: Number, 
-      min: 0, 
-      max: 100,
-      description: 'Social/Labor score (0-100)'
-    },
-    G: { 
-      type: Number, 
-      min: 0, 
-      max: 100,
-      description: 'Governance score (0-100)'
-    },
-    scale: { 
-      type: String, 
-      default: "0-100",
-      description: 'Score scale description'
-    }
+  {
+    timestamps: true,
+    collection: "esg_scores", // Explicitly set collection name
   }
-});
-
-// Main company schema
-const companySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    description: 'Official company name'
-  },
-  aliases: {
-    type: [String],
-    description: 'Alternative company names'
-  },
-  tickers: {
-    type: [String],
-    description: 'Stock ticker symbols (e.g., MSFT, AAPL)'
-  },
-  country: {
-    type: String,
-    default: null,
-    description: 'Country where company is headquartered'
-  },
-  domains: {
-    type: [String],
-    description: 'Company website domains'
-  },
-  esgSources: {
-    type: [esgSourceSchema],
-    description: 'ESG data from various sources'
-  }
-}, {
-  timestamps: true // Adds createdAt and updatedAt
-});
+);
 
 // Database indexes for better performance
-companySchema.index(
-  { "tickers": 1 },
-  { unique: true, collation: { locale: 'en', strength: 2 } }
-);
+companySchema.index({ ticker: 1 });
 companySchema.index({ name: 1 });
-companySchema.index({ "esgSources.asOf": -1 });
+companySchema.index({ name: "text" }); // Text search index
 
 // Create and export the Company model
-const Company = mongoose.model("Company", companySchema);
+const Company = mongoose.model("Company", companySchema, "esg_scores");
 
 export default Company;
