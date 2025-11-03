@@ -1,0 +1,27 @@
+{
+  "company_summary": [
+    {
+      "text": "Kirkland Signature demonstrates strong environmental practices by reducing single-use plastic across its bottled water line. The company has transitioned to lighter packaging and improved recycling rates within its supply chain.",
+      "tag": "Sustainability",
+      "sources": [
+        "https://www.kirkland.com/environmental-impact",
+        "https://example.com/plastic-reduction-initiative"
+      ]
+    },
+    {
+      "text": "The brand has invested in energy-efficient bottling facilities and collaborates with local water suppliers to ensure responsible water sourcing and minimal waste generation.",
+      "tag": "Energy & Resources",
+      "sources": [
+        "https://example.com/renewable-facilities",
+        "https://example.com/water-sourcing"
+      ]
+    },
+    {
+      "text": "Kirkland also reports annually on its ESG (Environmental, Social, and Governance) metrics, showcasing progress toward sustainable manufacturing and ethical supply chain management.",
+      "tag": "Corporate Responsibility",
+      "sources": [
+        "https://example.com/kirkland-esg-report"
+      ]
+    }
+  ]
+}
