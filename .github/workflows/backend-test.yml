@@ -1,0 +1,50 @@
+name: Backend Test CI
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - backend/**
+      - '!backend/**/*.md'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - backend/**
+      - '!backend/**/*.md'
+  workflow_dispatch:
+
+concurrency:
+  group: backend-test-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: ${{ secrets.NODE_VERSION }}
+  MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  REDIS_URL: ${{ secrets.REDIS_URL }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
+
+    - name: Install dependencies
+      run: |
+        cd backend
+        npm ci
+
+    - name: Run tests
+      run: |
+        cd backend
+        npm test
+      env:
+        CI: true
+        NODE_OPTIONS: --experimental-vm-modules

@@ -1,0 +1,53 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": [
+      "_id",
+      "code"
+    ],
+    "properties": {
+      "_id": {
+        "bsonType": "objectId"
+      },
+      "brands": {
+        "bsonType": [
+          "string",
+          "long"
+        ]
+      },
+      "categories": {
+        "bsonType": "string"
+      },
+      "code": {
+        "bsonType": [
+          "long",
+          "int"
+        ]
+      },
+      "environmental_score_grade": {
+        "bsonType": [
+          "string",
+          "bool"
+        ]
+      },
+      "image_url": {
+        "bsonType": "string"
+      },
+      "manufacturing_places": {
+        "bsonType": "string"
+      },
+      "origins": {
+        "bsonType": "string"
+      },
+      "packaging_en": {
+        "bsonType": "string"
+      },
+      "product_name": {
+        "bsonType": [
+          "string",
+          "long"
+        ]
+      }
+    }
+  }
+}

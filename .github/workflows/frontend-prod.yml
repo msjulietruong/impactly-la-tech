@@ -1,0 +1,39 @@
+name: Frontend Server CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - frontend-next/**
+      - '!frontend-next/**/*.md'
+  workflow_dispatch:
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: ${{ secrets.NODE_VERSION }}
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  FRONTEND_TOKEN: ${{ secrets.FRONTEND_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Azure Deploy Static App
+      uses: Azure/static-web-apps-deploy@v1
+      with:
+        azure_static_web_apps_api_token: ${{ env.FRONTEND_TOKEN }}
+        repo_token: ${{ env.GITHUB_TOKEN }}
+        action: "upload"
+        app_location: "./frontend-next"
+        api_location: "" # api src code path - optional
+        output_location: "" # built app content dir - optional

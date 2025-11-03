@@ -7,6 +7,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@theme {
+  --theme-color-primary: #66754c;
+  --theme-color-secondary: #8e9b6d;
+  --theme-color-tertiary: #d5c7aa;
+  --theme-color-text-primary: #444232;
+  --theme-color-background: #f6eedb;
+}
 /* ======================================= */
 /* Global Styles */
 /* ======================================= */
@@ -17,7 +24,8 @@ body {
   height: 100%;
   width: 100%;
   font-family: var(--font-sans);
-  color: var(--text-primary);
+  color: var(--theme-color-text-primary);
+  background-color: var(--theme-color-background);
 }
 
 a {
