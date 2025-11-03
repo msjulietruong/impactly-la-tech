@@ -1,13 +1,6 @@
 import { lookupProduct as lookupProductService } from "../services/openFoodFactsService.js";
 import ProductCache from "../models/ProductCache.js";
 import Company from "../models/Company.js";
-import { lookupProduct as lookupProductService } from "../services/openFoodFactsService.js";
-import ProductCache from "../models/ProductCache.js";
-import Company from "../models/Company.js";
-
-import axios from "axios";
-import redisClient from "../utils/redisClient.js";
-import { CACHE_TTL } from "../utils/config.js";
 import axios from "axios";
 import redisClient from "../utils/redisClient.js";
 import { CACHE_TTL } from "../utils/config.js";
