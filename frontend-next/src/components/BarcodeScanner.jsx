@@ -14,7 +14,8 @@ export default function BarcodeScanner({ onScan, onClose }) {
 
     async function startScanner() {
       try {
-        const videoInputDevices = await BrowserMultiFormatReader.listVideoInputDevices();
+        const videoInputDevices =
+          await BrowserMultiFormatReader.listVideoInputDevices();
 
         if (videoInputDevices.length === 0) {
           setError("No camera found on this device.");
@@ -92,17 +93,17 @@ export default function BarcodeScanner({ onScan, onClose }) {
           placeholder="Enter code manually"
           value={manualCode}
           onChange={(e) => setManualCode(e.target.value)}
-          className="px-3 py-2 rounded-md border border-gray-500 bg-gray-800 text-white focus:outline-none"
+          className="w-full py-2 bg-white border-2 border-[var(--theme-color-primary)] rounded-full pl-6 pr-28 md:pr-32 text-base font-medium focus:outline-none shadow-sm"
         />
         <button
           onClick={handleManualSubmit}
-          className="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded-md text-white font-semibold"
+          className="px-4 py-2 bg-[var(--theme-color-primary)] hover:bg-[var(--theme-color-secondary)] rounded-full text-white font-semibold cursor-pointer transition-colors"
         >
           Submit
         </button>
         <button
           onClick={onClose}
-          className="px-4 py-2 bg-gray-700 hover:bg-gray-800 rounded-md text-white font-semibold"
+          className="px-4 py-2 bg-stone-600 hover:bg-stone-500 rounded-full text-white font-semibold cursor-pointer transition-colors"
         >
           Cancel
         </button>

@@ -17,15 +17,11 @@ export default function AISummaryDisplay({ company_summary }) {
 
   return (
     <motion.section
-      className="w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-md border border-[#D5C7AA] p-6 mt-6"
+      className="w-full mx-auto rounded-2xl shadow-md "
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <h2 className="text-2xl font-semibold text-[#444232] mb-5">
-        AI-Generated Company Summary
-      </h2>
-
       {loading && (
         <div className="flex flex-col items-center justify-center py-12 text-[#66754C]">
           <Loader2 className="animate-spin mb-3" size={36} />
@@ -35,7 +31,7 @@ export default function AISummaryDisplay({ company_summary }) {
 
       {!loading && data.length === 0 && (
         <div className="text-center py-10 text-[#66754C] italic">
-          No company summaries available yet.
+          No ethical-related news found in the last year.
         </div>
       )}
 
