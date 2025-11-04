@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3001/api/products";
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/products`;
 // const API_BASE_URL = "/api/products"; --- IGNORE ---
 
 export const fetchAllProducts = async (input) => {
