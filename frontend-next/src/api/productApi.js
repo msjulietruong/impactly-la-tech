@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3001/api/products";
+const API_BASE_URL =
+  "http://impactly-backend.azurewebsites.net/api/products/12142007687/summary";
 // const API_BASE_URL = "/api/products"; --- IGNORE ---
 
 export const fetchAllProducts = async (input) => {
