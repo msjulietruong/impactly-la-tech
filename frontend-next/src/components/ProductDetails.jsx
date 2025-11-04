@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import ESGScore from "./ESGScore";
+import { ChevronDown, ChevronRight } from "lucide-react";    
 
 export default function ProductDetails({ product }) {
   const data = product || {
