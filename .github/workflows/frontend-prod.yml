@@ -7,6 +7,11 @@ on:
     paths:
       - frontend-next/**
       - '!frontend-next/**/*.md'
+  pull_request:
+      branches: [ "main" ]
+      paths:
+        - frontend-next/**
+        - '!frontend-next/**/*.md'
   workflow_dispatch:
 
 concurrency:
@@ -37,3 +42,4 @@ jobs:
         app_location: "./frontend-next"
         api_location: "" # api src code path - optional
         output_location: "" # built app content dir - optional
+
