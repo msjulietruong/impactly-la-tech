@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Input from "./Input";
 import Modal from "./Modal";
 import BarcodeScanner from "./BarcodeScanner";
 import { useRouter } from "next/navigation";
