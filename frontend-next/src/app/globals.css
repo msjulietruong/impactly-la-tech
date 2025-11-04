@@ -21,7 +21,8 @@
 /* ======================================= */
 /* Global Reset */
 /* ======================================= */
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   margin: 0;
@@ -36,31 +37,6 @@ html, body {
 /* Universal box-sizing for layout consistency */
 * {
   box-sizing: border-box;
-}
-
-/* ======================================= */
-/* Buttons */
-/* ======================================= */
-button {
-  background: white; /* same white as search bar */
-  border: none;
-  box-shadow: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Remove focus rings globally, keep accessibility clean */
-button:focus {
-  outline: none;
-}
-
-/* Optional: hover effect for better interactivity */
-button:hover {
-  background-color: #f9f9f9;
 }
 
 /* ======================================= */

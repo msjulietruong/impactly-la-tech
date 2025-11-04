@@ -50,21 +50,21 @@ const COMPANY_BRAND_MAP = {
   "kirkland signature": "Costco",
 
   // General Mills brands
-  "general mills": "General Mills",
-  cheerios: "General Mills",
-  "nature valley": "General Mills",
-  yoplait: "General Mills",
-  "lucky charms": "General Mills",
-  pillsbury: "General Mills",
-  "haagen-dazs": "General Mills",
-  "betty crocker": "General Mills",
-  "old el paso": "General Mills",
-  totino: "General Mills",
-  trix: "General Mills",
-  "cocoa puffs": "General Mills",
-  "cinnamon toast crunch": "General Mills",
-  "fiber one": "General Mills",
-  wheaties: "General Mills",
+  "general mills": "General Mills Inc",
+  cheerios: "General Mills Inc",
+  "nature valley": "General Mills Inc",
+  yoplait: "General Mills Inc",
+  "lucky charms": "General Mills Inc",
+  pillsbury: "General Mills Inc",
+  "haagen-dazs": "General Mills Inc",
+  "betty crocker": "General Mills Inc",
+  "old el paso": "General Mills Inc",
+  totino: "General Mills Inc",
+  trix: "General Mills Inc",
+  "cocoa puffs": "General Mills Inc",
+  "cinnamon toast crunch": "General Mills Inc",
+  "fiber one": "General Mills Inc",
+  wheaties: "General Mills Inc",
 
   // PepsiCo brands
   pepsi: "PepsiCo",
@@ -105,16 +105,16 @@ const COMPANY_BRAND_MAP = {
   crunch: "Nestlé",
 
   // Kellogg's brands
-  kelloggs: "Kellogg's",
-  "kellogg's": "Kellogg's",
-  pringles: "Kellogg's",
-  "cheez-it": "Kellogg's",
-  "frosted flakes": "Kellogg's",
-  "special k": "Kellogg's",
-  "pop-tarts": "Kellogg's",
-  "rice krispies": "Kellogg's",
-  eggo: "Kellogg's",
-  "nutri-grain": "Kellogg's",
+  kelloggs: "Kellanova",
+  "kellogg's": "Kellanova",
+  pringles: "Kellanova",
+  "cheez-it": "Kellanova",
+  "frosted flakes": "Kellanova",
+  "special k": "Kellanova",
+  "pop-tarts": "Kellanova",
+  "rice krispies": "Kellanova",
+  eggo: "Kellanova",
+  "nutri-grain": "Kellanova",
 
   // Mars brands
   mars: "Mars",
@@ -270,12 +270,14 @@ async function getProductESGData(brandName) {
       );
     }
 
-    return {
-      environmental: E,
-      social: S,
-      governance: G,
-      overall: overall,
+    const result = {
+      environmental: { score: E },
+      social: { score: S },
+      governance: { score: G },
+      overall: { score: overall },
     };
+
+    return result;
   } catch (error) {
     console.error("Error fetching ESG data:", error);
     return null;
@@ -323,17 +325,10 @@ const getAllProducts = async (req, res) => {
     }
 
     const enrichedProducts = await Promise.all(
-      products.map(async (product) => {
+      products.map(async (product, index) => {
         const esgData = await getProductESGData(product.brand);
 
-        const esgFormatted = esgData
-          ? {
-              environmental: esgData.environmental,
-              social: esgData.social,
-              governance: esgData.governance,
-              overall: esgData.overall,
-            }
-          : null;
+        const esgFormatted = esgData || null;
 
         return {
           ...product,
@@ -399,7 +394,18 @@ const getProductById = async (req, res) => {
     }
 
     const product = await lookupProductService({ upc: id });
-    res.json(product);
+
+    // Add ESG data to the product
+    const esgData = await getProductESGData(product.brand);
+
+    const esgFormatted = esgData || null;
+
+    const enrichedProduct = {
+      ...product,
+      esg: esgFormatted,
+    };
+
+    res.json(enrichedProduct);
   } catch (error) {
     if (error.code === "NOT_FOUND") {
       return res.status(404).json({
@@ -536,7 +542,7 @@ const getProductESG = async (req, res) => {
     });
 
     if (!company) {
-      return res.status(404).json({
+      return res.status(200).json({
         error: {
           code: "NOT_FOUND",
           message: `No ESG data found for product brand: ${companyName}`,
@@ -644,62 +650,60 @@ const getProductAlternatives = async (req, res) => {
     const { id } = req.params;
     const limit = parseInt(req.query.limit) || 5;
 
+    // Import mongoose to access MongoDB directly
     const mongoose = (await import("mongoose")).default;
     const foodCollection = mongoose.connection.db.collection("food");
     const esgCollection = mongoose.connection.db.collection("esg_scores");
 
-    let product = null;
-    const numericId = /^\d+$/.test(id) ? parseInt(id) : null;
+    // Use the outer getCompanyESG helper that includes brand mapping
+    // Note: Make sure the outer getCompanyESG function has access to esgCollection
+    const getCompanyESGWithCollection = async (brandName) => {
+      if (!brandName) return null;
 
-    if (numericId !== null) {
-      product = await foodCollection.findOne({ code: numericId });
-    }
+      // Map brand to parent company (e.g., "Great Value" → "Walmart")
+      const companyName = getBrandCompanyName(brandName);
 
-    if (!product) {
-      try {
-        const lookupResult = await lookupProductService(
-          numericId !== null ? { upc: id } : { gtin: id }
-        );
+      // Clean up company name (remove extra spaces, commas, etc.)
+      const cleanName = companyName.split(",")[0].trim();
 
-        if (lookupResult && !Array.isArray(lookupResult)) {
-          const productCode = lookupResult.id || lookupResult.barcode?.value;
-          if (productCode && /^\d+$/.test(productCode.toString())) {
-            product = await foodCollection.findOne({
-              code: parseInt(productCode),
-            });
-          }
+      // Try exact match first
+      let company = await esgCollection.findOne({
+        name: { $regex: new RegExp(`^${cleanName}`, "i") },
+      });
 
-          if (!product && lookupResult.name) {
-            product = await foodCollection.findOne({
-              product_name: { $regex: lookupResult.name, $options: "i" },
-            });
-          }
-        } else if (Array.isArray(lookupResult) && lookupResult.length > 0) {
-          const firstResult = lookupResult[0];
-          const productCode = firstResult.id || firstResult.barcode?.value;
-          if (productCode && /^\d+$/.test(productCode.toString())) {
-            product = await foodCollection.findOne({
-              code: parseInt(productCode),
-            });
-          }
-        }
-      } catch (error) {
-        console.log(
-          `Product ${id} not found via lookup service:`,
-          error.message
-        );
+      // If not found, try partial match
+      if (!company) {
+        company = await esgCollection.findOne({
+          name: { $regex: cleanName, $options: "i" },
+        });
       }
-    }
+
+      if (!company) return null;
+
+      return {
+        company_name: company.name,
+        environment_score: company.environment_score || null,
+        social_score: company.social_score || null,
+        governance_score: company.governance_score || null,
+        total_score: company.total_score || null,
+        total_level: company.total_level || null,
+        last_processing_date: company.last_processing_date || null,
+      };
+    };
+
+    // Find product in food collection by code (barcode)
+    const product = await foodCollection.findOne({ code: parseInt(id) });
 
     if (!product) {
       return res.status(404).json({
         error: {
           code: "NOT_FOUND",
-          message: `Product not found with ID: ${id}. Product may not be in the food database.`,
+          message: `Product not found with ID: ${id}`,
         },
       });
     }
 
+    // Check if product has embeddings
     if (!product.embedding || product.embedding.length === 0) {
       return res.json({
         productId: id,
@@ -710,6 +714,7 @@ const getProductAlternatives = async (req, res) => {
       });
     }
 
+    // Get product's environmental grade
     const GRADE_SCORES = { a: 5, b: 4, c: 3, d: 2, e: 1, unknown: 0, "": 0 };
     const originalGrade = String(
       product.environmental_score_grade || ""
@@ -717,6 +722,7 @@ const getProductAlternatives = async (req, res) => {
     const originalScore = GRADE_SCORES[originalGrade] || 0;
     const isUnknownGrade = originalScore === 0;
 
+    // Get categories - last one is most specific
     const categories = product.categories
       ? product.categories.split(",").map((c) => c.trim())
       : [];
@@ -725,11 +731,14 @@ const getProductAlternatives = async (req, res) => {
     const broadCategory =
       categories.length > 1 ? categories[categories.length - 2] : "";
 
+    // Build query with flexible category matching
     const query = {
       _id: { $ne: product._id },
       embedding: { $exists: true, $ne: [] },
     };
 
+    // Only filter by category if product has a known grade
+    // Unknown products search ALL categories for any graded alternative
     if (!isUnknownGrade && specificCategory) {
       query.$or = [{ categories: { $regex: specificCategory, $options: "i" } }];
       if (broadCategory) {
@@ -741,6 +750,7 @@ const getProductAlternatives = async (req, res) => {
 
     const candidates = await foodCollection.find(query).toArray();
 
+    // Calculate cosine similarity
     function cosineSimilarity(vecA, vecB) {
       const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
       const magnitudeA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
@@ -748,7 +758,10 @@ const getProductAlternatives = async (req, res) => {
       return dotProduct / (magnitudeA * magnitudeB);
     }
 
+    // Use lower threshold for unknown grade products
     const similarityThreshold = isUnknownGrade ? 0.65 : 0.75;
+
+    // Find better alternatives
     const alternatives = [];
 
     for (const candidate of candidates) {
@@ -757,19 +770,27 @@ const getProductAlternatives = async (req, res) => {
         candidate.embedding
       );
 
+      // Use dynamic threshold based on whether product has grade
       if (similarity > similarityThreshold) {
         const candidateGrade = String(
           candidate.environmental_score_grade || ""
         ).toLowerCase();
         const candidateScore = GRADE_SCORES[candidateGrade] || 0;
 
+        // NEVER recommend unknown grade products as alternatives
         if (candidateScore === 0) continue;
 
+        // For unknown products: show any graded alternative
+        // For graded products: only show better grades
         const shouldInclude = isUnknownGrade
           ? true
           : candidateScore > originalScore;
 
         if (shouldInclude) {
+          // Get ESG data for this alternative
+          const altEsgData = await getProductESGData(candidate.brands);
+          const overallScore = altEsgData?.overall?.score || null;
+
           alternatives.push({
             code: candidate.code,
             product_name: candidate.product_name,
@@ -777,6 +798,8 @@ const getProductAlternatives = async (req, res) => {
             categories: candidate.categories,
             environmental_score_grade: candidate.environmental_score_grade,
             image_url: candidate.image_url,
+            score: overallScore, // Overall ESG score
+            esg: altEsgData, // Full ESG breakdown
             similarity: Math.round(similarity * 100) / 100,
             grade_improvement: isUnknownGrade
               ? candidateScore
@@ -786,29 +809,22 @@ const getProductAlternatives = async (req, res) => {
       }
     }
 
+    // Sort by similarity first (most relevant), then grade improvement
     alternatives.sort((a, b) => {
+      // Primary sort: similarity (higher is better)
       if (Math.abs(b.similarity - a.similarity) > 0.05) {
         return b.similarity - a.similarity;
       }
+      // Secondary sort: grade improvement (or grade score for unknown products)
       return b.grade_improvement - a.grade_improvement;
     });
 
-    const enrichedAlternatives = await Promise.all(
-      alternatives.slice(0, limit).map(async (alt) => {
-        const companyESG = await getCompanyESGWithCollection(
-          alt.brands,
-          esgCollection
-        );
-        return {
-          ...alt,
-          company_esg: companyESG,
-        };
-      })
-    );
+    // Limit the results
+    const limitedAlternatives = alternatives.slice(0, limit);
 
+    // Also get ESG for the original product
     const originalProductESG = await getCompanyESGWithCollection(
-      product.brands,
-      esgCollection
+      product.brands
     );
 
     res.json({
@@ -817,8 +833,8 @@ const getProductAlternatives = async (req, res) => {
       brand: product.brands,
       environmental_score_grade: product.environmental_score_grade,
       company_esg: originalProductESG,
-      alternatives: enrichedAlternatives,
-      count: enrichedAlternatives.length,
+      alternatives: limitedAlternatives,
+      count: limitedAlternatives.length,
       matchedCategory: isUnknownGrade
         ? "all categories"
         : specificCategory || broadCategory || "all categories",
