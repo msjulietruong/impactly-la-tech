@@ -6,7 +6,12 @@ on:
       - main
     paths:
       - frontend-next/**
-      - '!frontend-next/**/*.md'
+      - "!frontend-next/**/*.md"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - frontend-next/**
+      - "!frontend-next/**/*.md"
   workflow_dispatch:
 
 concurrency:
@@ -26,14 +31,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Azure Deploy Static App
-      uses: Azure/static-web-apps-deploy@v1
-      with:
-        azure_static_web_apps_api_token: ${{ env.FRONTEND_TOKEN }}
-        repo_token: ${{ env.GITHUB_TOKEN }}
-        action: "upload"
-        app_location: "./frontend-next"
-        api_location: "" # api src code path - optional
-        output_location: "" # built app content dir - optional
+      - name: Azure Deploy Static App
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ env.FRONTEND_TOKEN }}
+          repo_token: ${{ env.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "./frontend-next"
+          api_location: "" # api src code path - optional
+          output_location: "" # built app content dir - optional
