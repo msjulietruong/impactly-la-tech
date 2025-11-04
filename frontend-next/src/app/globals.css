@@ -7,6 +7,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ======================================= */
+/* Theme Variables */
+/* ======================================= */
 @theme {
   --theme-color-primary: #66754c;
   --theme-color-secondary: #8e9b6d;
@@ -14,29 +17,55 @@
   --theme-color-text-primary: #444232;
   --theme-color-background: #f6eedb;
 }
+
 /* ======================================= */
-/* Global Styles */
+/* Global Reset */
 /* ======================================= */
-html,
-body {
-  margin: 0;
-  padding: 0;
+html, body {
   height: 100%;
   width: 100%;
-  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  background-color: var(--theme-color-background); /* soft beige */
   color: var(--theme-color-text-primary);
-  background-color: var(--theme-color-background);
+  font-family: var(--font-fredoka), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  text-decoration: underline;
+/* Universal box-sizing for layout consistency */
+* {
+  box-sizing: border-box;
 }
 
+/* ======================================= */
+/* Buttons */
+/* ======================================= */
 button {
+  background: white; /* same white as search bar */
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Optional: main container spacing */
+/* Remove focus rings globally, keep accessibility clean */
+button:focus {
+  outline: none;
+}
+
+/* Optional: hover effect for better interactivity */
+button:hover {
+  background-color: #f9f9f9;
+}
+
+/* ======================================= */
+/* Main container spacing */
+/* ======================================= */
 main {
   display: flex;
   flex-direction: column;

@@ -23,6 +23,7 @@ env:
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   REDIS_URL: ${{ secrets.REDIS_URL }}
   MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  AGENT_API_ENDPOINT: ${{ secrets.AGENT_API_ENDPOINT }}
   APP_NAME: impactly-backend
 
 jobs:

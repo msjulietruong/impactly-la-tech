@@ -1,0 +1,23 @@
+# Byte-compiled / cached files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments (in-project)
+.venv/
+venv/
+ENV/
+
+# Environment files
+.env
+
+# Test / tooling caches
+.pytest_cache/
+.mypy_cache/
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
