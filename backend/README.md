@@ -114,33 +114,6 @@ Shows how ethical the company is:
 
 ---
 
-## 📁 Project Structure (Where Everything Is)
-
-```
-backend/
-├── server.js              ← Main file - starts the server
-├── controllers/           ← Functions that handle requests
-│   ├── productController.js   ← Product search & details
-│   ├── companyController.js   ← Company & ESG scores
-│   └── healthController.js    ← Health check
-├── models/                ← Database schemas (data structure)
-│   ├── Company.js             ← Company data structure
-│   ├── ProductCache.js        ← Cached product data
-│   └── ProductSummary.js      ← AI summaries (future)
-├── routes/                ← URL endpoints
-│   └── index.js               ← All routes defined here
-├── middleware/            ← Helper code that runs before routes
-│   ├── errorHandler.js        ← Handles all errors
-│   └── validateObjectId.js    ← Checks MongoDB IDs are valid
-├── services/              ← External API connections
-│   └── openFoodFactsService.js ← Talks to food database
-└── tests/                 ← Automated tests
-    ├── api.spec.js            ← Main test file
-    └── setup.js               ← Test configuration
-```
-
----
-
 ## 🛠️ Available Commands
 
 ```bash
@@ -170,45 +143,6 @@ Get ESG score breakdown for a company.
 
 ---
 
-## ❌ Common Problems & Solutions
-
-### Problem: "Cannot connect to MongoDB"
-**Solution:** Check your `.env` file has the correct `MONGODB_URI`
-
-### Problem: "Port 3001 already in use"
-**Solution:** Another program is using port 3001. Either:
-- Stop the other program, OR
-- Change `PORT=3002` in your `.env` file
-
-### Problem: "Module not found"
-**Solution:** Run `npm install` again
-
-### Problem: "ESG data not found"
-**Solution:** This is normal! Not all products/brands have ESG data yet.
-
----
-
-## 🔄 How Data Flows
-
-```
-1. Frontend sends request → http://localhost:3001/api/products?q=chocolate
-
-2. Server receives it → server.js
-
-3. Routes it to the right controller → routes/index.js
-
-4. Controller processes it → controllers/productController.js
-   ↓
-   Might call external API (OpenFoodFacts)
-   Might query MongoDB database
-   ↓
-5. Returns formatted data → JSON response
-
-6. Frontend receives the data!
-```
-
----
-
 ## Development Scripts
 
 - `npm run dev` - Start development server with nodemon (auto-restart)
@@ -216,20 +150,6 @@ Get ESG score breakdown for a company.
 - `npm test` - Run test suite
 - `npm run ingest:esg` - Ingest ESG data from CSV
 - `npm run verify` - Ingest data and run tests
-
----
-
-##  Next Steps (testing)
-
-### To connect your own dataset:
-1. Update the `MONGODB_URI` in `.env` with your database
-2. Import your data using `npm run ingest:esg`
-3. The API will automatically work with your data!
-
-### To connect the frontend:
-1. Make sure this backend is running (`npm start`)
-2. In your frontend code, call: `fetch('http://localhost:3001/api/products?q=search')`
-3. The backend will respond with JSON data!
 
 ---
 
@@ -271,28 +191,6 @@ Expected CSV columns:
 - `social_grade`, `social_level`, `governance_grade`, `governance_level`
 - `total_grade`, `total_level`, `cik`
 
----
-
-## Future Features
-
-### Coming Soon
-- **Vector Search**: MongoDB Atlas Vector Search for product alternatives
-- **AI Summaries**: LangChain integration for intelligent product summaries
-- **Batch Operations**: Bulk product lookups
-- **Webhooks**: Real-time ESG data updates
-- **Rate Limiting**: API rate limiting and authentication
-
-### Ready for Live Data
-All endpoints are designed to work seamlessly with live data. The current implementation includes:
-- Placeholder responses for AI features
-- Database models ready for vector search
-- Clear TODO comments in code for easy implementation
-- Well-documented API contracts
-
-When the frontend team is ready, simply:
-1. Connect to live MongoDB Atlas instance
-2. Implement LangChain service (see `productController.js`)
-3. Set up vector search indexes (see `ProductSummary.js`)
 
 ---
 
@@ -306,14 +204,6 @@ When the frontend team is ready, simply:
 | `INTERNAL_ERROR` | 500 | Server error |
 | `EXTERNAL_SERVICE_ERROR` | 500 | External API failure |
 
----
-
-## 🤝 Need Help?
-
-1. Check the code comments first
-2. Run `npm test` to see what's broken
-3. Check the error messages - they tell you what's wrong!
-4. Run tests before committing
 
 ---
 
@@ -330,4 +220,4 @@ When the frontend team is ready, simply:
 
 ## License
 
-This project is part of the LA Tech hackathon project "Impactly".
+This project is part of the LA Tech project "Impactly".
