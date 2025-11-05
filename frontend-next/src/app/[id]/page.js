@@ -309,7 +309,9 @@ export default function ResultsPage() {
               title="Alternatives"
               className="mt-8 w-full text-left items-start"
             />
-            {loadingAlts && <Spinner label="Loading alternatives..." />}
+            <div className="w-full">
+              {loadingAlts && <Spinner label="Loading alternatives..." />}
+            </div>
             {!loadingAlts && errorAlts && (
               <div className="text-red-600">Error: {errorAlts}</div>
             )}
