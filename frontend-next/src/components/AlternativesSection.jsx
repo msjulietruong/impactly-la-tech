@@ -11,18 +11,12 @@ export default function AlternativesSection({ alternatives = [] }) {
 
   return (
     <motion.section
-      className="w-full bg-white border border-[#e5dcc5] rounded-2xl shadow-sm p-6 mt-8"
+      className="w-full bg-white border border-[#e5dcc5] rounded-2xl shadow-sm p-6 mt-4"
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      <h3 className="text-[#66754C] text-xl font-semibold mb-4">
-        Alternatives
-      </h3>
-      <hr className="border-[#a1a68b] mb-6" />
-
-      {/* ✅ Alternatives List */}
       {hasAlternatives ? (
         <div className="max-h-[200px] overflow-y-scroll">
           {alternatives.map((alt, index) => (
