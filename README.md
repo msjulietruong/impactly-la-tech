@@ -23,3 +23,9 @@
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠛⠁⠀⠀⠐⠛⠁⠀⠀
              - <i>impactly making a new impact.</i>⠀⠀
 </pre>             
+
+Impactly is platform that helps users find ethically-made products!
+
+We integrated data from well known public data such as Open Food Facts,
+Public Company ESG datasets, and real-time news scraping, generating
+tailored summaries that dynamically influence each product's score.
