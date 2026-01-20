@@ -876,12 +876,147 @@ const getProductAlternatives = async (req, res) => {
 // NOTE(liam): flag ingredients endpoint
 const checkProductIngredients = async (id) => {
   try {
-    // NOTE(liam): flags == bool
-    // missing: how to compare ingredients to some arbitrary set.
-    // Maybe we can maintain a table of ingredients with a score,
-    // similar to ESG? idk how this is going to work.
-    //
-  } catch (err) {}
+    if (!id) {
+      throw new Error("Product id is required");
+    }
+
+    // Try cache first (only barcodes are cached)
+    let product = null;
+    const cached = await ProductCache.findOne({ code: id });
+    if (cached) {
+      product = cached.data;
+    } else {
+      try {
+        // Use barcode lookup when id is numeric, otherwise try gtin
+        if (/^\d+$/.test(String(id))) {
+          product = await lookupProductService({ upc: String(id) });
+        } else {
+          product = await lookupProductService({ gtin: String(id) });
+        }
+
+        if (Array.isArray(product)) product = product[0];
+      } catch (err) {
+        // If lookup fails, return a descriptive result instead of throwing
+        console.error("Ingredient check: product lookup failed", err);
+        return {
+          productId: id,
+          ok: false,
+          error: {
+            code: err.code || "LOOKUP_FAILED",
+            message: err.message || String(err),
+          },
+        };
+      }
+    }
+
+    if (!product) {
+      return {
+        productId: id,
+        ok: false,
+        error: { code: "NOT_FOUND", message: "Product not found" },
+      };
+    }
+
+    // Extract ingredients text from common fields
+    let ingredientsText = "";
+    if (product.ingredients_text) {
+      ingredientsText = String(product.ingredients_text);
+    } else if (product.ingredients_text_en) {
+      ingredientsText = String(product.ingredients_text_en);
+    } else if (product.ingredients && Array.isArray(product.ingredients)) {
+      ingredientsText = product.ingredients
+        .map((ing) => (ing && (ing.text || ing)) || "")
+        .filter(Boolean)
+        .join(", ");
+    } else if (product.ingredients) {
+      ingredientsText = String(product.ingredients);
+    }
+
+    if (!ingredientsText || ingredientsText.trim() === "") {
+      return {
+        productId: id,
+        productName: product.product_name || product.name || null,
+        brand: product.brands || product.brand || null,
+        ok: true,
+        message: "No ingredients information available for this product",
+      };
+    }
+
+    const normalized = ingredientsText.toLowerCase();
+
+    // Define allergen and concern patterns (not exhaustive)
+    const ALLERGEN_PATTERNS = {
+      milk: /\b(milk|casein|whey|lactose|buttermilk|milk powder|skimmilk)\b/i,
+      eggs: /\b(egg|albumen|albumin)\b/i,
+      peanuts: /\b(peanut|groundnut)\b/i,
+      tree_nuts:
+        /\b(almond|walnut|pecan|cashew|hazelnut|pistachio|macadamia|brazil nut)\b/i,
+      soy: /\b(soy|soya|soybean|soy lecithin|soy protein)\b/i,
+      wheat_gluten: /\b(wheat|gluten|farina|semolina|spelt|durum|kamut)\b/i,
+      fish: /\b(fish|anchovy|cod|salmon|tuna|trout|herring|pollock)\b/i,
+      shellfish:
+        /\b(shellfish|shrimp|prawn|crab|lobster|crayfish|clam|mussel|oyster)\b/i,
+      sesame: /\b(sesame|tahini)\b/i,
+    };
+
+    const CONCERN_PATTERNS = {
+      palm_oil: /\b(palm oil|palmolein)\b/i,
+      high_fructose_corn_syrup: /\b(high[- ]fructose corn syrup|hfcs)\b/i,
+      artificial_colors:
+        /\b(red 40|yellow 5|yellow 6|blue 1|caramel color|artificial color|tartrazine|allura red)\b/i,
+      preservatives:
+        /\b(bht|bha|sodium benzoate|potassium sorbate|sorbate|sulfite|sulphite|nitrite|nitrate|propionate)\b/i,
+      trans_fat: /\b(hydrogenated|partially hydrogenated|trans fat)\b/i,
+      msg: /\b(mononatrium glutamate|monosodium glutamate|msg)\b/i,
+      artificial_sweeteners:
+        /\b(aspartame|sucralose|acesulfame|saccharin|neotame)\b/i,
+      high_sugar: /\b(sugar|corn syrup|glucose syrup|fructose)\b/i,
+    };
+
+    const foundAllergens = {};
+    const foundConcerns = {};
+
+    for (const [k, re] of Object.entries(ALLERGEN_PATTERNS)) {
+      foundAllergens[k] = re.test(normalized);
+    }
+
+    for (const [k, re] of Object.entries(CONCERN_PATTERNS)) {
+      foundConcerns[k] = re.test(normalized);
+    }
+
+    const matchedAllergens = Object.keys(foundAllergens).filter(
+      (k) => foundAllergens[k],
+    );
+    const matchedConcerns = Object.keys(foundConcerns).filter(
+      (k) => foundConcerns[k],
+    );
+
+    const safe = matchedAllergens.length === 0 && matchedConcerns.length === 0;
+
+    return {
+      productId: id,
+      productName: product.product_name || product.name || null,
+      brand: product.brands || product.brand || null,
+      ingredients: ingredientsText,
+      found: {
+        allergens: foundAllergens,
+        concerns: foundConcerns,
+      },
+      matchedAllergens,
+      matchedConcerns,
+      safe,
+    };
+  } catch (err) {
+    console.error("checkProductIngredients error:", err);
+    return {
+      productId: id,
+      ok: false,
+      error: {
+        code: err.code || "INTERNAL_ERROR",
+        message: err.message || String(err),
+      },
+    };
+  }
 };
 
 // ============================================================================
