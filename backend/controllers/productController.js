@@ -1,7 +1,7 @@
 import { lookupProduct as lookupProductService } from "../services/openFoodFactsService.js";
 import ProductCache from "../models/ProductCache.js";
 import Company from "../models/Company.js";
-import axios from "axios";
+import axios, { HttpStatusCode } from "axios";
 import redisClient from "../utils/redisClient.js";
 import { CACHE_TTL } from "../utils/config.js";
 
@@ -266,7 +266,7 @@ async function getProductESGData(brandName) {
             : 0,
       };
       overall = Math.round(
-        (E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG
+        (E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG,
       );
     }
 
@@ -314,7 +314,7 @@ const getAllProducts = async (req, res) => {
 
     if (q && !isArray) {
       console.warn(
-        "Text search returned non-array result, converting to array"
+        "Text search returned non-array result, converting to array",
       );
       return res.status(500).json({
         error: {
@@ -334,7 +334,7 @@ const getAllProducts = async (req, res) => {
           ...product,
           esg: esgFormatted,
         };
-      })
+      }),
     );
 
     if (isArray) {
@@ -578,7 +578,7 @@ const getProductESG = async (req, res) => {
             : 0,
       };
       overall = Math.round(
-        (E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG
+        (E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG,
       );
     }
 
@@ -717,7 +717,7 @@ const getProductAlternatives = async (req, res) => {
     // Get product's environmental grade
     const GRADE_SCORES = { a: 5, b: 4, c: 3, d: 2, e: 1, unknown: 0, "": 0 };
     const originalGrade = String(
-      product.environmental_score_grade || ""
+      product.environmental_score_grade || "",
     ).toLowerCase();
     const originalScore = GRADE_SCORES[originalGrade] || 0;
     const isUnknownGrade = originalScore === 0;
@@ -767,13 +767,13 @@ const getProductAlternatives = async (req, res) => {
     for (const candidate of candidates) {
       const similarity = cosineSimilarity(
         product.embedding,
-        candidate.embedding
+        candidate.embedding,
       );
 
       // Use dynamic threshold based on whether product has grade
       if (similarity > similarityThreshold) {
         const candidateGrade = String(
-          candidate.environmental_score_grade || ""
+          candidate.environmental_score_grade || "",
         ).toLowerCase();
         const candidateScore = GRADE_SCORES[candidateGrade] || 0;
 
@@ -824,7 +824,7 @@ const getProductAlternatives = async (req, res) => {
 
     // Also get ESG for the original product
     const originalProductESG = await getCompanyESGWithCollection(
-      product.brands
+      product.brands,
     );
 
     res.json({
@@ -873,6 +873,17 @@ const getProductAlternatives = async (req, res) => {
   }
 };
 
+// NOTE(liam): flag ingredients endpoint
+const checkProductIngredients = async (id) => {
+  try {
+    // NOTE(liam): flags == bool
+    // missing: how to compare ingredients to some arbitrary set.
+    // Maybe we can maintain a table of ingredients with a score,
+    // similar to ESG? idk how this is going to work.
+    //
+  } catch (err) {}
+};
+
 // ============================================================================
 // PRODUCT SUMMARIES (AI-GENERATED)
 // ============================================================================
@@ -892,7 +903,7 @@ const generateProductSummary = async (id) => {
         // Log the error and continue; the agent can still run using product_identifier only.
         console.error(
           "Product lookup failed inside generateProductSummary:",
-          lookupErr
+          lookupErr,
         );
         product = null;
       }
@@ -915,7 +926,7 @@ const generateProductSummary = async (id) => {
       "Calling summary agent:",
       agentUrl,
       "payload keys:",
-      Object.keys(payload)
+      Object.keys(payload),
     );
     const resp = await axios.post(agentUrl, payload, {
       headers,
@@ -956,7 +967,7 @@ const generateProductSummary = async (id) => {
           .split(",")[0]
           .trim()
           .toLowerCase()
-          .replace(/\s+/g, "_")
+          .replace(/\s+/g, "_"),
       ) || String(id);
     const cacheKey = `brandSummary:${companyKey}`;
 
@@ -974,7 +985,7 @@ const generateProductSummary = async (id) => {
     throw new Error(
       `Failed to generate product summary: ${
         typeof details === "string" ? details : JSON.stringify(details)
-      }`
+      }`,
     );
   }
 };
@@ -1004,7 +1015,7 @@ const getProductSummary = async (req, res) => {
           .split(",")[0]
           .trim()
           .toLowerCase()
-          .replace(/\s+/g, "_")
+          .replace(/\s+/g, "_"),
       ) || String(id);
     const cacheKey = `brandSummary:${companyKey}`;
 
