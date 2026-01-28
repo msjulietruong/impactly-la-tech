@@ -1,33 +1,13 @@
-import { lookupProduct as lookupProductService } from "../services/openFoodFactsService.js";
+// import { lookupProduct as lookupProductService } from "../services/openFoodFactsService.js";
 import ProductCache from "../models/ProductCache.js";
 import Company from "../models/Company.js";
 import axios, { HttpStatusCode } from "axios";
 import redisClient from "../utils/redisClient.js";
 import { CACHE_TTL } from "../utils/config.js";
 
-/**
- * PRODUCT CONTROLLER
- *
- * This controller handles all product-related operations including:
- * - Searching and listing products
- * - Getting product details by ID or barcode
- * - Fetching ESG (Environmental, Social, Governance) data for products
- * - Managing product alternatives
- * - Generating and caching product summaries
- *
- * All functions follow a standard format:
- * 1. Extract parameters from request
- * 2. Validate input
- * 3. Process the request (database queries, external API calls, etc.)
- * 4. Return formatted response
- * 5. Handle errors appropriately
- */
+import { Request, Response } from "express";
 
-// ============================================================================
-// BRAND TO COMPANY MAPPING
-// ============================================================================
-
-const COMPANY_BRAND_MAP = {
+const COMPANY_BRAND_MAP: Record<string, string> = {
   // Walmart brands
   walmart: "Walmart Inc",
   "great value": "Walmart Inc",
@@ -205,42 +185,34 @@ const COMPANY_BRAND_MAP = {
 /**
  * Convert brand name to parent company name
  */
-function getBrandCompanyName(brandName) {
+function getBrandCompanyName(
+  brandName: string | null | undefined,
+): string | null {
   if (!brandName) return null;
   const normalized = brandName.toLowerCase().trim();
   return COMPANY_BRAND_MAP[normalized] || brandName;
 }
 
-// ============================================================================
-// HELPER FUNCTION: Get ESG data for a product
-// ============================================================================
-/**
- * Helper function to get ESG data for a product by brand name
- * Returns null if no ESG data is found
- *
- */
-async function getProductESGData(brandName) {
+async function getProductESGData(
+  brandName: string | null | undefined,
+): Promise<ESGData | null> {
   if (!brandName) return null;
 
   try {
-    // Map brand to parent company (e.g., "Great Value" → "Walmart Inc")
     const companyName = getBrandCompanyName(brandName);
 
-    // Find the company in our database
-    const company = await Company.findOne({
+    const company = (await Company.findOne({
       name: { $regex: companyName, $options: "i" },
-    });
+    })) as CompanyDocument | null;
 
     if (!company) {
       return null;
     }
 
-    // ✅ NEW: Extract scores from flat structure
     const E = company.environment_score ?? null;
     const S = company.social_score ?? null;
     const G = company.governance_score ?? null;
 
-    // Calculate overall score (use total_score if available, otherwise calculate)
     let overall = company.total_score ?? null;
 
     if (overall === null && (E !== null || S !== null || G !== null)) {
@@ -270,7 +242,7 @@ async function getProductESGData(brandName) {
       );
     }
 
-    const result = {
+    const result: ESGData = {
       environmental: { score: E },
       social: { score: S },
       governance: { score: G },
@@ -284,13 +256,127 @@ async function getProductESGData(brandName) {
   }
 }
 
+// TODO(Liam): do below
+
 // ============================================================================
 // PRODUCT SEARCH AND LISTING
 // ============================================================================
 
-const getAllProducts = async (req, res) => {
+interface ESGData {
+  environmental: { score: number | null };
+  social: { score: number | null };
+  governance: { score: number | null };
+  overall: { score: number | null };
+}
+
+interface CompanyDocument {
+  environment_score?: number;
+  social_score?: number;
+  governance_score?: number;
+  total_score?: number;
+  name: string;
+}
+
+interface ProductQueryParams {
+  upc?: string;
+  ean?: string;
+  gtin?: string;
+  q?: string;
+}
+
+interface Product {
+  brand?: string;
+  name: string;
+  upc?: string;
+  ean?: string;
+  gtin?: string;
+  description?: string;
+  category?: string;
+  price?: string;
+  [key: string]: any;
+}
+
+interface EnrichedProduct extends Product {
+  esg: any | null;
+}
+
+interface ErrorResponse {
+  error: {
+    code: string;
+    message: string;
+  };
+}
+
+interface CustomError extends Error {
+  code?: string;
+}
+
+interface ServiceError extends Error {
+  code?: string;
+}
+
+interface CachedProduct {
+  code: string;
+  data: Product;
+}
+
+// NOTE(Liam): temporary
+const lookupProductService = async (
+  params: ProductQueryParams,
+): Promise<Product | Product[]> => {
+  const { upc, ean, gtin, q } = params;
+
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  const mockProducts: Product[] = [];
+
+  if (q) {
+    const searchTerm = q.toLowerCase();
+    const results = mockProducts.filter(
+      (product) =>
+        product.name.toLowerCase().includes(searchTerm) ||
+        product.brand?.toLowerCase().includes(searchTerm) ||
+        product.description?.toLowerCase().includes(searchTerm),
+    );
+
+    if (results.length === 0) {
+      const error = new Error(
+        `No products found matching: ${q}`,
+      ) as ServiceError;
+      throw error;
+    }
+
+    return results;
+  }
+
+  const code = upc || ean || gtin;
+  if (code) {
+    const product = mockProducts.find(
+      (p) => p.upc === code || p.ean === code || p.gtin === code,
+    );
+
+    if (!product) {
+      const error = new Error(
+        `Product not found with code: ${code}`,
+      ) as ServiceError;
+      error.code = "NOT_FOUND";
+      throw error;
+    }
+
+    return product;
+  }
+
+  const error = new Error("Invalid lookup parameters") as ServiceError;
+  error.code = "INVALID_ARGUMENT";
+  throw error;
+};
+
+const getAllProducts = async (
+  req: Request,
+  res: Response,
+): Promise<Response | void> => {
   try {
-    const { upc, ean, gtin, q } = req.query;
+    const { upc, ean, gtin, q } = req.query as ProductQueryParams;
 
     if (!upc && !ean && !gtin && !q) {
       return res.status(400).json({
@@ -299,75 +385,67 @@ const getAllProducts = async (req, res) => {
           message:
             "Missing required parameters. Provide either upc, ean, gtin, or q for search",
         },
-      });
+      } as ErrorResponse);
     }
 
-    let result;
+    let result: Product | Product[];
     try {
       result = await lookupProductService({ upc, ean, gtin, q });
     } catch (error) {
       throw error;
     }
 
-    const isArray = Array.isArray(result);
-    const products = isArray ? result : [result];
+    const products: Product[] = Array.isArray(result) ? result : [result];
+    const isArray: boolean = Array.isArray(result);
 
-    if (q && !isArray) {
-      console.warn(
-        "Text search returned non-array result, converting to array",
-      );
-      return res.status(500).json({
-        error: {
-          code: "INTERNAL_ERROR",
-          message: "Invalid search result format",
+    const enrichedProducts: EnrichedProduct[] = await Promise.all(
+      products.map(
+        async (product: Product, index: number): Promise<EnrichedProduct> => {
+          const esgData = await getProductESGData(product.brand);
+
+          const esgFormatted = esgData || null;
+
+          return {
+            ...product,
+            esg: esgFormatted,
+          };
         },
-      });
-    }
-
-    const enrichedProducts = await Promise.all(
-      products.map(async (product, index) => {
-        const esgData = await getProductESGData(product.brand);
-
-        const esgFormatted = esgData || null;
-
-        return {
-          ...product,
-          esg: esgFormatted,
-        };
-      }),
+      ),
     );
 
     if (isArray) {
-      res.json(enrichedProducts);
+      return res.json(enrichedProducts);
     } else {
-      res.json(enrichedProducts[0]);
+      return res.json(enrichedProducts[0]);
     }
   } catch (error) {
-    if (error.code === "NOT_FOUND") {
+    const customError = error as CustomError;
+
+    if (customError.code === "NOT_FOUND") {
       return res.status(404).json({
         error: {
           code: "NOT_FOUND",
-          message: error.message,
+          message: customError.message,
         },
-      });
+      } as ErrorResponse);
     }
 
-    if (error.code === "INVALID_ARGUMENT") {
+    if (customError.code === "INVALID_ARGUMENT") {
       return res.status(400).json({
         error: {
           code: "INVALID_ARGUMENT",
-          message: error.message,
+          message: customError.message,
         },
-      });
+      } as ErrorResponse);
     }
 
     console.error("Product search error:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: {
         code: "INTERNAL_ERROR",
         message: "Failed to search products",
       },
-    });
+    } as ErrorResponse);
   }
 };
 
@@ -375,29 +453,36 @@ const getAllProducts = async (req, res) => {
 // PRODUCT DETAILS
 // ============================================================================
 
-const getProductById = async (req, res) => {
+const getProductById = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
   try {
     const { id } = req.params;
+    const productId = id as string;
 
-    if (!id) {
+    if (!productId) {
       return res.status(400).json({
         error: {
           code: "INVALID_ARGUMENT",
           message: "Product ID is required",
         },
-      });
+      } as ErrorResponse);
     }
 
-    const cached = await ProductCache.findOne({ code: id });
+    const cached = (await ProductCache.findOne({
+      code: productId,
+    })) as CachedProduct | null;
+
     if (cached) {
       return res.json(cached.data);
     }
 
-    const product = await lookupProductService({ upc: id });
+    const product = (await lookupProductService({
+      upc: productId,
+    })) as Product;
 
-    // Add ESG data to the product
     const esgData = await getProductESGData(product.brand);
-
     const esgFormatted = esgData || null;
 
     const enrichedProduct = {
@@ -405,32 +490,38 @@ const getProductById = async (req, res) => {
       esg: esgFormatted,
     };
 
-    res.json(enrichedProduct);
+    return res.json(enrichedProduct);
   } catch (error) {
-    if (error.code === "NOT_FOUND") {
+    const customError = error as CustomError;
+
+    if (customError.code === "NOT_FOUND") {
       return res.status(404).json({
         error: {
           code: "NOT_FOUND",
           message: `Product not found with ID: ${req.params.id}`,
         },
-      });
+      } as ErrorResponse);
     }
 
     console.error("Product lookup error:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: {
         code: "INTERNAL_ERROR",
         message: "Failed to get product details",
       },
-    });
+    } as ErrorResponse);
   }
 };
 
-const getProductByBarcode = async (req, res) => {
+const getProductByCode = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
   try {
     const { code } = req.params;
+    const productCode = code as string;
 
-    if (!code) {
+    if (!productCode) {
       return res.status(400).json({
         error: {
           code: "INVALID_ARGUMENT",
@@ -439,25 +530,34 @@ const getProductByBarcode = async (req, res) => {
       });
     }
 
-    const product = await lookupProductService({ upc: code });
-    res.json(product);
+    const cached = (await ProductCache.findOne({
+      code: productCode,
+    })) as CachedProduct | null;
+
+    if (cached) {
+      return res.json(cached.data);
+    }
+
+    const product = await lookupProductService({ upc: productCode });
+    return res.json(product);
   } catch (error) {
-    if (error.code === "NOT_FOUND") {
+    const customError = error as CustomError;
+    if (customError.code === "NOT_FOUND") {
       return res.status(404).json({
         error: {
           code: "NOT_FOUND",
           message: `Product not found with barcode: ${req.params.code}`,
         },
-      });
+      } as ErrorResponse);
     }
 
     console.error("Barcode lookup error:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: {
         code: "INTERNAL_ERROR",
         message: "Failed to lookup product by barcode",
       },
-    });
+    } as ErrorResponse);
   }
 };
 
@@ -501,28 +601,54 @@ async function getCompanyESGWithCollection(brandName, esgCollection) {
 // ESG DATA (Environmental, Social, Governance Scores)
 // ============================================================================
 
-const getProductESG = async (req, res) => {
+const getProductESG = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
   try {
     const { id } = req.params;
+    const productId = id as string;
 
-    const cached = await ProductCache.findOne({ code: id });
-    let product;
+    if (!productId) {
+      return res.status(400).json({
+        error: {
+          code: "INVALID_ARGUMENT",
+          message: "Product ID is required",
+        },
+      } as ErrorResponse);
+    }
+
+    const cached = await ProductCache.findOne({ code: productId });
+    let product: Product | Product[];
 
     if (cached) {
       product = cached.data;
     } else {
       try {
-        if (/^\d+$/.test(id)) {
-          product = await lookupProductService({ upc: id });
+        if (/^\d+$/.test(productId)) {
+          product = await lookupProductService({ upc: productId });
         } else {
-          product = await lookupProductService({ gtin: id });
+          product = await lookupProductService({
+            gtin: productId,
+          });
         }
 
         if (Array.isArray(product)) {
           product = product[0];
         }
       } catch (error) {
-        throw error;
+        const customError = error as CustomError;
+
+        if (customError.code === "NOT_FOUND") {
+          return res.status(404).json({
+            error: {
+              code: "NOTE_FOUND",
+              message: `Product not found with ID: ${productId}`,
+            },
+          } as ErrorResponse);
+        }
+
+        console.error("Product esg lookup");
       }
     }
 

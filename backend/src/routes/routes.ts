@@ -1,40 +1,15 @@
-/**
- * ========================================
- * ROUTES - The URL Map
- * ========================================
- *
- * What this does:
- * - Maps URLs to functions (like a phone book maps names to numbers)
- * - When someone visits a URL, this file says "go to this function"
- *
- * Example:
- *   User visits: GET /api/products?q=chocolate
- *   This file says: "Run the getAllProducts function!"
- *
- * Route Organization:
- * - /api/* = New modern endpoints (use these!)
- * - /v1/* = Old legacy endpoints (for backwards compatibility)
- * - /health = Check if server is running
- *
- * Controllers (The functions that do the work):
- * - healthController → Checks server health
- * - productController → Handles products (search, details, ESG)
- * - companyController → Handles companies (lookup, scores)
- */
-
 import express from "express";
+import type { Router } from "express";
 
-// Import all the controller files (they have the actual functions)
-import * as healthController from '../controllers/healthController.js';
-import * as productController from '../controllers/productController.js';
-import * as companyController from '../controllers/companyController.js';
-import embeddingsRoutes from './embeddings.js';
+import * as healthController from "../controllers/healthController.js";
+import * as productController from "../controllers/productController.js";
+import * as companyController from "../controllers/companyController.js";
+import embeddingsRoutes from "./embeddings.js";
 
-// Import middleware (helper code that runs before routes)
-import validateObjectId from '../middleware/validateObjectId.js';
+import validateObjectId from "../middleware/validateObjectId.js";
 
 // Create the router (this will hold all our routes)
-const router = express.Router();
+const router: Router = express.Router();
 
 // ============================================================================
 // HEALTH CHECK ENDPOINTS
@@ -50,8 +25,8 @@ const router = express.Router();
  *   - /health        (short and simple)
  *   - /api/health    (follows API naming pattern)
  */
-router.get('/health', healthController.getHealth);
-router.get('/api/health', healthController.getHealth);
+router.get("/health", healthController.getHealth);
+router.get("/api/health", healthController.getHealth);
 
 // ============================================================================
 // PRODUCT ENDPOINTS - The Main API!
@@ -67,7 +42,7 @@ router.get('/api/health', healthController.getHealth);
  *   GET /api/products?q=chocolate        → Search for "chocolate"
  *   GET /api/products?upc=123456789012   → Find exact product by barcode
  */
-router.get('/api/products', productController.getAllProducts);
+router.get("/api/products", productController.getAllProducts);
 
 /**
  * ENDPOINT 2: Product details by ID
@@ -77,7 +52,7 @@ router.get('/api/products', productController.getAllProducts);
  * How to use:
  *   GET /api/products/3274080005003   → Get details for product 3274080005003
  */
-router.get('/api/products/:id', productController.getProductById);
+router.get("/api/products/:id", productController.getProductById);
 
 /**
  * Product lookup by barcode (alternative route)
@@ -87,7 +62,10 @@ router.get('/api/products/:id', productController.getProductById);
  * How to use:
  *   GET /api/products/barcode/3274080005003
  */
-router.get('/api/products/barcode/:code', productController.getProductByBarcode);
+router.get(
+  "/api/products/barcode/:code",
+  productController.getProductByBarcode,
+);
 
 /**
  * ENDPOINT 3: Product ESG breakdown
@@ -102,7 +80,7 @@ router.get('/api/products/barcode/:code', productController.getProductByBarcode)
  *   - Social score (0-100): How well they treat people
  *   - Governance score (0-100): How honest the company is
  */
-router.get('/api/products/:id/esg', productController.getProductESG);
+router.get("/api/products/:id/esg", productController.getProductESG);
 
 /**
  * Product alternatives (Future feature - vector search)
@@ -113,7 +91,10 @@ router.get('/api/products/:id/esg', productController.getProductESG);
  * How to use:
  *   GET /api/products/:id/alternatives?limit=5
  */
-router.get('/api/products/:id/alternatives', productController.getProductAlternatives);
+router.get(
+  "/api/products/:id/alternatives",
+  productController.getProductAlternatives,
+);
 
 /**
  * Product summaries (Future feature - AI powered)
@@ -124,7 +105,7 @@ router.get('/api/products/:id/alternatives', productController.getProductAlterna
  * How to use:
  *   GET /api/products/:id/summary    → Get existing or generate new summary
  */
-router.get('/api/products/:id/summary', productController.getProductSummary);
+router.get("/api/products/:id/summary", productController.getProductSummary);
 
 // ============================================================================
 // COMPANY ENDPOINTS
@@ -141,7 +122,11 @@ router.get('/api/products/:id/summary', productController.getProductSummary);
  *
  * Note: validateObjectId checks that the ID is valid before running
  */
-router.get('/api/companies/:id', validateObjectId('id'), companyController.getCompanyById);
+router.get(
+  "/api/companies/:id",
+  validateObjectId("id"),
+  companyController.getCompanyById,
+);
 
 // ============================================================================
 // LEGACY ENDPOINTS (v1)
@@ -159,7 +144,7 @@ router.get('/api/companies/:id', validateObjectId('id'), companyController.getCo
  *   GET /v1/lookup?upc=123456789012   → Find by barcode
  *   GET /v1/lookup?q=chocolate        → Search by text
  */
-router.get('/v1/lookup', productController.getAllProducts);
+router.get("/v1/lookup", productController.getAllProducts);
 
 /**
  * Legacy company lookup
@@ -171,8 +156,12 @@ router.get('/v1/lookup', productController.getAllProducts);
  *   GET /v1/company?q=microsoft       → Search for "microsoft"
  *   GET /v1/company/:id               → Get by database ID
  */
-router.get('/v1/company', companyController.getCompany);
-router.get('/v1/company/:id', validateObjectId('id'), companyController.getCompany);
+router.get("/v1/company", companyController.getCompany);
+router.get(
+  "/v1/company/:id",
+  validateObjectId("id"),
+  companyController.getCompany,
+);
 
 /**
  * Legacy ESG score endpoint
@@ -188,12 +177,11 @@ router.get('/v1/company/:id', validateObjectId('id'), companyController.getCompa
  *   - Methodology: How we calculated it
  *   - Confidence: How sure we are
  */
-router.get('/v1/score/:companyId', validateObjectId('companyId'), companyController.getCompanyScore);
-router.use('/api/food', embeddingsRoutes);
-// ============================================================================
-// EXPORT THE ROUTER
-// ============================================================================
-// Export so server.js can use all these routes
-
+router.get(
+  "/v1/score/:companyId",
+  validateObjectId("companyId"),
+  companyController.getCompanyScore,
+);
+router.use("/api/food", embeddingsRoutes);
 
 export default router;
