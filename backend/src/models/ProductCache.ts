@@ -1,27 +1,44 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document, Model } from "mongoose";
 
-// Product cache schema for storing lookup results
-const productCacheSchema = new mongoose.Schema({
-  code: {
-    type: String,
-    required: true,
-    unique: true,
-    index: true,
-    description: 'Product identifier (barcode, UPC, EAN, GTIN, or search query)'
+export type ProductData = Record<string, unknown>;
+
+export interface IProductCache extends Document {
+  code: string;
+  data: ProductData;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const productCacheSchema: Schema<IProductCache> = new Schema(
+  {
+    code: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+      description:
+        "Product identifier (barcode, UPC, EAN, GTIN, or search query)",
+      trim: true,
+    },
+    data: {
+      type: Schema.Types.Mixed as unknown as ProductData,
+      required: true,
+      description: "Cached product data in normalized format",
+    },
   },
-  data: {
-    type: mongoose.Schema.Types.Mixed,
-    required: true,
-    description: 'Cached product data in normalized format'
-  }
-}, {
-  timestamps: true // Adds createdAt and updatedAt
-});
+  {
+    timestamps: true,
+  },
+);
 
-// TTL index - automatically delete cache entries after 7 days
-productCacheSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 604800 });
+productCacheSchema.index(
+  { updatedAt: 1 },
+  { expireAfterSeconds: 60 * 60 * 24 * 7 },
+);
 
-// Create and export the ProductCache model
-const ProductCache = mongoose.model("ProductCache", productCacheSchema);
+const ProductCache: Model<IProductCache> = mongoose.model<IProductCache>(
+  "ProductCache",
+  productCacheSchema,
+);
 
 export default ProductCache;

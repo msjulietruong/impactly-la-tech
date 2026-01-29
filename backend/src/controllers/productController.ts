@@ -1,266 +1,15 @@
 // import { lookupProduct as lookupProductService } from "../services/openFoodFactsService.js";
-import ProductCache from "../models/ProductCache.js";
-import Company from "../models/Company.js";
+import Product, { IProduct } from "../models/Product.js";
+import ProductCache, { IProductCache } from "../models/ProductCache.js";
+import EsgScore, { IEsgScore } from "../models/EsgScore.js";
+
+import Company, { ICompany, COMPANY_BRAND_MAP } from "../models/Company.js";
+
 import axios, { HttpStatusCode } from "axios";
 import redisClient from "../utils/redisClient.js";
 import { CACHE_TTL } from "../utils/config.js";
 
 import { Request, Response } from "express";
-
-const COMPANY_BRAND_MAP: Record<string, string> = {
-  // Walmart brands
-  walmart: "Walmart Inc",
-  "great value": "Walmart Inc",
-  "sam's choice": "Walmart Inc",
-  marketside: "Walmart Inc",
-  equate: "Walmart Inc",
-
-  // Kroger brands
-  kroger: "Kroger",
-  "simple truth": "Kroger",
-  "private selection": "Kroger",
-
-  // Target brands
-  target: "Target",
-  "good & gather": "Target",
-  "market pantry": "Target",
-
-  // Costco brands
-  costco: "Costco",
-  "kirkland signature": "Costco",
-
-  // General Mills brands
-  "general mills": "General Mills Inc",
-  cheerios: "General Mills Inc",
-  "nature valley": "General Mills Inc",
-  yoplait: "General Mills Inc",
-  "lucky charms": "General Mills Inc",
-  pillsbury: "General Mills Inc",
-  "haagen-dazs": "General Mills Inc",
-  "betty crocker": "General Mills Inc",
-  "old el paso": "General Mills Inc",
-  totino: "General Mills Inc",
-  trix: "General Mills Inc",
-  "cocoa puffs": "General Mills Inc",
-  "cinnamon toast crunch": "General Mills Inc",
-  "fiber one": "General Mills Inc",
-  wheaties: "General Mills Inc",
-
-  // PepsiCo brands
-  pepsi: "PepsiCo",
-  pepsico: "PepsiCo",
-  "frito-lay": "PepsiCo",
-  "lay's": "PepsiCo",
-  lays: "PepsiCo",
-  doritos: "PepsiCo",
-  "mountain dew": "PepsiCo",
-  gatorade: "PepsiCo",
-  tropicana: "PepsiCo",
-  quaker: "PepsiCo",
-  tostitos: "PepsiCo",
-  cheetos: "PepsiCo",
-  ruffles: "PepsiCo",
-
-  // Coca-Cola brands
-  "coca-cola": "Coca-Cola",
-  coke: "Coca-Cola",
-  sprite: "Coca-Cola",
-  fanta: "Coca-Cola",
-  dasani: "Coca-Cola",
-  "minute maid": "Coca-Cola",
-  powerade: "Coca-Cola",
-  vitaminwater: "Coca-Cola",
-
-  // Nestlé brands
-  nestle: "Nestlé",
-  nescafe: "Nestlé",
-  "kit kat": "Nestlé",
-  "pure life": "Nestlé",
-  gerber: "Nestlé",
-  stouffer: "Nestlé",
-  digiorno: "Nestlé",
-  "hot pockets": "Nestlé",
-  "lean cuisine": "Nestlé",
-  butterfinger: "Nestlé",
-  crunch: "Nestlé",
-
-  // Kellogg's brands
-  kelloggs: "Kellanova",
-  "kellogg's": "Kellanova",
-  pringles: "Kellanova",
-  "cheez-it": "Kellanova",
-  "frosted flakes": "Kellanova",
-  "special k": "Kellanova",
-  "pop-tarts": "Kellanova",
-  "rice krispies": "Kellanova",
-  eggo: "Kellanova",
-  "nutri-grain": "Kellanova",
-
-  // Mars brands
-  mars: "Mars",
-  "m&m's": "Mars",
-  "m&m": "Mars",
-  snickers: "Mars",
-  twix: "Mars",
-  "milky way": "Mars",
-  skittles: "Mars",
-  starburst: "Mars",
-
-  // Mondelez brands
-  oreo: "Mondelez",
-  cadbury: "Mondelez",
-  ritz: "Mondelez",
-  trident: "Mondelez",
-  "chips ahoy": "Mondelez",
-  "wheat thins": "Mondelez",
-  triscuit: "Mondelez",
-
-  // Kraft Heinz brands
-  kraft: "Kraft Heinz",
-  heinz: "Kraft Heinz",
-  "oscar mayer": "Kraft Heinz",
-  philadelphia: "Kraft Heinz",
-  velveeta: "Kraft Heinz",
-  "capri sun": "Kraft Heinz",
-  "jell-o": "Kraft Heinz",
-  "maxwell house": "Kraft Heinz",
-  planters: "Kraft Heinz",
-  lunchables: "Kraft Heinz",
-  "kool-aid": "Kraft Heinz",
-
-  // Campbell brands
-  campbell: "Campbell",
-  "campbell's": "Campbell",
-  "pepperidge farm": "Campbell",
-  goldfish: "Campbell",
-  v8: "Campbell",
-  prego: "Campbell",
-  swanson: "Campbell",
-
-  // McCormick brands
-  mccormick: "McCormick",
-  french: "McCormick",
-  "french's": "McCormick",
-  "old bay": "McCormick",
-  lawry: "McCormick",
-  "lawry's": "McCormick",
-  casero: "McCormick",
-
-  // Hershey brands
-  hershey: "Hershey",
-  "hershey's": "Hershey",
-  reese: "Hershey",
-  "reese's": "Hershey",
-  kisses: "Hershey",
-  "jolly rancher": "Hershey",
-  "ice breakers": "Hershey",
-
-  // ConAgra brands
-  conagra: "ConAgra",
-  hunt: "ConAgra",
-  "hunt's": "ConAgra",
-  "reddi-wip": "ConAgra",
-  "slim jim": "ConAgra",
-  "healthy choice": "ConAgra",
-  "marie callender": "ConAgra",
-  "marie callender's": "ConAgra",
-  "orville redenbacher": "ConAgra",
-  "swiss miss": "ConAgra",
-  vlasic: "ConAgra",
-
-  // Hormel brands
-  hormel: "Hormel",
-  spam: "Hormel",
-  skippy: "Hormel",
-  "jennie-o": "Hormel",
-  applegate: "Hormel",
-
-  // Tyson brands
-  tyson: "Tyson",
-  "jimmy dean": "Tyson",
-  "hillshire farm": "Tyson",
-  "ball park": "Tyson",
-};
-
-/**
- * Convert brand name to parent company name
- */
-function getBrandCompanyName(
-  brandName: string | null | undefined,
-): string | null {
-  if (!brandName) return null;
-  const normalized = brandName.toLowerCase().trim();
-  return COMPANY_BRAND_MAP[normalized] || brandName;
-}
-
-async function getProductESGData(
-  brandName: string | null | undefined,
-): Promise<ESGData | null> {
-  if (!brandName) return null;
-
-  try {
-    const companyName = getBrandCompanyName(brandName);
-
-    const company = (await Company.findOne({
-      name: { $regex: companyName, $options: "i" },
-    })) as CompanyDocument | null;
-
-    if (!company) {
-      return null;
-    }
-
-    const E = company.environment_score ?? null;
-    const S = company.social_score ?? null;
-    const G = company.governance_score ?? null;
-
-    let overall = company.total_score ?? null;
-
-    if (overall === null && (E !== null || S !== null || G !== null)) {
-      const availableFactors = [E, S, G].filter((score) => score !== null);
-      const weights = {
-        wE:
-          E !== null
-            ? availableFactors.length === 3
-              ? 0.4
-              : 1.0 / availableFactors.length
-            : 0,
-        wS:
-          S !== null
-            ? availableFactors.length === 3
-              ? 0.4
-              : 1.0 / availableFactors.length
-            : 0,
-        wG:
-          G !== null
-            ? availableFactors.length === 3
-              ? 0.2
-              : 1.0 / availableFactors.length
-            : 0,
-      };
-      overall = Math.round(
-        (E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG,
-      );
-    }
-
-    const result: ESGData = {
-      environmental: { score: E },
-      social: { score: S },
-      governance: { score: G },
-      overall: { score: overall },
-    };
-
-    return result;
-  } catch (error) {
-    console.error("Error fetching ESG data:", error);
-    return null;
-  }
-}
-
-// TODO(Liam): do below
-
-// ============================================================================
-// PRODUCT SEARCH AND LISTING
-// ============================================================================
 
 interface ESGData {
   environmental: { score: number | null };
@@ -311,7 +60,7 @@ interface CustomError extends Error {
   code?: string;
 }
 
-interface ServiceError extends Error {
+class ServiceError extends Error {
   code?: string;
 }
 
@@ -320,56 +69,157 @@ interface CachedProduct {
   data: Product;
 }
 
-// NOTE(Liam): temporary
-const lookupProductService = async (
-  params: ProductQueryParams,
-): Promise<Product | Product[]> => {
-  const { upc, ean, gtin, q } = params;
+/**
+ * Convert brand name to parent company name
+ */
+function getBrandCompanyName(
+  brandName: string | null | undefined,
+): string | null {
+  if (!brandName) return null;
+  const normalized = brandName.toLowerCase().trim();
+  return COMPANY_BRAND_MAP[normalized] || brandName;
+}
 
+function calculateEsg(E: number, S: number, G: number): number {
+  const scores = { E, S, G };
+  const available = Object.entries(scores).filter(([, v]) => v !== null);
+
+  if (available.length === 0) return 0;
+
+  const equalWeight = 1 / available.length;
+
+  let wE: number = equalWeight;
+  let wS: number = equalWeight;
+  let wG: number = equalWeight;
+  if (available.length === 3) {
+    wE = 0.4;
+    wS = 0.4;
+    wG = 0.2;
+  }
+
+  const result = Math.round(
+    (E ?? 0) * (E !== null ? wE : 0) +
+      (S ?? 0) * (S !== null ? wS : 0) +
+      (G ?? 0) * (G !== null ? wG : 0),
+  );
+
+  return result;
+}
+
+function parseStrictInt(
+  value: string | null | undefined,
+  fallback: number = 0,
+): number {
+  if (value == null) return fallback;
+  const n = parseInt(value, 10);
+  return Number.isNaN(n) ? fallback : n;
+}
+
+function coalesceStrictString(
+  values: (string | null | undefined)[],
+  defaultValue: string,
+): string {
+  for (const v of values) {
+    if (v != null && v.trim() !== "") {
+      return v;
+    }
+  }
+  return defaultValue;
+}
+
+async function getProductESGData(
+  brandName: string | null | undefined,
+): Promise<ESGData | null> {
+  if (!brandName) return null;
+
+  try {
+    const companyName: string | null = getBrandCompanyName(brandName);
+
+    const company: ICompany | null = await Company.findOne({
+      name: { $regex: companyName, $options: "i" },
+    });
+
+    if (!company) {
+      return null;
+    }
+
+    const E: number = parseStrictInt(company.environment_score);
+    const S: number = parseStrictInt(company.social_score);
+    const G: number = parseStrictInt(company.governance_score);
+
+    let overall: number = parseStrictInt(company.total_score);
+    if (overall === 0) {
+      overall = calculateEsg(E, S, G);
+    }
+
+    const result: ESGData = {
+      environmental: { score: E },
+      social: { score: S },
+      governance: { score: G },
+      overall: { score: overall },
+    };
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching ESG data:", error);
+    return null;
+  }
+}
+
+// TODO(Liam): do below
+
+// ============================================================================
+// PRODUCT SEARCH AND LISTING
+// ============================================================================
+
+// NOTE(Liam): temporary
+async function lookupProductById(code: string): Promise<IProduct> {
   await new Promise((resolve) => setTimeout(resolve, 100));
 
-  const mockProducts: Product[] = [];
+  // TODO(liam): point to some arbitrary table
+  const mockProducts: IProduct[] = [];
 
-  if (q) {
-    const searchTerm = q.toLowerCase();
-    const results = mockProducts.filter(
-      (product) =>
-        product.name.toLowerCase().includes(searchTerm) ||
-        product.brand?.toLowerCase().includes(searchTerm) ||
-        product.description?.toLowerCase().includes(searchTerm),
-    );
+  const product = mockProducts.find((p) => p.code === code);
 
-    if (results.length === 0) {
-      const error = new Error(
-        `No products found matching: ${q}`,
-      ) as ServiceError;
-      throw error;
-    }
-
-    return results;
+  if (!product) {
+    const error = new Error(
+      `Product not found with code: ${code}`,
+    ) as ServiceError;
+    error.code = "NOT_FOUND";
+    throw error;
   }
 
-  const code = upc || ean || gtin;
-  if (code) {
-    const product = mockProducts.find(
-      (p) => p.upc === code || p.ean === code || p.gtin === code,
-    );
+  return product;
+}
 
-    if (!product) {
-      const error = new Error(
-        `Product not found with code: ${code}`,
-      ) as ServiceError;
-      error.code = "NOT_FOUND";
-      throw error;
-    }
+async function lookupProductByQuery(query: string | null): Promise<IProduct[]> {
+  await new Promise((resolve) => setTimeout(resolve, 100));
 
-    return product;
+  // TODO(liam): point to some arbitrary table
+  const mockProducts: IProduct[] = [];
+
+  let result: IProduct[] = [];
+  if (query === null) {
+    return result;
   }
 
-  const error = new Error("Invalid lookup parameters") as ServiceError;
-  error.code = "INVALID_ARGUMENT";
-  throw error;
-};
+  const searchTerm = query.toLowerCase();
+  result = mockProducts.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchTerm) ||
+      product.brand.toLowerCase().includes(searchTerm) ||
+      product.description?.toLowerCase().includes(searchTerm),
+  );
+
+  if (result.length === 0) {
+    const error = new Error(
+      `No products found matching: ${query}`,
+    ) as ServiceError;
+    throw error;
+  }
+
+  return result;
+}
 
 const getAllProducts = async (
   req: Request,
@@ -390,9 +240,38 @@ const getAllProducts = async (
 
     let result: Product | Product[];
     try {
-      result = await lookupProductService({ upc, ean, gtin, q });
+      const code: string = coalesceStrictString([upc, ean, gtin], "");
+      if (code === "") {
+        if (q === null) {
+          return res.status(400).json({
+            error: {
+              code: "INVALID_ARGUMENT",
+              message: "Missing required parameters.",
+            },
+          } as ErrorResponse);
+        }
+        result = await lookupProductByQuery(q ?? "");
+      } else {
+        result = await lookupProductById(code);
+      }
     } catch (error) {
-      throw error;
+      if (error instanceof ServiceError) {
+        const serviceError = error as ServiceError;
+        return res.status(400).json({
+          error: {
+            code: serviceError.code,
+            message: serviceError.message,
+          },
+        } as ErrorResponse);
+      } else {
+        const anyError = error as Error;
+        return res.status(505).json({
+          error: {
+            code: "SERVER_ERROR",
+            message: anyError.message,
+          },
+        } as ErrorResponse);
+      }
     }
 
     const products: Product[] = Array.isArray(result) ? result : [result];
