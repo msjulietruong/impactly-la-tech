@@ -4,16 +4,16 @@ export interface ICompany extends Document {
   ticker: string;
   name: string;
   logo?: string;
-  weburl?: string;
+  web_url?: string;
 
-  environment_grade?: string;
-  environment_level?: string;
+  environmental_grade?: string;
+  environmental_level?: string;
   social_grade?: string;
   social_level?: string;
   governance_grade?: string;
   governance_level?: string;
 
-  environment_score?: string;
+  environmental_score?: string;
   social_score?: string;
   governance_score?: string;
   total_score?: string;
@@ -44,15 +44,15 @@ const companySchema: Schema<ICompany> = new Schema(
       type: String,
       description: "Company logo URL",
     },
-    weburl: {
+    web_url: {
       type: String,
       description: "Company website URL",
     },
-    environment_grade: {
+    environmental_grade: {
       type: String,
       description: "Environmental grade (A, B, C, etc.)",
     },
-    environment_level: {
+    environmental_level: {
       type: String,
       description: "Environmental level (High, Medium, Low)",
     },
@@ -72,7 +72,7 @@ const companySchema: Schema<ICompany> = new Schema(
       type: String,
       description: "Governance level (High, Medium, Low)",
     },
-    environment_score: {
+    environmental_score: {
       type: Number,
       min: 0,
       max: 100,

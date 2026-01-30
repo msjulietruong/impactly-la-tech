@@ -11,10 +11,10 @@ export interface IEsgScore extends Document {
   score_governance?: number;
   score_final?: number;
 
-  version: string;
+  version?: string;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const esgScoreSchema: Schema<IEsgScore> = new Schema(
