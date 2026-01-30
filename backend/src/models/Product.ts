@@ -5,8 +5,9 @@ export interface IProduct extends Document {
   brand: string;
   name: string;
   description?: string;
-  category?: string;
+  categories?: string;
   image_url?: string;
+  embedding?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -30,10 +31,13 @@ const productSchema: Schema<IProduct> = new Schema(
     description: {
       type: String,
     },
-    category: {
+    categories: {
       type: String,
     },
     image_url: {
+      type: String,
+    },
+    embedding: {
       type: String,
     },
   },

@@ -4,7 +4,10 @@ import ProductCache, { IProductCache } from "../models/ProductCache.js";
 import EsgScore, { IEsgScore } from "../models/EsgScore.js";
 
 import Company, { ICompany, COMPANY_BRAND_MAP } from "../models/Company.js";
+import Brand, { IBrand } from "../models/Brand.js";
+import Food, { IFood } from "../models/Food.js";
 
+import mongoose from "mongoose";
 import axios, { HttpStatusCode } from "axios";
 import redisClient from "../utils/redisClient.js";
 import { CACHE_TTL } from "../utils/config.js";
@@ -33,20 +36,8 @@ interface ProductQueryParams {
   q?: string;
 }
 
-interface Product {
-  brand?: string;
-  name: string;
-  upc?: string;
-  ean?: string;
-  gtin?: string;
-  description?: string;
-  category?: string;
-  price?: string;
-  [key: string]: any;
-}
-
-interface EnrichedProduct extends Product {
-  esg: any | null;
+interface EnrichedProduct extends IProduct {
+  esg: IEsgScore | null;
 }
 
 interface ErrorResponse {
@@ -66,7 +57,7 @@ class ServiceError extends Error {
 
 interface CachedProduct {
   code: string;
-  data: Product;
+  data: IProduct;
 }
 
 /**
@@ -129,37 +120,45 @@ function coalesceStrictString(
 
 async function getProductESGData(
   brandName: string | null | undefined,
-): Promise<ESGData | null> {
+): Promise<IEsgScore | null> {
   if (!brandName) return null;
 
   try {
     const companyName: string | null = getBrandCompanyName(brandName);
 
-    const company: ICompany | null = await Company.findOne({
+    const brand: IBrand | null = await Brand.findOne({
       name: { $regex: companyName, $options: "i" },
     });
 
-    if (!company) {
+    if (!brand) {
+      console.warn("Brand not found.");
       return null;
     }
 
-    const E: number = parseStrictInt(company.environment_score);
-    const S: number = parseStrictInt(company.social_score);
-    const G: number = parseStrictInt(company.governance_score);
+    let esgScore: IEsgScore | null = await EsgScore.findOne({
+      brand_id: brand.id,
+    });
 
-    let overall: number = parseStrictInt(company.total_score);
-    if (overall === 0) {
-      overall = calculateEsg(E, S, G);
+    if (!esgScore) {
+      console.warn("Esg Score missing for brand.");
+      return null;
     }
 
-    const result: ESGData = {
-      environmental: { score: E },
-      social: { score: S },
-      governance: { score: G },
-      overall: { score: overall },
-    };
+    let overall: number = esgScore.score_final ?? 0;
+    if (overall === 0) {
+      const E: number = esgScore.score_environmental ?? 0;
+      const S: number = esgScore.score_social ?? 0;
+      const G: number = esgScore.score_governance ?? 0;
+      if (E + S + G === 0) {
+        console.warn("Total Esg Score is 0.");
+        return null;
+      }
+      overall = calculateEsg(E, S, G);
 
-    return result;
+      esgScore.score_final = overall;
+    }
+
+    return esgScore;
   } catch (error) {
     console.error("Error fetching ESG data:", error);
     return null;
@@ -173,7 +172,7 @@ async function getProductESGData(
 // ============================================================================
 
 // NOTE(Liam): temporary
-async function lookupProductById(code: string): Promise<IProduct> {
+async function lookupProductByCode(code: string): Promise<IProduct> {
   await new Promise((resolve) => setTimeout(resolve, 100));
 
   // TODO(liam): point to some arbitrary table
@@ -184,6 +183,25 @@ async function lookupProductById(code: string): Promise<IProduct> {
   if (!product) {
     const error = new Error(
       `Product not found with code: ${code}`,
+    ) as ServiceError;
+    error.code = "NOT_FOUND";
+    throw error;
+  }
+
+  return product;
+}
+
+async function lookupProductById(id: string): Promise<IProduct> {
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  // TODO(liam): point to some arbitrary table
+  const mockProducts: IProduct[] = [];
+
+  const product = mockProducts.find((p) => p.id === id);
+
+  if (!product) {
+    const error = new Error(
+      `Product not found with internal product id: ${id}`,
     ) as ServiceError;
     error.code = "NOT_FOUND";
     throw error;
@@ -221,10 +239,17 @@ async function lookupProductByQuery(query: string | null): Promise<IProduct[]> {
   return result;
 }
 
-const getAllProducts = async (
-  req: Request,
-  res: Response,
-): Promise<Response | void> => {
+async function getEnrichedProduct(product: IProduct): Promise<EnrichedProduct> {
+  const esgScore = await getProductESGData(product.brand);
+
+  let enrichedProduct = product as EnrichedProduct;
+  enrichedProduct.esg = esgScore;
+
+  return enrichedProduct;
+}
+
+// TODO(liam): continue here
+async function getAllProducts(req: Request, res: Response): Promise<Response> {
   try {
     const { upc, ean, gtin, q } = req.query as ProductQueryParams;
 
@@ -238,7 +263,7 @@ const getAllProducts = async (
       } as ErrorResponse);
     }
 
-    let result: Product | Product[];
+    let products: IProduct[];
     try {
       const code: string = coalesceStrictString([upc, ean, gtin], "");
       if (code === "") {
@@ -250,69 +275,44 @@ const getAllProducts = async (
             },
           } as ErrorResponse);
         }
-        result = await lookupProductByQuery(q ?? "");
+        products = await lookupProductByQuery(q ?? "");
       } else {
-        result = await lookupProductById(code);
+        products = [await lookupProductById(code)];
       }
     } catch (error) {
+      let error_code: string = "SERVER_ERROR";
+      let return_code: number = 400;
+      let error_message: string;
+
       if (error instanceof ServiceError) {
         const serviceError = error as ServiceError;
-        return res.status(400).json({
-          error: {
-            code: serviceError.code,
-            message: serviceError.message,
-          },
-        } as ErrorResponse);
+        error_code = coalesceStrictString([serviceError.code], error_code);
+        error_message = serviceError.message;
       } else {
         const anyError = error as Error;
-        return res.status(505).json({
-          error: {
-            code: "SERVER_ERROR",
-            message: anyError.message,
-          },
-        } as ErrorResponse);
+        error_message = anyError.message;
       }
-    }
 
-    const products: Product[] = Array.isArray(result) ? result : [result];
-    const isArray: boolean = Array.isArray(result);
-
-    const enrichedProducts: EnrichedProduct[] = await Promise.all(
-      products.map(
-        async (product: Product, index: number): Promise<EnrichedProduct> => {
-          const esgData = await getProductESGData(product.brand);
-
-          const esgFormatted = esgData || null;
-
-          return {
-            ...product,
-            esg: esgFormatted,
-          };
-        },
-      ),
-    );
-
-    if (isArray) {
-      return res.json(enrichedProducts);
-    } else {
-      return res.json(enrichedProducts[0]);
-    }
-  } catch (error) {
-    const customError = error as CustomError;
-
-    if (customError.code === "NOT_FOUND") {
-      return res.status(404).json({
+      return res.status(return_code).json({
         error: {
-          code: "NOT_FOUND",
-          message: customError.message,
+          code: error_code,
+          message: error_message,
         },
       } as ErrorResponse);
     }
 
-    if (customError.code === "INVALID_ARGUMENT") {
-      return res.status(400).json({
+    const enrichedProducts: EnrichedProduct[] = await Promise.all(
+      products.map(getEnrichedProduct),
+    );
+
+    return res.json({ enrichedProducts });
+  } catch (error) {
+    const customError = error as CustomError;
+
+    if (customError.code) {
+      return res.status(404).json({
         error: {
-          code: "INVALID_ARGUMENT",
+          code: customError.code,
           message: customError.message,
         },
       } as ErrorResponse);
@@ -326,16 +326,9 @@ const getAllProducts = async (
       },
     } as ErrorResponse);
   }
-};
+}
 
-// ============================================================================
-// PRODUCT DETAILS
-// ============================================================================
-
-const getProductById = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
+async function getProductById(req: Request, res: Response): Promise<Response> {
   try {
     const { id } = req.params;
     const productId = id as string;
@@ -350,24 +343,16 @@ const getProductById = async (
     }
 
     const cached = (await ProductCache.findOne({
-      code: productId,
-    })) as CachedProduct | null;
+      id: productId,
+    })) as IProductCache | null;
 
     if (cached) {
       return res.json(cached.data);
     }
 
-    const product = (await lookupProductService({
-      upc: productId,
-    })) as Product;
+    const product: IProduct = await lookupProductById(productId);
 
-    const esgData = await getProductESGData(product.brand);
-    const esgFormatted = esgData || null;
-
-    const enrichedProduct = {
-      ...product,
-      esg: esgFormatted,
-    };
+    const enrichedProduct = getEnrichedProduct(product);
 
     return res.json(enrichedProduct);
   } catch (error) {
@@ -390,12 +375,12 @@ const getProductById = async (
       },
     } as ErrorResponse);
   }
-};
+}
 
-const getProductByCode = async (
+async function getProductByCode(
   req: Request,
   res: Response,
-): Promise<Response> => {
+): Promise<Response> {
   try {
     const { code } = req.params;
     const productCode = code as string;
@@ -404,450 +389,503 @@ const getProductByCode = async (
       return res.status(400).json({
         error: {
           code: "INVALID_ARGUMENT",
-          message: "Barcode is required",
+          message: "Product Code is required",
         },
-      });
+      } as ErrorResponse);
     }
 
     const cached = (await ProductCache.findOne({
       code: productCode,
-    })) as CachedProduct | null;
+    })) as IProductCache | null;
 
     if (cached) {
       return res.json(cached.data);
     }
 
-    const product = await lookupProductService({ upc: productCode });
-    return res.json(product);
+    const product: IProduct = await lookupProductByCode(productCode);
+
+    const enrichedProduct = getEnrichedProduct(product);
+
+    return res.json(enrichedProduct);
   } catch (error) {
     const customError = error as CustomError;
+
     if (customError.code === "NOT_FOUND") {
       return res.status(404).json({
         error: {
           code: "NOT_FOUND",
-          message: `Product not found with barcode: ${req.params.code}`,
+          message: `Product not found with Code: ${req.params.code}`,
         },
       } as ErrorResponse);
     }
 
-    console.error("Barcode lookup error:", error);
+    console.error("Product lookup error:", error);
     return res.status(500).json({
       error: {
         code: "INTERNAL_ERROR",
-        message: "Failed to lookup product by barcode",
+        message: "Failed to get product details",
       },
     } as ErrorResponse);
   }
-};
+}
 
 // ============================================================================
 // HELPER FUNCTION: Get company ESG with collection
 // ============================================================================
-async function getCompanyESGWithCollection(brandName, esgCollection) {
+// async function getCompanyESGWithCollection(brandName, esgCollection) {
+//   if (!brandName) return null;
+
+//   const companyName = getBrandCompanyName(brandName);
+//   const cleanName = companyName.split(",")[0].trim();
+
+//   let company = await esgCollection.findOne({
+//     name: { $regex: new RegExp(`^${cleanName}`, "i") },
+//   });
+
+//   if (!company) {
+//     company = await esgCollection.findOne({
+//       name: { $regex: cleanName, $options: "i" },
+//     });
+//   }
+
+//   if (!company) return null;
+
+//   return {
+//     company_name: company.name,
+//     ticker: company.ticker || null,
+//     environment_score: company.environment_score || null,
+//     environment_level: company.environment_level || null,
+//     social_score: company.social_score || null,
+//     social_level: company.social_level || null,
+//     governance_score: company.governance_score || null,
+//     governance_level: company.governance_level || null,
+//     total_score: company.total_score || null,
+//     total_level: company.total_level || null,
+//     last_processing_date: company.last_processing_date || null,
+//   };
+// }
+
+// ============================================================================
+// ESG DATA (Environmental, Social, Governance Scores)
+// ============================================================================
+// NOTE(Liam): this seems to be a duplicate because the first two gets (ID and Code)
+//             both return with the ESG Score attached already...
+// const getProductESG = async (
+//   req: Request,
+//   res: Response,
+// ): Promise<Response> => {
+//   try {
+//     const { id } = req.params;
+//     const productId = id as string;
+
+//     if (!productId) {
+//       return res.status(400).json({
+//         error: {
+//           code: "INVALID_ARGUMENT",
+//           message: "Product ID is required",
+//         },
+//       } as ErrorResponse);
+//     }
+
+//     const cached = await ProductCache.findOne({ code: productId });
+//     let product: Product | Product[];
+
+//     if (cached) {
+//       product = cached.data;
+//     } else {
+//       try {
+//         if (/^\d+$/.test(productId)) {
+//           product = await lookupProductService({ upc: productId });
+//         } else {
+//           product = await lookupProductService({
+//             gtin: productId,
+//           });
+//         }
+
+//         if (Array.isArray(product)) {
+//           product = product[0];
+//         }
+//       } catch (error) {
+//         const customError = error as CustomError;
+
+//         if (customError.code === "NOT_FOUND") {
+//           return res.status(404).json({
+//             error: {
+//               code: "NOTE_FOUND",
+//               message: `Product not found with ID: ${productId}`,
+//             },
+//           } as ErrorResponse);
+//         }
+
+//         console.error("Product esg lookup");
+//       }
+//     }
+
+//     if (!product || !product.brand) {
+//       return res.status(404).json({
+//         error: {
+//           code: "NOT_FOUND",
+//           message:
+//             "Brand information not available for this product. ESG data cannot be retrieved.",
+//         },
+//       });
+//     }
+
+//     const companyName = getBrandCompanyName(product.brand);
+//     const company = await Company.findOne({
+//       name: { $regex: companyName, $options: "i" },
+//     });
+
+//     if (!company) {
+//       return res.status(200).json({
+//         error: {
+//           code: "NOT_FOUND",
+//           message: `No ESG data found for product brand: ${companyName}`,
+//         },
+//       });
+//     }
+
+//     const E = company.environment_score ?? null;
+//     const S = company.social_score ?? null;
+//     const G = company.governance_score ?? null;
+//     let overall = company.total_score ?? null;
+
+//     if (overall === null && (E !== null || S !== null || G !== null)) {
+//       const availableFactors = [E, S, G].filter((score) => score !== null);
+//       const weights = {
+//         wE:
+//           E !== null
+//             ? availableFactors.length === 3
+//               ? 0.4
+//               : 1.0 / availableFactors.length
+//             : 0,
+//         wS:
+//           S !== null
+//             ? availableFactors.length === 3
+//               ? 0.4
+//               : 1.0 / availableFactors.length
+//             : 0,
+//         wG:
+//           G !== null
+//             ? availableFactors.length === 3
+//               ? 0.2
+//               : 1.0 / availableFactors.length
+//             : 0,
+//       };
+//       overall = Math.round(
+//         (E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG,
+//       );
+//     }
+
+//     res.json({
+//       productId: id,
+//       productName: product.name,
+//       brand: product.brand,
+//       companyId: company._id.toString(),
+//       companyName: company.name,
+//       esgData: {
+//         environment: {
+//           score: E,
+//           grade: company.environment_grade || null,
+//           level: company.environment_level || null,
+//           description:
+//             "Environmental impact score (0-100, higher is better for Earth)",
+//         },
+//         social: {
+//           score: S,
+//           grade: company.social_grade || null,
+//           level: company.social_level || null,
+//           description:
+//             "Social responsibility score (0-100, higher means treats people better)",
+//         },
+//         governance: {
+//           score: G,
+//           grade: company.governance_grade || null,
+//           level: company.governance_level || null,
+//           description:
+//             "Corporate governance score (0-100, higher means more trustworthy)",
+//         },
+//         overall: {
+//           score: overall,
+//           grade: company.total_grade || null,
+//           level: company.total_level || null,
+//           description: "Overall ESG score (weighted average of E, S, G)",
+//         },
+//         scale: "0-100",
+//       },
+//       lastProcessingDate: company.last_processing_date,
+//       lastUpdated: new Date().toISOString(),
+//     });
+//   } catch (error) {
+//     if (error.code === "NOT_FOUND") {
+//       return res.status(404).json({
+//         error: {
+//           code: "NOT_FOUND",
+//           message: error.message,
+//         },
+//       });
+//     }
+
+//     console.error("ESG lookup error:", error);
+//     res.status(500).json({
+//       error: {
+//         code: "INTERNAL_ERROR",
+//         message: "Failed to get ESG data for product",
+//       },
+//     });
+//   }
+// };
+
+// ============================================================================
+// PRODUCT ALTERNATIVES (VECTOR SEARCH)
+// ============================================================================
+
+function calculateCosineSimilarity(vecA, vecB): number {
+  const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
+  const magnitudeA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
+  const magnitudeB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
+  return dotProduct / (magnitudeA * magnitudeB);
+}
+
+async function getBrandCompany(
+  brandName: string | undefined | null,
+): Promise<ICompany | null> {
   if (!brandName) return null;
 
-  const companyName = getBrandCompanyName(brandName);
+  const companyName: string = getBrandCompanyName(brandName) ?? "";
   const cleanName = companyName.split(",")[0].trim();
 
-  let company = await esgCollection.findOne({
+  if (cleanName === "") {
+    return null;
+  }
+
+  let company = Company.findOne({
     name: { $regex: new RegExp(`^${cleanName}`, "i") },
   });
 
   if (!company) {
-    company = await esgCollection.findOne({
+    company = Company.findOne({
       name: { $regex: cleanName, $options: "i" },
     });
   }
 
   if (!company) return null;
 
-  return {
-    company_name: company.name,
-    ticker: company.ticker || null,
-    environment_score: company.environment_score || null,
-    environment_level: company.environment_level || null,
-    social_score: company.social_score || null,
-    social_level: company.social_level || null,
-    governance_score: company.governance_score || null,
-    governance_level: company.governance_level || null,
-    total_score: company.total_score || null,
-    total_level: company.total_level || null,
-    last_processing_date: company.last_processing_date || null,
+  return company;
+}
+
+function buildCandidateQuery(product: IProduct, isUnknownGrade: boolean) {
+  const categories = product.categories?.split(",").map((c) => c.trim()) || [];
+  const specificCategory = categories[categories.length - 1];
+  const broadCategory = categories[categories.length - 2];
+
+  const query: any = {
+    _id: { $ne: product._id },
+    embedding: { $exists: true, $ne: [] },
+  };
+
+  if (!isUnknownGrade && specificCategory) {
+    query.$or = [{ categories: { $regex: specificCategory, $options: "i" } }];
+    if (broadCategory) {
+      query.$or.push({ categories: { $regex: broadCategory, $options: "i" } });
+    }
+  }
+
+  return { query, specificCategory, broadCategory };
+}
+
+interface ProductAlternative {
+  product: IFood;
+  esg?: IEsgScore;
+
+  final_score: number;
+  similarity: number;
+  grade_improvement: number;
+}
+
+interface ProductAltResponse {
+  name: string;
+  code: string;
+  brand: string;
+  alternatives: string[];
+  message?: string;
+  implementation: {
+    status: string;
+    method?: string;
+    features?: string[];
   };
 }
 
-// ============================================================================
-// ESG DATA (Environmental, Social, Governance Scores)
-// ============================================================================
-
-const getProductESG = async (
+async function getProductAlternatives(
   req: Request,
   res: Response,
-): Promise<Response> => {
+): Promise<Response> {
   try {
-    const { id } = req.params;
-    const productId = id as string;
+    const { code } = req.params;
+    const productCode = code as string;
+    const limit: number = parseStrictInt(req.query.limit, 5);
 
-    if (!productId) {
+    if (!productCode) {
       return res.status(400).json({
         error: {
           code: "INVALID_ARGUMENT",
-          message: "Product ID is required",
+          message: "Product Code is required",
         },
       } as ErrorResponse);
     }
 
-    const cached = await ProductCache.findOne({ code: productId });
-    let product: Product | Product[];
-
-    if (cached) {
-      product = cached.data;
-    } else {
-      try {
-        if (/^\d+$/.test(productId)) {
-          product = await lookupProductService({ upc: productId });
-        } else {
-          product = await lookupProductService({
-            gtin: productId,
-          });
-        }
-
-        if (Array.isArray(product)) {
-          product = product[0];
-        }
-      } catch (error) {
-        const customError = error as CustomError;
-
-        if (customError.code === "NOT_FOUND") {
-          return res.status(404).json({
-            error: {
-              code: "NOTE_FOUND",
-              message: `Product not found with ID: ${productId}`,
-            },
-          } as ErrorResponse);
-        }
-
-        console.error("Product esg lookup");
-      }
-    }
-
-    if (!product || !product.brand) {
-      return res.status(404).json({
+    const dbconn = mongoose.default.connection.db;
+    if (!dbconn) {
+      return res.status(500).json({
         error: {
-          code: "NOT_FOUND",
-          message:
-            "Brand information not available for this product. ESG data cannot be retrieved.",
+          code: "DB_ERROR",
+          message: "Cannot establish connection to database.",
         },
-      });
+      } as ErrorResponse);
     }
-
-    const companyName = getBrandCompanyName(product.brand);
-    const company = await Company.findOne({
-      name: { $regex: companyName, $options: "i" },
-    });
-
-    if (!company) {
-      return res.status(200).json({
-        error: {
-          code: "NOT_FOUND",
-          message: `No ESG data found for product brand: ${companyName}`,
-        },
-      });
-    }
-
-    const E = company.environment_score ?? null;
-    const S = company.social_score ?? null;
-    const G = company.governance_score ?? null;
-    let overall = company.total_score ?? null;
-
-    if (overall === null && (E !== null || S !== null || G !== null)) {
-      const availableFactors = [E, S, G].filter((score) => score !== null);
-      const weights = {
-        wE:
-          E !== null
-            ? availableFactors.length === 3
-              ? 0.4
-              : 1.0 / availableFactors.length
-            : 0,
-        wS:
-          S !== null
-            ? availableFactors.length === 3
-              ? 0.4
-              : 1.0 / availableFactors.length
-            : 0,
-        wG:
-          G !== null
-            ? availableFactors.length === 3
-              ? 0.2
-              : 1.0 / availableFactors.length
-            : 0,
-      };
-      overall = Math.round(
-        (E || 0) * weights.wE + (S || 0) * weights.wS + (G || 0) * weights.wG,
-      );
-    }
-
-    res.json({
-      productId: id,
-      productName: product.name,
-      brand: product.brand,
-      companyId: company._id.toString(),
-      companyName: company.name,
-      esgData: {
-        environment: {
-          score: E,
-          grade: company.environment_grade || null,
-          level: company.environment_level || null,
-          description:
-            "Environmental impact score (0-100, higher is better for Earth)",
-        },
-        social: {
-          score: S,
-          grade: company.social_grade || null,
-          level: company.social_level || null,
-          description:
-            "Social responsibility score (0-100, higher means treats people better)",
-        },
-        governance: {
-          score: G,
-          grade: company.governance_grade || null,
-          level: company.governance_level || null,
-          description:
-            "Corporate governance score (0-100, higher means more trustworthy)",
-        },
-        overall: {
-          score: overall,
-          grade: company.total_grade || null,
-          level: company.total_level || null,
-          description: "Overall ESG score (weighted average of E, S, G)",
-        },
-        scale: "0-100",
-      },
-      lastProcessingDate: company.last_processing_date,
-      lastUpdated: new Date().toISOString(),
-    });
-  } catch (error) {
-    if (error.code === "NOT_FOUND") {
-      return res.status(404).json({
-        error: {
-          code: "NOT_FOUND",
-          message: error.message,
-        },
-      });
-    }
-
-    console.error("ESG lookup error:", error);
-    res.status(500).json({
-      error: {
-        code: "INTERNAL_ERROR",
-        message: "Failed to get ESG data for product",
-      },
-    });
-  }
-};
-
-// ============================================================================
-// PRODUCT ALTERNATIVES (VECTOR SEARCH)
-// ============================================================================
-
-const getProductAlternatives = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const limit = parseInt(req.query.limit) || 5;
-
-    // Import mongoose to access MongoDB directly
-    const mongoose = (await import("mongoose")).default;
-    const foodCollection = mongoose.connection.db.collection("food");
-    const esgCollection = mongoose.connection.db.collection("esg_scores");
 
     // Use the outer getCompanyESG helper that includes brand mapping
     // Note: Make sure the outer getCompanyESG function has access to esgCollection
-    const getCompanyESGWithCollection = async (brandName) => {
-      if (!brandName) return null;
-
-      // Map brand to parent company (e.g., "Great Value" → "Walmart")
-      const companyName = getBrandCompanyName(brandName);
-
-      // Clean up company name (remove extra spaces, commas, etc.)
-      const cleanName = companyName.split(",")[0].trim();
-
-      // Try exact match first
-      let company = await esgCollection.findOne({
-        name: { $regex: new RegExp(`^${cleanName}`, "i") },
-      });
-
-      // If not found, try partial match
-      if (!company) {
-        company = await esgCollection.findOne({
-          name: { $regex: cleanName, $options: "i" },
-        });
-      }
-
-      if (!company) return null;
-
-      return {
-        company_name: company.name,
-        environment_score: company.environment_score || null,
-        social_score: company.social_score || null,
-        governance_score: company.governance_score || null,
-        total_score: company.total_score || null,
-        total_level: company.total_level || null,
-        last_processing_date: company.last_processing_date || null,
-      };
-    };
 
     // Find product in food collection by code (barcode)
-    const product = await foodCollection.findOne({ code: parseInt(id) });
+    const product: IProduct = await lookupProductByCode(productCode);
 
     if (!product) {
       return res.status(404).json({
         error: {
           code: "NOT_FOUND",
-          message: `Product not found with ID: ${id}`,
+          message: `Product not found with Code: ${productCode}`,
         },
-      });
+      } as ErrorResponse);
     }
 
     // Check if product has embeddings
     if (!product.embedding || product.embedding.length === 0) {
       return res.json({
-        productId: id,
-        productName: product.product_name,
+        name: product.name,
+        code: productCode,
+        brand: product.brand,
         alternatives: [],
         message:
           "Product does not have embeddings yet. Generate embeddings by running: POST /api/food/generate",
-      });
+        implementation: {
+          status: "inactive",
+        },
+      } as ProductAltResponse);
+    }
+
+    const enrichedProduct = await getEnrichedProduct(product);
+    const company = await getBrandCompany(product.brand);
+
+    if (company === null) {
+      return res.status(404).json({
+        error: {
+          code: "NOT_FOUND",
+          message: `Product company was not found: ${product.brand}`,
+        },
+      } as ErrorResponse);
     }
 
     // Get product's environmental grade
-    const GRADE_SCORES = { a: 5, b: 4, c: 3, d: 2, e: 1, unknown: 0, "": 0 };
-    const originalGrade = String(
-      product.environmental_score_grade || "",
+    const GRADE_SCORES: Record<string, number> = {
+      a: 5,
+      b: 4,
+      c: 3,
+      d: 2,
+      e: 1,
+      "": 0,
+    } as const;
+
+    const originalGrade: string = coalesceStrictString(
+      [company.environmental_grade],
+      "",
     ).toLowerCase();
     const originalScore = GRADE_SCORES[originalGrade] || 0;
-    const isUnknownGrade = originalScore === 0;
-
-    // Get categories - last one is most specific
-    const categories = product.categories
-      ? product.categories.split(",").map((c) => c.trim())
-      : [];
-    const specificCategory =
-      categories.length > 0 ? categories[categories.length - 1] : "";
-    const broadCategory =
-      categories.length > 1 ? categories[categories.length - 2] : "";
-
-    // Build query with flexible category matching
-    const query = {
-      _id: { $ne: product._id },
-      embedding: { $exists: true, $ne: [] },
-    };
-
-    // Only filter by category if product has a known grade
-    // Unknown products search ALL categories for any graded alternative
-    if (!isUnknownGrade && specificCategory) {
-      query.$or = [{ categories: { $regex: specificCategory, $options: "i" } }];
-      if (broadCategory) {
-        query.$or.push({
-          categories: { $regex: broadCategory, $options: "i" },
-        });
-      }
-    }
-
-    const candidates = await foodCollection.find(query).toArray();
-
-    // Calculate cosine similarity
-    function cosineSimilarity(vecA, vecB) {
-      const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
-      const magnitudeA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
-      const magnitudeB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
-      return dotProduct / (magnitudeA * magnitudeB);
-    }
-
-    // Use lower threshold for unknown grade products
+    const isUnknownGrade = originalScore <= 0;
     const similarityThreshold = isUnknownGrade ? 0.65 : 0.75;
 
-    // Find better alternatives
+    const query = buildCandidateQuery(product, isUnknownGrade);
+
+    const candidates: IFood[] = await Food.find(query);
+    // const candidates = Food.find(query).toArray();
+
     const alternatives = [];
 
     for (const candidate of candidates) {
-      const similarity = cosineSimilarity(
+      const similarity = calculateCosineSimilarity(
         product.embedding,
         candidate.embedding,
       );
 
-      // Use dynamic threshold based on whether product has grade
       if (similarity > similarityThreshold) {
         const candidateGrade = String(
           candidate.environmental_score_grade || "",
         ).toLowerCase();
         const candidateScore = GRADE_SCORES[candidateGrade] || 0;
 
-        // NEVER recommend unknown grade products as alternatives
         if (candidateScore === 0) continue;
 
-        // For unknown products: show any graded alternative
-        // For graded products: only show better grades
         const shouldInclude = isUnknownGrade
           ? true
           : candidateScore > originalScore;
 
         if (shouldInclude) {
-          // Get ESG data for this alternative
-          const altEsgData = await getProductESGData(candidate.brands);
-          const overallScore = altEsgData?.overall?.score || null;
+          const altEsgScore: IEsgScore | undefined =
+            (await getProductESGData(candidate.brands)) ?? undefined;
+          const overallScore: number = altEsgScore?.score_final || 0;
 
           alternatives.push({
-            code: candidate.code,
-            product_name: candidate.product_name,
-            brands: candidate.brands,
-            categories: candidate.categories,
-            environmental_score_grade: candidate.environmental_score_grade,
-            image_url: candidate.image_url,
-            score: overallScore, // Overall ESG score
-            esg: altEsgData, // Full ESG breakdown
+            product: candidate,
+            esg: altEsgScore,
+
+            final_score: overallScore,
             similarity: Math.round(similarity * 100) / 100,
             grade_improvement: isUnknownGrade
               ? candidateScore
               : candidateScore - originalScore,
-          });
+          } satisfies ProductAlternative);
+
+          // alternatives.push({
+          //   code: candidate.code,
+          //   product_name: candidate.product_name,
+          //   brands: candidate.brands,
+          //   categories: candidate.categories,
+          //   environmental_score_grade: candidate.environmental_score_grade,
+          //   image_url: candidate.image_url,
+          //   score: overallScore,
+          //   esg: altEsgData,
+          //   similarity: Math.round(similarity * 100) / 100,
+          //   grade_improvement: isUnknownGrade
+          //     ? candidateScore
+          //     : candidateScore - originalScore,
+          // });
         }
       }
     }
 
     // Sort by similarity first (most relevant), then grade improvement
     alternatives.sort((a, b) => {
-      // Primary sort: similarity (higher is better)
       if (Math.abs(b.similarity - a.similarity) > 0.05) {
         return b.similarity - a.similarity;
       }
-      // Secondary sort: grade improvement (or grade score for unknown products)
       return b.grade_improvement - a.grade_improvement;
     });
 
-    // Limit the results
     const limitedAlternatives = alternatives.slice(0, limit);
 
     // Also get ESG for the original product
-    const originalProductESG = await getCompanyESGWithCollection(
-      product.brands,
-    );
+    const originalProductESG = await getProductESGData(product.brand);
 
-    res.json({
-      productId: id,
-      productName: product.product_name,
-      brand: product.brands,
-      environmental_score_grade: product.environmental_score_grade,
-      company_esg: originalProductESG,
-      alternatives: limitedAlternatives,
-      count: limitedAlternatives.length,
-      matchedCategory: isUnknownGrade
-        ? "all categories"
-        : specificCategory || broadCategory || "all categories",
-      isUnknownGrade: isUnknownGrade,
-      similarityThreshold: similarityThreshold,
-      message: isUnknownGrade
-        ? "Showing graded alternatives from all categories (original product has no environmental data)"
-        : undefined,
+    let return_message: string = isUnknownGrade
+      ? "Showing graded alternatives from all categories (original product has no environmental data)"
+      : "";
+
+    return res.json({
+      name: product.name,
+      code: productCode,
+      brand: product.brand,
+      alternatives: alternatives,
+      message: return_message,
       implementation: {
         status: "active",
         method:
@@ -867,6 +905,42 @@ const getProductAlternatives = async (req, res) => {
         ],
       },
     });
+
+    // res.json({
+    //   productId: id,
+    //   productName: product.product_name,
+    //   brand: product.brands,
+    //   environmental_score_grade: product.environmental_score_grade,
+    //   company_esg: originalProductESG,
+    //   alternatives: limitedAlternatives,
+    //   count: limitedAlternatives.length,
+    //   matchedCategory: isUnknownGrade
+    //     ? "all categories"
+    //     : specificCategory || broadCategory || "all categories",
+    //   isUnknownGrade: isUnknownGrade,
+    //   similarityThreshold: similarityThreshold,
+    //   message: isUnknownGrade
+    //     ? "Showing graded alternatives from all categories (original product has no environmental data)"
+    //     : undefined,
+    //   implementation: {
+    //     status: "active",
+    //     method:
+    //       "Vector search using HuggingFace embeddings with ESG enrichment",
+    //     features: [
+    //       "Semantic similarity using AI embeddings (384-d vectors)",
+    //       isUnknownGrade
+    //         ? "Minimum 65% similarity for unknown products"
+    //         : "Minimum 75% similarity threshold for relevance",
+    //       "Filtered by better environmental grades",
+    //       "Never recommends unknown grade products",
+    //       isUnknownGrade
+    //         ? "Searches all categories for unknown products"
+    //         : "Specific category matching for graded products",
+    //       "Sorted by similarity and grade improvement",
+    //       "Enriched with company ESG scores with brand-to-company mapping",
+    //     ],
+    //   },
+    // });
   } catch (error) {
     console.error("Alternatives lookup error:", error);
     res.status(500).json({
@@ -874,9 +948,9 @@ const getProductAlternatives = async (req, res) => {
         code: "INTERNAL_ERROR",
         message: "Failed to get product alternatives",
       },
-    });
+    } as ErrorResponse);
   }
-};
+}
 
 // NOTE(liam): flag ingredients endpoint
 const checkProductIngredients = async (id) => {
@@ -1202,8 +1276,7 @@ const getProductSummary = async (req, res) => {
 export {
   getAllProducts,
   getProductById,
-  getProductByBarcode,
-  getProductESG,
+  getProductByCode,
   getProductAlternatives,
   getProductSummary,
 };
