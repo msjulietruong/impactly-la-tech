@@ -1,10 +1,11 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
+import { IProduct } from "../models/Product.js";
 
 export type ProductData = Record<string, unknown>;
 
 export interface IProductCache extends Document {
   code: string;
-  data: ProductData;
+  data: IProduct;
   createdAt: Date;
   updatedAt: Date;
 }

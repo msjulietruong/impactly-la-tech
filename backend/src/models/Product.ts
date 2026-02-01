@@ -1,5 +1,11 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
+export interface ProductSummary {
+  data: string[];
+  metadata: any;
+  generatedAt: string;
+}
+
 export interface IProduct extends Document {
   code: string;
   brand: string;
@@ -8,6 +14,7 @@ export interface IProduct extends Document {
   categories?: string;
   image_url?: string;
   embedding?: string;
+  summary?: ProductSummary;
   createdAt: string;
   updatedAt: string;
 }
@@ -38,6 +45,9 @@ const productSchema: Schema<IProduct> = new Schema(
       type: String,
     },
     embedding: {
+      type: String,
+    },
+    summary: {
       type: String,
     },
   },

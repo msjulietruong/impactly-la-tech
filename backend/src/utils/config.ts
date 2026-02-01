@@ -43,6 +43,13 @@ export const REDIS_URL: string = requireEnv(
   "redis://localhost:6379",
 );
 
+export const AGENT_API_ENDPOINT: string = requireEnv(
+  "AGENT_API_ENDPOINT",
+  "http://localhost:8000",
+);
+
+export const AGENT_API_KEY: string = requireEnv("AGENT_API_KEY", "");
+
 export const CACHE_TTL = parseNumber(process.env.CACHE_TTL, 36000, "CACHE_TTL");
 
 console.log(
