@@ -1,6 +1,9 @@
 // import { lookupProduct as lookupProductService } from "../services/openFoodFactsService.js";
 import Product, { IProduct } from "../models/Product.js";
-import ProductCache, { IProductCache } from "../models/ProductCache.js";
+import ProductCache, {
+  IProductCache,
+  ProductSummary,
+} from "../models/ProductCache.js";
 import EsgScore, { IEsgScore } from "../models/EsgScore.js";
 
 import Company, { ICompany, COMPANY_BRAND_MAP } from "../models/Company.js";
@@ -10,24 +13,13 @@ import Food, { IFood } from "../models/Food.js";
 import mongoose from "mongoose";
 import axios, { HttpStatusCode } from "axios";
 import redisClient from "../utils/redisClient.js";
-import { CACHE_TTL } from "../utils/config.js";
+import {
+  AGENT_API_ENDPOINT,
+  AGENT_API_KEY,
+  CACHE_TTL,
+} from "../utils/config.js";
 
 import { Request, Response } from "express";
-
-interface ESGData {
-  environmental: { score: number | null };
-  social: { score: number | null };
-  governance: { score: number | null };
-  overall: { score: number | null };
-}
-
-interface CompanyDocument {
-  environment_score?: number;
-  social_score?: number;
-  governance_score?: number;
-  total_score?: number;
-  name: string;
-}
 
 interface ProductQueryParams {
   upc?: string;
@@ -47,17 +39,30 @@ interface ErrorResponse {
   };
 }
 
-interface CustomError extends Error {
+class ExtendedError extends Error {
   code?: string;
 }
 
-class ServiceError extends Error {
-  code?: string;
+interface ProductAlternative {
+  product: IFood;
+  esg?: IEsgScore;
+
+  final_score: number;
+  similarity: number;
+  grade_improvement: number;
 }
 
-interface CachedProduct {
+interface ProductAltResponse {
+  name: string;
   code: string;
-  data: IProduct;
+  brand: string;
+  alternatives: string[];
+  message?: string;
+  implementation: {
+    status: string;
+    method?: string;
+    features?: string[];
+  };
 }
 
 /**
@@ -181,9 +186,7 @@ async function lookupProductByCode(code: string): Promise<IProduct> {
   const product = mockProducts.find((p) => p.code === code);
 
   if (!product) {
-    const error = new Error(
-      `Product not found with code: ${code}`,
-    ) as ServiceError;
+    const error = new ExtendedError(`Product not found with code: ${code}`);
     error.code = "NOT_FOUND";
     throw error;
   }
@@ -200,9 +203,9 @@ async function lookupProductById(id: string): Promise<IProduct> {
   const product = mockProducts.find((p) => p.id === id);
 
   if (!product) {
-    const error = new Error(
+    const error = new ExtendedError(
       `Product not found with internal product id: ${id}`,
-    ) as ServiceError;
+    );
     error.code = "NOT_FOUND";
     throw error;
   }
@@ -230,9 +233,8 @@ async function lookupProductByQuery(query: string | null): Promise<IProduct[]> {
   );
 
   if (result.length === 0) {
-    const error = new Error(
-      `No products found matching: ${query}`,
-    ) as ServiceError;
+    const error = new ExtendedError(`No products found matching: ${query}`);
+    error.code = "NOT_FOUND";
     throw error;
   }
 
@@ -284,8 +286,8 @@ async function getAllProducts(req: Request, res: Response): Promise<Response> {
       let return_code: number = 400;
       let error_message: string;
 
-      if (error instanceof ServiceError) {
-        const serviceError = error as ServiceError;
+      if (error instanceof ExtendedError) {
+        const serviceError = error as ExtendedError;
         error_code = coalesceStrictString([serviceError.code], error_code);
         error_message = serviceError.message;
       } else {
@@ -307,13 +309,13 @@ async function getAllProducts(req: Request, res: Response): Promise<Response> {
 
     return res.json({ enrichedProducts });
   } catch (error) {
-    const customError = error as CustomError;
+    const encodedError = error as ExtendedError;
 
-    if (customError.code) {
+    if (encodedError.code) {
       return res.status(404).json({
         error: {
-          code: customError.code,
-          message: customError.message,
+          code: encodedError.code,
+          message: encodedError.message,
         },
       } as ErrorResponse);
     }
@@ -356,12 +358,12 @@ async function getProductById(req: Request, res: Response): Promise<Response> {
 
     return res.json(enrichedProduct);
   } catch (error) {
-    const customError = error as CustomError;
+    const encodedError = error as ExtendedError;
 
-    if (customError.code === "NOT_FOUND") {
+    if (encodedError.code === "NOT_FOUND") {
       return res.status(404).json({
         error: {
-          code: "NOT_FOUND",
+          code: encodedError.code,
           message: `Product not found with ID: ${req.params.id}`,
         },
       } as ErrorResponse);
@@ -408,7 +410,7 @@ async function getProductByCode(
 
     return res.json(enrichedProduct);
   } catch (error) {
-    const customError = error as CustomError;
+    const customError = error as ExtendedError;
 
     if (customError.code === "NOT_FOUND") {
       return res.status(404).json({
@@ -694,28 +696,7 @@ function buildCandidateQuery(product: IProduct, isUnknownGrade: boolean) {
   return { query, specificCategory, broadCategory };
 }
 
-interface ProductAlternative {
-  product: IFood;
-  esg?: IEsgScore;
-
-  final_score: number;
-  similarity: number;
-  grade_improvement: number;
-}
-
-interface ProductAltResponse {
-  name: string;
-  code: string;
-  brand: string;
-  alternatives: string[];
-  message?: string;
-  implementation: {
-    status: string;
-    method?: string;
-    features?: string[];
-  };
-}
-
+// TODO(liam): fix Food Model and then fix this
 async function getProductAlternatives(
   req: Request,
   res: Response,
@@ -723,7 +704,10 @@ async function getProductAlternatives(
   try {
     const { code } = req.params;
     const productCode = code as string;
-    const limit: number = parseStrictInt(req.query.limit, 5);
+    const limit: number = parseStrictInt(
+      req.query.limit as string | undefined,
+      5,
+    );
 
     if (!productCode) {
       return res.status(400).json({
@@ -953,187 +937,187 @@ async function getProductAlternatives(
 }
 
 // NOTE(liam): flag ingredients endpoint
-const checkProductIngredients = async (id) => {
-  try {
-    if (!id) {
-      throw new Error("Product id is required");
-    }
+// const checkProductIngredients = async (id) => {
+//   try {
+//     if (!id) {
+//       throw new Error("Product id is required");
+//     }
 
-    // Try cache first (only barcodes are cached)
-    let product = null;
-    const cached = await ProductCache.findOne({ code: id });
-    if (cached) {
-      product = cached.data;
-    } else {
-      try {
-        // Use barcode lookup when id is numeric, otherwise try gtin
-        if (/^\d+$/.test(String(id))) {
-          product = await lookupProductService({ upc: String(id) });
-        } else {
-          product = await lookupProductService({ gtin: String(id) });
-        }
+//     // Try cache first (only barcodes are cached)
+//     let product = null;
+//     const cached = await ProductCache.findOne({ code: id });
+//     if (cached) {
+//       product = cached.data;
+//     } else {
+//       try {
+//         // Use barcode lookup when id is numeric, otherwise try gtin
+//         if (/^\d+$/.test(String(id))) {
+//           product = await lookupProductService({ upc: String(id) });
+//         } else {
+//           product = await lookupProductService({ gtin: String(id) });
+//         }
 
-        if (Array.isArray(product)) product = product[0];
-      } catch (err) {
-        // If lookup fails, return a descriptive result instead of throwing
-        console.error("Ingredient check: product lookup failed", err);
-        return {
-          productId: id,
-          ok: false,
-          error: {
-            code: err.code || "LOOKUP_FAILED",
-            message: err.message || String(err),
-          },
-        };
-      }
-    }
+//         if (Array.isArray(product)) product = product[0];
+//       } catch (err) {
+//         // If lookup fails, return a descriptive result instead of throwing
+//         console.error("Ingredient check: product lookup failed", err);
+//         return {
+//           productId: id,
+//           ok: false,
+//           error: {
+//             code: err.code || "LOOKUP_FAILED",
+//             message: err.message || String(err),
+//           },
+//         };
+//       }
+//     }
 
-    if (!product) {
-      return {
-        productId: id,
-        ok: false,
-        error: { code: "NOT_FOUND", message: "Product not found" },
-      };
-    }
+//     if (!product) {
+//       return {
+//         productId: id,
+//         ok: false,
+//         error: { code: "NOT_FOUND", message: "Product not found" },
+//       };
+//     }
 
-    // Extract ingredients text from common fields
-    let ingredientsText = "";
-    if (product.ingredients_text) {
-      ingredientsText = String(product.ingredients_text);
-    } else if (product.ingredients_text_en) {
-      ingredientsText = String(product.ingredients_text_en);
-    } else if (product.ingredients && Array.isArray(product.ingredients)) {
-      ingredientsText = product.ingredients
-        .map((ing) => (ing && (ing.text || ing)) || "")
-        .filter(Boolean)
-        .join(", ");
-    } else if (product.ingredients) {
-      ingredientsText = String(product.ingredients);
-    }
+//     // Extract ingredients text from common fields
+//     let ingredientsText = "";
+//     if (product.ingredients_text) {
+//       ingredientsText = String(product.ingredients_text);
+//     } else if (product.ingredients_text_en) {
+//       ingredientsText = String(product.ingredients_text_en);
+//     } else if (product.ingredients && Array.isArray(product.ingredients)) {
+//       ingredientsText = product.ingredients
+//         .map((ing) => (ing && (ing.text || ing)) || "")
+//         .filter(Boolean)
+//         .join(", ");
+//     } else if (product.ingredients) {
+//       ingredientsText = String(product.ingredients);
+//     }
 
-    if (!ingredientsText || ingredientsText.trim() === "") {
-      return {
-        productId: id,
-        productName: product.product_name || product.name || null,
-        brand: product.brands || product.brand || null,
-        ok: true,
-        message: "No ingredients information available for this product",
-      };
-    }
+//     if (!ingredientsText || ingredientsText.trim() === "") {
+//       return {
+//         productId: id,
+//         productName: product.product_name || product.name || null,
+//         brand: product.brands || product.brand || null,
+//         ok: true,
+//         message: "No ingredients information available for this product",
+//       };
+//     }
 
-    const normalized = ingredientsText.toLowerCase();
+//     const normalized = ingredientsText.toLowerCase();
 
-    // Define allergen and concern patterns (not exhaustive)
-    const ALLERGEN_PATTERNS = {
-      milk: /\b(milk|casein|whey|lactose|buttermilk|milk powder|skimmilk)\b/i,
-      eggs: /\b(egg|albumen|albumin)\b/i,
-      peanuts: /\b(peanut|groundnut)\b/i,
-      tree_nuts:
-        /\b(almond|walnut|pecan|cashew|hazelnut|pistachio|macadamia|brazil nut)\b/i,
-      soy: /\b(soy|soya|soybean|soy lecithin|soy protein)\b/i,
-      wheat_gluten: /\b(wheat|gluten|farina|semolina|spelt|durum|kamut)\b/i,
-      fish: /\b(fish|anchovy|cod|salmon|tuna|trout|herring|pollock)\b/i,
-      shellfish:
-        /\b(shellfish|shrimp|prawn|crab|lobster|crayfish|clam|mussel|oyster)\b/i,
-      sesame: /\b(sesame|tahini)\b/i,
-    };
+//     // Define allergen and concern patterns (not exhaustive)
+//     const ALLERGEN_PATTERNS = {
+//       milk: /\b(milk|casein|whey|lactose|buttermilk|milk powder|skimmilk)\b/i,
+//       eggs: /\b(egg|albumen|albumin)\b/i,
+//       peanuts: /\b(peanut|groundnut)\b/i,
+//       tree_nuts:
+//         /\b(almond|walnut|pecan|cashew|hazelnut|pistachio|macadamia|brazil nut)\b/i,
+//       soy: /\b(soy|soya|soybean|soy lecithin|soy protein)\b/i,
+//       wheat_gluten: /\b(wheat|gluten|farina|semolina|spelt|durum|kamut)\b/i,
+//       fish: /\b(fish|anchovy|cod|salmon|tuna|trout|herring|pollock)\b/i,
+//       shellfish:
+//         /\b(shellfish|shrimp|prawn|crab|lobster|crayfish|clam|mussel|oyster)\b/i,
+//       sesame: /\b(sesame|tahini)\b/i,
+//     };
 
-    const CONCERN_PATTERNS = {
-      palm_oil: /\b(palm oil|palmolein)\b/i,
-      high_fructose_corn_syrup: /\b(high[- ]fructose corn syrup|hfcs)\b/i,
-      artificial_colors:
-        /\b(red 40|yellow 5|yellow 6|blue 1|caramel color|artificial color|tartrazine|allura red)\b/i,
-      preservatives:
-        /\b(bht|bha|sodium benzoate|potassium sorbate|sorbate|sulfite|sulphite|nitrite|nitrate|propionate)\b/i,
-      trans_fat: /\b(hydrogenated|partially hydrogenated|trans fat)\b/i,
-      msg: /\b(mononatrium glutamate|monosodium glutamate|msg)\b/i,
-      artificial_sweeteners:
-        /\b(aspartame|sucralose|acesulfame|saccharin|neotame)\b/i,
-      high_sugar: /\b(sugar|corn syrup|glucose syrup|fructose)\b/i,
-    };
+//     const CONCERN_PATTERNS = {
+//       palm_oil: /\b(palm oil|palmolein)\b/i,
+//       high_fructose_corn_syrup: /\b(high[- ]fructose corn syrup|hfcs)\b/i,
+//       artificial_colors:
+//         /\b(red 40|yellow 5|yellow 6|blue 1|caramel color|artificial color|tartrazine|allura red)\b/i,
+//       preservatives:
+//         /\b(bht|bha|sodium benzoate|potassium sorbate|sorbate|sulfite|sulphite|nitrite|nitrate|propionate)\b/i,
+//       trans_fat: /\b(hydrogenated|partially hydrogenated|trans fat)\b/i,
+//       msg: /\b(mononatrium glutamate|monosodium glutamate|msg)\b/i,
+//       artificial_sweeteners:
+//         /\b(aspartame|sucralose|acesulfame|saccharin|neotame)\b/i,
+//       high_sugar: /\b(sugar|corn syrup|glucose syrup|fructose)\b/i,
+//     };
 
-    const foundAllergens = {};
-    const foundConcerns = {};
+//     const foundAllergens = {};
+//     const foundConcerns = {};
 
-    for (const [k, re] of Object.entries(ALLERGEN_PATTERNS)) {
-      foundAllergens[k] = re.test(normalized);
-    }
+//     for (const [k, re] of Object.entries(ALLERGEN_PATTERNS)) {
+//       foundAllergens[k] = re.test(normalized);
+//     }
 
-    for (const [k, re] of Object.entries(CONCERN_PATTERNS)) {
-      foundConcerns[k] = re.test(normalized);
-    }
+//     for (const [k, re] of Object.entries(CONCERN_PATTERNS)) {
+//       foundConcerns[k] = re.test(normalized);
+//     }
 
-    const matchedAllergens = Object.keys(foundAllergens).filter(
-      (k) => foundAllergens[k],
-    );
-    const matchedConcerns = Object.keys(foundConcerns).filter(
-      (k) => foundConcerns[k],
-    );
+//     const matchedAllergens = Object.keys(foundAllergens).filter(
+//       (k) => foundAllergens[k],
+//     );
+//     const matchedConcerns = Object.keys(foundConcerns).filter(
+//       (k) => foundConcerns[k],
+//     );
 
-    const safe = matchedAllergens.length === 0 && matchedConcerns.length === 0;
+//     const safe = matchedAllergens.length === 0 && matchedConcerns.length === 0;
 
-    return {
-      productId: id,
-      productName: product.product_name || product.name || null,
-      brand: product.brands || product.brand || null,
-      ingredients: ingredientsText,
-      found: {
-        allergens: foundAllergens,
-        concerns: foundConcerns,
-      },
-      matchedAllergens,
-      matchedConcerns,
-      safe,
-    };
-  } catch (err) {
-    console.error("checkProductIngredients error:", err);
-    return {
-      productId: id,
-      ok: false,
-      error: {
-        code: err.code || "INTERNAL_ERROR",
-        message: err.message || String(err),
-      },
-    };
-  }
-};
+//     return {
+//       productId: id,
+//       productName: product.product_name || product.name || null,
+//       brand: product.brands || product.brand || null,
+//       ingredients: ingredientsText,
+//       found: {
+//         allergens: foundAllergens,
+//         concerns: foundConcerns,
+//       },
+//       matchedAllergens,
+//       matchedConcerns,
+//       safe,
+//     };
+//   } catch (err) {
+//     console.error("checkProductIngredients error:", err);
+//     return {
+//       productId: id,
+//       ok: false,
+//       error: {
+//         code: err.code || "INTERNAL_ERROR",
+//         message: err.message || String(err),
+//       },
+//     };
+//   }
+// };
 
 // ============================================================================
 // PRODUCT SUMMARIES (AI-GENERATED)
 // ============================================================================
 
-const generateProductSummary = async (id) => {
+/*
+ * creates an ai-generated summary for a product,
+ * OR gets a cached summary from the redis database.
+ *
+ */
+async function generateProductSummary(id: string): Promise<IProduct> {
   try {
-    const cached = await ProductCache.findOne({ code: id });
-    let product;
+    const cached = (await ProductCache.findOne({
+      id: id,
+    })) as IProductCache | null;
 
+    let product: IProduct | null;
     if (cached) {
+      console.log("[redis] Cache hit:", cached);
       product = cached.data;
     } else {
-      try {
-        product = await lookupProductService({ upc: id });
-      } catch (lookupErr) {
-        // Don't fail the entire summary generation if product lookup fails.
-        // Log the error and continue; the agent can still run using product_identifier only.
-        console.error(
-          "Product lookup failed inside generateProductSummary:",
-          lookupErr,
-        );
-        product = null;
-      }
+      console.log("[redis] Cache miss!");
+      product = await lookupProductByCode(id);
     }
 
-    const agentBase = process.env.AGENT_API_ENDPOINT || "http://localhost:8000";
-    const agentUrl = `${agentBase.replace(/\/$/, "")}/workflow/run`;
-
-    const headers = {};
-    // If an internal agent API key is configured, send it as x-internal-key
-    if (process.env.AGENT_API_KEY) {
-      headers["x-internal-key"] = process.env.AGENT_API_KEY;
+    if (!product) {
+      // TODO(liam): handle error
     }
+
+    const agentUrl = `${AGENT_API_ENDPOINT.replace(/\/$/, "")}/workflow/run`;
+
+    const headers = {
+      "x-internal-key": AGENT_API_KEY,
+    };
 
     const payload = {
-      product_identifier: String(id),
+      product_identifier: id,
     };
 
     console.info(
@@ -1142,132 +1126,71 @@ const generateProductSummary = async (id) => {
       "payload keys:",
       Object.keys(payload),
     );
-    const resp = await axios.post(agentUrl, payload, {
+
+    const res = await axios.post(agentUrl, payload, {
       headers,
       timeout: 100000,
     });
 
-    if (!resp || !resp.data) {
-      throw new Error("Empty response from agent");
+    if (!res || !res.data) {
+      throw new Error("Agent did not respond.") as ExtendedError;
     }
 
-    // Normalize agent response to a consistent summary object
-    const agentData = resp.data;
-    const finalReport = agentData.final_report || {};
+    const finalReport = res.data || {};
 
-    const normalized = {
-      productId: finalReport.product_id || String(id),
-      productName:
-        finalReport.product_name ||
-        (product && (product.name || product.product_name)) ||
-        "",
-      brand:
-        finalReport.brand ||
-        (product && (product.brands || product.brand)) ||
-        "",
-      summary: finalReport.summary || [],
+    const summary: ProductSummary = {
+      data: finalReport.summary || [],
       metadata: finalReport.metadata || {},
       generatedAt: new Date().toISOString(),
     };
+    product.summary = summary;
 
-    // Compute per-company cache key (use normalized.brand first)
-    const companyRaw =
-      normalized.brand ||
-      (product && (product.brands || product.brand)) ||
-      String(id);
-    const companyKey =
+    const companyRaw: string = product.brand || id;
+    const companyKey: string =
       encodeURIComponent(
-        String(companyRaw)
-          .split(",")[0]
-          .trim()
-          .toLowerCase()
-          .replace(/\s+/g, "_"),
-      ) || String(id);
+        companyRaw.split(",")[0].trim().toLowerCase().replace(/\s+/g, "_"),
+      ) || id;
     const cacheKey = `brandSummary:${companyKey}`;
 
-    // Cache the normalized summary in Redis under per-company key
     console.log(`[redis] caching with key: '${cacheKey}'`);
 
-    await redisClient.set(cacheKey, JSON.stringify(normalized), {
+    await redisClient.set(cacheKey, JSON.stringify(product), {
       EX: CACHE_TTL,
     });
 
-    return normalized;
+    return product;
   } catch (error) {
-    const details = error?.response?.data ?? error.message ?? String(error);
-    console.error("Summary generation error:", details);
-    throw new Error(
-      `Failed to generate product summary: ${
-        typeof details === "string" ? details : JSON.stringify(details)
-      }`,
+    const encodedError = error as ExtendedError;
+    console.error(
+      "Failed to generate a product summary:",
+      encodedError.message,
     );
+    throw encodedError;
   }
-};
+}
 
-const getProductSummary = async (req, res) => {
+async function getProductSummary(
+  req: Request,
+  res: Response,
+): Promise<Response> {
   try {
     const { id } = req.params;
+    const productId = id as string;
 
-    const cached = await ProductCache.findOne({ code: id });
-    let product = null;
+    const product: IProduct = await generateProductSummary(productId);
 
-    if (cached) {
-      product = cached.data;
-    } else {
-      try {
-        product = await lookupProductService({ upc: id });
-      } catch (lookupErr) {
-        console.error(lookupErr);
-      }
-    }
-
-    const companyRaw =
-      (product && (product.brands || product.brand)) || String(id);
-    const companyKey =
-      encodeURIComponent(
-        String(companyRaw)
-          .split(",")[0]
-          .trim()
-          .toLowerCase()
-          .replace(/\s+/g, "_"),
-      ) || String(id);
-    const cacheKey = `brandSummary:${companyKey}`;
-
-    console.log(`[redis] checking cache with key: '${cacheKey}'`);
-
-    const redisCached = await redisClient.get(cacheKey);
-
-    if (redisCached) {
-      console.log("[redis] Cache hit:", JSON.parse(redisCached));
-
-      return res.json(JSON.parse(redisCached));
-    } else {
-      console.log("[redis] Cache miss!");
-
-      // NOTE(liam): generates new summary.
-      try {
-        const newSummary = await generateProductSummary(id);
-        return res.json(newSummary);
-      } catch (err) {
-        console.error(err);
-        return res.status(500).json({
-          error: {
-            code: "INTERNAL_ERROR",
-            message: err.message,
-          },
-        });
-      }
-    }
+    return res.json(product);
   } catch (error) {
-    console.error("Summary retrieval error:", error);
-    res.status(500).json({
+    const encodedError = error as ExtendedError;
+    console.error(error);
+    return res.status(500).json({
       error: {
-        code: "INTERNAL_ERROR",
-        message: "Failed to retrieve product summary",
+        code: encodedError.code || "INTERNAL_ERROR",
+        message: encodedError.message,
       },
-    });
+    } as ErrorResponse);
   }
-};
+}
 
 // ============================================================================
 // EXPORTS
@@ -1278,5 +1201,6 @@ export {
   getProductById,
   getProductByCode,
   getProductAlternatives,
+  generateProductSummary,
   getProductSummary,
 };
