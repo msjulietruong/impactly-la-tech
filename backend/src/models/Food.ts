@@ -1,13 +1,13 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IFood extends Document {
-  product_name: string;
+  product_name: string | number;
   code: string;
-  embedding?: string;
-  brands?: string;
+  embedding?: number[];
+  brands?: string | number;
   categories?: string;
   image_url?: string;
-  environmental_score_grade?: string;
+  environmental_score_grade?: string | boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,15 +15,23 @@ export interface IFood extends Document {
 const foodSchema: Schema<IFood> = new Schema(
   {
     product_name: {
-      type: String,
+      type: Schema.Types.Mixed,
+      validate: {
+        validator: (v) => typeof v === "string" || typeof v === "number",
+        message: "Value must be string or number",
+      },
       required: true,
     },
     code: {
-      type: String,
+      type: Schema.Types.Mixed,
+      validate: {
+        validator: (v) => typeof v === "string" || typeof v === "number",
+        message: "Value must be string or number",
+      },
       required: true,
     },
     embedding: {
-      type: String,
+      type: [Number],
     },
     brands: {
       type: String,
@@ -36,6 +44,10 @@ const foodSchema: Schema<IFood> = new Schema(
     },
     environmental_score_grade: {
       type: String,
+      validate: {
+        validator: (v) => typeof v === "string" || typeof v === "boolean",
+        message: "Value must be string or boolean",
+      },
     },
   },
   {

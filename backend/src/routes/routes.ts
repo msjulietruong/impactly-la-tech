@@ -62,25 +62,10 @@ router.get("/api/products/:id", productController.getProductById);
  * How to use:
  *   GET /api/products/barcode/3274080005003
  */
-router.get(
-  "/api/products/barcode/:code",
-  productController.getProductByBarcode,
-);
+router.get("/api/products/barcode/:code", productController.getProductByCode);
 
-/**
- * ENDPOINT 3: Product ESG breakdown
- *
- * What it does: Shows how ethical the company is (Environment, Social, Governance)
- *
- * How to use:
- *   GET /api/products/3274080005003/esg   → Get ethics scores
- *
- * What you get:
- *   - Environment score (0-100): How much they care about Earth
- *   - Social score (0-100): How well they treat people
- *   - Governance score (0-100): How honest the company is
- */
-router.get("/api/products/:id/esg", productController.getProductESG);
+// THIS ROUTE DOES NOT EXIST ANYMORE; ESG IS CALCULATED WHEN QUERYING PRODUCT.
+// router.get("/api/products/:id/esg", productController.getProductESG);
 
 /**
  * Product alternatives (Future feature - vector search)

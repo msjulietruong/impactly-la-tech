@@ -1,9 +1,7 @@
 // import { lookupProduct as lookupProductService } from "../services/openFoodFactsService.js";
-import Product, { IProduct } from "../models/Product.js";
-import ProductCache, {
-  IProductCache,
-  ProductSummary,
-} from "../models/ProductCache.js";
+import Product, { ProductSummary, IProduct } from "../models/Product.js";
+// import ProductSummary, { IProductSummary } from "../models/ProductSummary.js";
+import ProductCache, { IProductCache } from "../models/ProductCache.js";
 import EsgScore, { IEsgScore } from "../models/EsgScore.js";
 
 import Company, { ICompany, COMPANY_BRAND_MAP } from "../models/Company.js";
@@ -52,11 +50,17 @@ interface ProductAlternative {
   grade_improvement: number;
 }
 
-interface ProductAltResponse {
-  name: string;
-  code: string;
-  brand: string;
-  alternatives: string[];
+interface ProductAlternativeResponse {
+  productId: string;
+  productName: string | number;
+  brand: string | string[] | number;
+  environmental_score_grade: string | boolean;
+  company_esg: IEsgScore | null;
+  alternatives: ProductAlternative[];
+  count: number;
+  matchedCategory: string;
+  isUnknownGrade: boolean;
+  similarityThreshold: number;
   message?: string;
   implementation: {
     status: string;
@@ -642,7 +646,7 @@ async function getProductByCode(
 // PRODUCT ALTERNATIVES (VECTOR SEARCH)
 // ============================================================================
 
-function calculateCosineSimilarity(vecA, vecB): number {
+function calculateCosineSimilarity(vecA: number[], vecB: number[]): number {
   const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
   const magnitudeA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
   const magnitudeB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
@@ -746,16 +750,22 @@ async function getProductAlternatives(
     // Check if product has embeddings
     if (!product.embedding || product.embedding.length === 0) {
       return res.json({
-        name: product.name,
-        code: productCode,
+        productId: product.id,
+        productName: product.name,
         brand: product.brand,
+        environmental_score_grade: false,
+        company_esg: null,
         alternatives: [],
+        count: 0,
+        matchedCategory: "",
+        isUnknownGrade: true,
+        similarityThreshold: 0,
         message:
           "Product does not have embeddings yet. Generate embeddings by running: POST /api/food/generate",
         implementation: {
           status: "inactive",
         },
-      } as ProductAltResponse);
+      } satisfies ProductAlternativeResponse);
     }
 
     const enrichedProduct = await getEnrichedProduct(product);
@@ -789,16 +799,29 @@ async function getProductAlternatives(
     const similarityThreshold = isUnknownGrade ? 0.65 : 0.75;
 
     const query = buildCandidateQuery(product, isUnknownGrade);
+    const specificCategory = query.specificCategory;
+    const broadCategory = query.broadCategory;
+
+    const productAsFood: IFood | null = await Food.findOne({
+      code: { $regex: product.code, $options: "i" },
+    });
+
+    let productEnvironmentScoreGrade: string | boolean = false;
+    if (productAsFood) {
+      productEnvironmentScoreGrade =
+        productAsFood.environmental_score_grade ?? false;
+    } else {
+      console.warn("Product's Food data could not be found.");
+    }
 
     const candidates: IFood[] = await Food.find(query);
-    // const candidates = Food.find(query).toArray();
 
     const alternatives = [];
 
     for (const candidate of candidates) {
       const similarity = calculateCosineSimilarity(
         product.embedding,
-        candidate.embedding,
+        candidate.embedding ?? Array(product.embedding.length).fill(0),
       );
 
       if (similarity > similarityThreshold) {
@@ -815,7 +838,7 @@ async function getProductAlternatives(
 
         if (shouldInclude) {
           const altEsgScore: IEsgScore | undefined =
-            (await getProductESGData(candidate.brands)) ?? undefined;
+            (await getProductESGData(String(candidate.brands))) ?? undefined;
           const overallScore: number = altEsgScore?.score_final || 0;
 
           alternatives.push({
@@ -828,21 +851,6 @@ async function getProductAlternatives(
               ? candidateScore
               : candidateScore - originalScore,
           } satisfies ProductAlternative);
-
-          // alternatives.push({
-          //   code: candidate.code,
-          //   product_name: candidate.product_name,
-          //   brands: candidate.brands,
-          //   categories: candidate.categories,
-          //   environmental_score_grade: candidate.environmental_score_grade,
-          //   image_url: candidate.image_url,
-          //   score: overallScore,
-          //   esg: altEsgData,
-          //   similarity: Math.round(similarity * 100) / 100,
-          //   grade_improvement: isUnknownGrade
-          //     ? candidateScore
-          //     : candidateScore - originalScore,
-          // });
         }
       }
     }
@@ -865,10 +873,18 @@ async function getProductAlternatives(
       : "";
 
     return res.json({
-      name: product.name,
-      code: productCode,
+      productId: product.id,
+      productName: product.name,
       brand: product.brand,
-      alternatives: alternatives,
+      environmental_score_grade: productEnvironmentScoreGrade,
+      company_esg: originalProductESG,
+      alternatives: limitedAlternatives,
+      count: limitedAlternatives.length,
+      matchedCategory: isUnknownGrade
+        ? "all categories"
+        : specificCategory || broadCategory || "",
+      isUnknownGrade: isUnknownGrade,
+      similarityThreshold: similarityThreshold,
       message: return_message,
       implementation: {
         status: "active",
@@ -888,46 +904,10 @@ async function getProductAlternatives(
           "Enriched with company ESG scores with brand-to-company mapping",
         ],
       },
-    });
-
-    // res.json({
-    //   productId: id,
-    //   productName: product.product_name,
-    //   brand: product.brands,
-    //   environmental_score_grade: product.environmental_score_grade,
-    //   company_esg: originalProductESG,
-    //   alternatives: limitedAlternatives,
-    //   count: limitedAlternatives.length,
-    //   matchedCategory: isUnknownGrade
-    //     ? "all categories"
-    //     : specificCategory || broadCategory || "all categories",
-    //   isUnknownGrade: isUnknownGrade,
-    //   similarityThreshold: similarityThreshold,
-    //   message: isUnknownGrade
-    //     ? "Showing graded alternatives from all categories (original product has no environmental data)"
-    //     : undefined,
-    //   implementation: {
-    //     status: "active",
-    //     method:
-    //       "Vector search using HuggingFace embeddings with ESG enrichment",
-    //     features: [
-    //       "Semantic similarity using AI embeddings (384-d vectors)",
-    //       isUnknownGrade
-    //         ? "Minimum 65% similarity for unknown products"
-    //         : "Minimum 75% similarity threshold for relevance",
-    //       "Filtered by better environmental grades",
-    //       "Never recommends unknown grade products",
-    //       isUnknownGrade
-    //         ? "Searches all categories for unknown products"
-    //         : "Specific category matching for graded products",
-    //       "Sorted by similarity and grade improvement",
-    //       "Enriched with company ESG scores with brand-to-company mapping",
-    //     ],
-    //   },
-    // });
+    } satisfies ProductAlternativeResponse);
   } catch (error) {
     console.error("Alternatives lookup error:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: {
         code: "INTERNAL_ERROR",
         message: "Failed to get product alternatives",
