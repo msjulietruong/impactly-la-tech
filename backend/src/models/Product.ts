@@ -13,7 +13,7 @@ export interface IProduct extends Document {
   description?: string;
   categories?: string;
   image_url?: string;
-  embedding?: string;
+  embedding?: number[];
   summary?: ProductSummary;
   createdAt: string;
   updatedAt: string;
@@ -45,7 +45,7 @@ const productSchema: Schema<IProduct> = new Schema(
       type: String,
     },
     embedding: {
-      type: String,
+      type: [Number],
     },
     summary: {
       type: String,

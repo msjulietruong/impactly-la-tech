@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import ProductCache from "../models/ProductCache.js";
 
 // ============================================================================
@@ -8,8 +8,8 @@ import ProductCache from "../models/ProductCache.js";
 /**
  * Get the food collection from MongoDB
  */
-function getFoodCollection() {
-  return mongoose.connection.db.collection("food");
+function getFoodCollection(): mongo.Collection<Document> | undefined {
+  return mongoose.connection?.db?.collection("food");
 }
 
 // ============================================================================
