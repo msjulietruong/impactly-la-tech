@@ -1,6 +1,4 @@
-// import { lookupProduct as lookupProductService } from "../services/openFoodFactsService.js";
 import Product, { ProductSummary, IProduct } from "../models/Product.js";
-// import ProductSummary, { IProductSummary } from "../models/ProductSummary.js";
 import ProductCache, { IProductCache } from "../models/ProductCache.js";
 import EsgScore, { IEsgScore } from "../models/EsgScore.js";
 import { ExtendedError, ErrorResponse } from "../models/Error.js";
@@ -96,7 +94,7 @@ function calculateEsg(E: number, S: number, G: number): number {
   return result;
 }
 
-function parseStrictInt(
+export function parseStrictInt(
   value: string | null | undefined,
   fallback: number = 0,
 ): number {
@@ -636,7 +634,10 @@ async function getProductByCode(
 // PRODUCT ALTERNATIVES (VECTOR SEARCH)
 // ============================================================================
 
-function calculateCosineSimilarity(vecA: number[], vecB: number[]): number {
+export function calculateCosineSimilarity(
+  vecA: number[],
+  vecB: number[],
+): number {
   const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
   const magnitudeA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
   const magnitudeB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
@@ -1077,7 +1078,6 @@ async function generateProductSummary(id: string): Promise<IProduct> {
     }
 
     if (!product) {
-      // TODO(liam): handle error
     }
 
     const agentUrl = `${AGENT_API_ENDPOINT.replace(/\/$/, "")}/workflow/run`;
