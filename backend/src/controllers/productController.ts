@@ -3,6 +3,7 @@ import Product, { ProductSummary, IProduct } from "../models/Product.js";
 // import ProductSummary, { IProductSummary } from "../models/ProductSummary.js";
 import ProductCache, { IProductCache } from "../models/ProductCache.js";
 import EsgScore, { IEsgScore } from "../models/EsgScore.js";
+import { ExtendedError, ErrorResponse } from "../models/Error.js";
 
 import Company, { ICompany, COMPANY_BRAND_MAP } from "../models/Company.js";
 import Brand, { IBrand } from "../models/Brand.js";
@@ -28,17 +29,6 @@ interface ProductQueryParams {
 
 interface EnrichedProduct extends IProduct {
   esg: IEsgScore | null;
-}
-
-interface ErrorResponse {
-  error: {
-    code: string;
-    message: string;
-  };
-}
-
-class ExtendedError extends Error {
-  code?: string;
 }
 
 interface ProductAlternative {
