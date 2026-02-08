@@ -5,8 +5,9 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
+    "build": "tsc",
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
+    "start": "node dist/server.js",
     "ingest:esg": "node scripts/ingest-esg.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "verify": "node scripts/ingest-esg.js && node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
