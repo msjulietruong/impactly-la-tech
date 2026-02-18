@@ -54,8 +54,6 @@ const esgScoreSchema: Schema<IEsgScore> = new Schema(
   { timestamps: true },
 );
 
-esgScoreSchema.index({ brand_id: 1 }, { unique: true });
-
 const EsgScore: Model<IEsgScore> = mongoose.model<IEsgScore>(
   "EsgScore",
   esgScoreSchema,
