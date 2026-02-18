@@ -32,6 +32,5 @@ const esgScoreSchema = new Schema({
         required: true,
     },
 }, { timestamps: true });
-esgScoreSchema.index({ brand_id: 1 }, { unique: true });
 const EsgScore = mongoose.model("EsgScore", esgScoreSchema);
 export default EsgScore;
