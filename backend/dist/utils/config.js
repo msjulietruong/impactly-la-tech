@@ -25,4 +25,5 @@ export const REDIS_URL = requireEnv("REDIS_URL", "redis://localhost:6379");
 export const AGENT_API_ENDPOINT = requireEnv("AGENT_API_ENDPOINT", "http://localhost:8000");
 export const AGENT_API_KEY = requireEnv("OPENAI_API_KEY", "");
 export const CACHE_TTL = parseNumber(process.env.CACHE_TTL, 36000, "CACHE_TTL");
-console.log("Redis URL (sanitized):", process.env.REDIS_URL?.replace(/:[^:]*@/, ":****@"));
+console.log("MONGODB URL (sanitized):", MONGODB_URI?.replace(/:[^:]*@/, ":****@"));
+console.log("Redis URL (sanitized):", REDIS_URL?.replace(/:[^:]*@/, ":****@"));

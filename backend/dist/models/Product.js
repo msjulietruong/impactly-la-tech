@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 const productSchema = new Schema({
     code: {
-        type: String,
+        type: Number,
         required: true,
         unique: true,
     },
@@ -9,10 +9,12 @@ const productSchema = new Schema({
         type: String,
         required: true,
         unique: true,
+        alias: "brands",
     },
     name: {
         type: String,
         required: true,
+        alias: "product_name",
     },
     description: {
         type: String,
@@ -27,8 +29,17 @@ const productSchema = new Schema({
         type: [Number],
     },
     summary: {
+        data: [String],
+        metadata: Schema.Types.Mixed,
+        generatedAt: String,
+    },
+    environmental_score_grade: {
         type: String,
+        validate: {
+            validator: (v) => typeof v === "string" || typeof v === "boolean",
+            message: "Value must be string or boolean",
+        },
     },
 }, { timestamps: true });
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model("Product", productSchema, "product");
 export default Product;

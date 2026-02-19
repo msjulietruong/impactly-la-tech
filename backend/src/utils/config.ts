@@ -53,6 +53,7 @@ export const AGENT_API_KEY: string = requireEnv("OPENAI_API_KEY", "");
 export const CACHE_TTL = parseNumber(process.env.CACHE_TTL, 36000, "CACHE_TTL");
 
 console.log(
-  "Redis URL (sanitized):",
-  process.env.REDIS_URL?.replace(/:[^:]*@/, ":****@"),
+  "MONGODB URL (sanitized):",
+  MONGODB_URI?.replace(/:[^:]*@/, ":****@"),
 );
+console.log("Redis URL (sanitized):", REDIS_URL?.replace(/:[^:]*@/, ":****@"));

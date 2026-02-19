@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Food, { IFood } from "../models/Food.js";
+// import Food, { IFood } from "../models/Food.js";
 import Product, { IProduct } from "../models/Product.js";
 import { ObjectId } from "mongodb";
 import { pipeline, FeatureExtractionPipeline } from "@xenova/transformers";
@@ -38,10 +38,10 @@ async function getEmbedder(): Promise<FeatureExtractionPipeline> {
 }
 
 // Create embedding from product
-async function createEmbeddingFromFood(product: IFood) {
+async function createEmbeddingFromProduct(product: IProduct) {
   const embedder = await getEmbedder();
 
-  const text = `${product.product_name || ""} ${product.categories || ""} ${product.brands || ""}`;
+  const text = `${product.name || ""} ${product.categories || ""} ${product.brand || ""}`;
   const output = await embedder(text, { pooling: "mean", normalize: true });
   return Array.from(output.data);
 }
@@ -57,11 +57,11 @@ async function generateEmbeddings(
   res: Response,
 ): Promise<Response> {
   try {
-    const totalProducts = Food.countDocuments();
+    const totalProducts = Product.countDocuments();
     console.log("Total products in collection:", totalProducts);
 
     // Check a sample product
-    const sampleProduct = await Food.findOne({});
+    const sampleProduct = await Product.findOne({});
     console.log("Sample product embedding:", sampleProduct?.embedding);
     console.log(
       "Sample product embedding type:",
@@ -72,7 +72,7 @@ async function generateEmbeddings(
       sampleProduct?.embedding?.length,
     );
 
-    const products: IFood[] = await Food.find({
+    const products: IProduct[] = await Product.find({
       $or: [
         { embedding: { $exists: false } },
         { embedding: { $size: 0 } },
@@ -82,7 +82,7 @@ async function generateEmbeddings(
 
     console.log("Products found needing embeddings:", products.length);
     if (products.length === 0) {
-      console.log("First product:", products[0].product_name);
+      console.log("First product:", products[0].name);
       console.log("First product embedding:", products[0].embedding);
       return res.json({
         success: true,
@@ -93,12 +93,10 @@ async function generateEmbeddings(
 
     let count = 0;
     for (const product of products) {
-      const embedding = await createEmbeddingFromFood(product);
-      await Food.updateOne({ _id: product._id }, { $set: { embedding } });
+      const embedding = await createEmbeddingFromProduct(product);
+      await Product.updateOne({ _id: product._id }, { $set: { embedding } });
       count++;
-      console.log(
-        `Embedded: ${product.product_name} (${count}/${products.length})`,
-      );
+      console.log(`Embedded: ${product.name} (${count}/${products.length})`);
     }
 
     return res.json({
@@ -122,7 +120,7 @@ async function searchProducts(req: Request, res: Response): Promise<Response> {
   try {
     const { query } = req.params;
 
-    const products = Food.find({
+    const products = Product.find({
       product_name: { $regex: query, $options: "i" },
     }).limit(10);
 
@@ -141,7 +139,7 @@ async function searchProducts(req: Request, res: Response): Promise<Response> {
 
 async function debugGradeStats(req: Request, res: Response): Promise<Response> {
   try {
-    const gradeStats = await Food.aggregate([
+    const gradeStats = await Product.aggregate([
       {
         $group: {
           _id: "$environmental_score_grade",
@@ -151,11 +149,11 @@ async function debugGradeStats(req: Request, res: Response): Promise<Response> {
       { $sort: { count: -1 } },
     ]);
 
-    const totalProducts = Food.countDocuments();
-    const withEmbeddings = Food.countDocuments({
+    const totalProducts = Product.countDocuments();
+    const withEmbeddings = Product.countDocuments({
       embedding: { $exists: true, $ne: [] },
     });
-    const withGrades = Food.countDocuments({
+    const withGrades = Product.countDocuments({
       environmental_score_grade: { $nin: ["unknown", "", null] },
     });
 
