@@ -8,6 +8,10 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { getEmbedder } from "./controllers/embeddingController.js";
 import { PORT, MONGODB_URI } from "./utils/config.js";
+import dns from "node:dns/promises";
+
+// console.log(await dns.getServers());
+dns.setServers(["8.8.8.8"]);
 
 const app = express();
 
@@ -34,7 +38,13 @@ app.use(errorHandler);
  */
 async function connectDB(): Promise<void> {
   try {
-    await mongoose.connect(MONGODB_URI);
+    const clientOptions: any = {
+      serverApi: { version: "1", strict: true, deprecationErrors: true },
+    };
+
+    await mongoose.connect(MONGODB_URI, clientOptions);
+    await mongoose.connection.db?.admin().command({ ping: 1 });
+
     console.log("MongoDB connected successfully");
   } catch (error: unknown) {
     if (error instanceof Error) {
