@@ -5,7 +5,7 @@ import { ExtendedError, ErrorResponse } from "../models/Error.js";
 
 import Company, { ICompany, COMPANY_BRAND_MAP } from "../models/Company.js";
 import Brand, { IBrand } from "../models/Brand.js";
-import Food, { IFood } from "../models/Food.js";
+// import Food, { IFood } from "../models/Food.js";
 
 import mongoose from "mongoose";
 import axios, { HttpStatusCode } from "axios";
@@ -30,7 +30,7 @@ interface EnrichedProduct extends IProduct {
 }
 
 interface ProductAlternative {
-  product: IFood;
+  product: IProduct;
   esg?: IEsgScore;
 
   final_score: number;

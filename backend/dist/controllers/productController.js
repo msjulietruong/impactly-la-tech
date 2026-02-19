@@ -1,9 +1,10 @@
+import Product from "../models/Product.js";
 import ProductCache from "../models/ProductCache.js";
 import EsgScore from "../models/EsgScore.js";
 import { ExtendedError } from "../models/Error.js";
 import Company, { COMPANY_BRAND_MAP } from "../models/Company.js";
 import Brand from "../models/Brand.js";
-import Food from "../models/Food.js";
+// import Food, { IFood } from "../models/Food.js";
 import mongoose from "mongoose";
 import axios from "axios";
 import redisClient from "../utils/redisClient.js";
@@ -92,12 +93,12 @@ async function getProductESGData(brandName) {
 // ============================================================================
 // PRODUCT SEARCH AND LISTING
 // ============================================================================
-// NOTE(Liam): temporary
 async function lookupProductByCode(code) {
     await new Promise((resolve) => setTimeout(resolve, 100));
-    // TODO(liam): point to some arbitrary table
-    const mockProducts = [];
-    const product = mockProducts.find((p) => p.code === code);
+    const parsedCode = parseStrictInt(code, 0);
+    const product = await Product.findOne({
+        code: parsedCode,
+    });
     if (!product) {
         const error = new ExtendedError(`Product not found with code: ${code}`);
         error.code = "NOT_FOUND";
@@ -107,9 +108,12 @@ async function lookupProductByCode(code) {
 }
 async function lookupProductById(id) {
     await new Promise((resolve) => setTimeout(resolve, 100));
-    // TODO(liam): point to some arbitrary table
-    const mockProducts = [];
-    const product = mockProducts.find((p) => p.id === id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        const error = new ExtendedError(`Failed to search product due to invalid id provided: ${id}`);
+        error.code = "NOT_FOUND";
+        throw error;
+    }
+    const product = await Product.findById(id);
     if (!product) {
         const error = new ExtendedError(`Product not found with internal product id: ${id}`);
         error.code = "NOT_FOUND";
@@ -117,18 +121,30 @@ async function lookupProductById(id) {
     }
     return product;
 }
+function escapeRegex(text) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 async function lookupProductByQuery(query) {
     await new Promise((resolve) => setTimeout(resolve, 100));
-    // TODO(liam): point to some arbitrary table
-    const mockProducts = [];
     let result = [];
     if (query === null) {
         return result;
     }
-    const searchTerm = query.toLowerCase();
-    result = mockProducts.filter((product) => product.name.toLowerCase().includes(searchTerm) ||
-        product.brand.toLowerCase().includes(searchTerm) ||
-        product.description?.toLowerCase().includes(searchTerm));
+    const searchTerm = escapeRegex(query);
+    result = await Product.find({
+        $or: [
+            {
+                product_name: { $regex: searchTerm, $options: "i" },
+            },
+            {
+                brands: { $regex: searchTerm, $options: "i" },
+            },
+            {
+                description: { $regex: searchTerm, $options: "i" },
+            },
+        ],
+    });
+    console.log(result);
     if (result.length === 0) {
         const error = new ExtendedError(`No products found matching: ${query}`);
         error.code = "NOT_FOUND";
@@ -142,19 +158,36 @@ async function getEnrichedProduct(product) {
     enrichedProduct.esg = esgScore;
     return enrichedProduct;
 }
-// TODO(liam): continue here
 async function getAllProducts(req, res) {
     try {
         const { upc, ean, gtin, q } = req.query;
-        if (!upc && !ean && !gtin && !q) {
-            return res.status(400).json({
-                error: {
-                    code: "INVALID_ARGUMENT",
-                    message: "Missing required parameters. Provide either upc, ean, gtin, or q for search",
-                },
-            });
-        }
         let products;
+        if (!upc && !ean && !gtin && !q) {
+            try {
+                products = [(await Product.findOne({}))];
+                return res.json(products);
+            }
+            catch (error) {
+                let error_code = "SERVER_ERROR";
+                let return_code = 400;
+                let error_message;
+                if (error instanceof ExtendedError) {
+                    const serviceError = error;
+                    error_code = coalesceStrictString([serviceError.code], error_code);
+                    error_message = serviceError.message;
+                }
+                else {
+                    const anyError = error;
+                    error_message = anyError.message;
+                }
+                return res.status(return_code).json({
+                    error: {
+                        code: error_code,
+                        message: error_message,
+                    },
+                });
+            }
+        }
         try {
             const code = coalesceStrictString([upc, ean, gtin], "");
             if (code === "") {
@@ -192,8 +225,10 @@ async function getAllProducts(req, res) {
                 },
             });
         }
-        const enrichedProducts = await Promise.all(products.map(getEnrichedProduct));
-        return res.json({ enrichedProducts });
+        // const enrichedProducts: EnrichedProduct[] = await Promise.all(
+        //   products.map(getEnrichedProduct),
+        // );
+        return res.json({ products });
     }
     catch (error) {
         const encodedError = error;
@@ -233,8 +268,8 @@ async function getProductById(req, res) {
             return res.json(cached.data);
         }
         const product = await lookupProductById(productId);
-        const enrichedProduct = getEnrichedProduct(product);
-        return res.json(enrichedProduct);
+        // const enrichedProduct = getEnrichedProduct(product);
+        return res.json(product);
     }
     catch (error) {
         const encodedError = error;
@@ -274,8 +309,8 @@ async function getProductByCode(req, res) {
             return res.json(cached.data);
         }
         const product = await lookupProductByCode(productCode);
-        const enrichedProduct = getEnrichedProduct(product);
-        return res.json(enrichedProduct);
+        // const enrichedProduct = getEnrichedProduct(product);
+        return res.json(product);
     }
     catch (error) {
         const customError = error;
@@ -608,18 +643,17 @@ async function getProductAlternatives(req, res) {
         const query = buildCandidateQuery(product, isUnknownGrade);
         const specificCategory = query.specificCategory;
         const broadCategory = query.broadCategory;
-        const productAsFood = await Food.findOne({
-            code: { $regex: product.code, $options: "i" },
-        });
+        // const product: IProduct | null = await Product.findOne({
+        //   code: { $regex: product.code, $options: "i" },
+        // });
         let productEnvironmentScoreGrade = false;
-        if (productAsFood) {
-            productEnvironmentScoreGrade =
-                productAsFood.environmental_score_grade ?? false;
+        if (product) {
+            productEnvironmentScoreGrade = product.environmental_score_grade ?? false;
         }
         else {
-            console.warn("Product's Food data could not be found.");
+            console.warn("Product's data could not be found.");
         }
-        const candidates = await Food.find(query);
+        const candidates = await Product.find(query);
         const alternatives = [];
         for (const candidate of candidates) {
             const similarity = calculateCosineSimilarity(product.embedding, candidate.embedding ?? Array(product.embedding.length).fill(0));
@@ -632,7 +666,7 @@ async function getProductAlternatives(req, res) {
                     ? true
                     : candidateScore > originalScore;
                 if (shouldInclude) {
-                    const altEsgScore = (await getProductESGData(String(candidate.brands))) ?? undefined;
+                    const altEsgScore = (await getProductESGData(candidate.brand)) ?? undefined;
                     const overallScore = altEsgScore?.score_final || 0;
                     alternatives.push({
                         product: candidate,

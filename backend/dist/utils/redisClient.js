@@ -50,11 +50,6 @@ function setex(key, seconds, value) {
         return Promise.resolve("OK");
     return redisClient.setEx(key, seconds, value);
 }
-const redisWrapper = {
-    isConnected() {
-        return isConnected;
-    },
-};
 export default {
     isConnected: () => isConnected,
     get,
