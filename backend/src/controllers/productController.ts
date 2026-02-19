@@ -168,14 +168,13 @@ async function getProductESGData(
 // PRODUCT SEARCH AND LISTING
 // ============================================================================
 
-// NOTE(Liam): temporary
 async function lookupProductByCode(code: string): Promise<IProduct> {
   await new Promise((resolve) => setTimeout(resolve, 100));
 
-  // TODO(liam): point to some arbitrary table
-  const mockProducts: IProduct[] = [];
-
-  const product = mockProducts.find((p) => p.code === code);
+  const parsedCode: number = parseStrictInt(code, 0);
+  const product: IProduct | null = await Product.findOne({
+    code: parsedCode,
+  });
 
   if (!product) {
     const error = new ExtendedError(`Product not found with code: ${code}`);
@@ -189,10 +188,15 @@ async function lookupProductByCode(code: string): Promise<IProduct> {
 async function lookupProductById(id: string): Promise<IProduct> {
   await new Promise((resolve) => setTimeout(resolve, 100));
 
-  // TODO(liam): point to some arbitrary table
-  const mockProducts: IProduct[] = [];
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    const error = new ExtendedError(
+      `Failed to search product due to invalid id provided: ${id}`,
+    );
+    error.code = "NOT_FOUND";
+    throw error;
+  }
 
-  const product = mockProducts.find((p) => p.id === id);
+  const product: IProduct | null = await Product.findById(id);
 
   if (!product) {
     const error = new ExtendedError(
@@ -205,24 +209,34 @@ async function lookupProductById(id: string): Promise<IProduct> {
   return product;
 }
 
+function escapeRegex(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 async function lookupProductByQuery(query: string | null): Promise<IProduct[]> {
   await new Promise((resolve) => setTimeout(resolve, 100));
 
-  // TODO(liam): point to some arbitrary table
-  const mockProducts: IProduct[] = [];
-
   let result: IProduct[] = [];
+
   if (query === null) {
     return result;
   }
 
-  const searchTerm = query.toLowerCase();
-  result = mockProducts.filter(
-    (product) =>
-      product.name.toLowerCase().includes(searchTerm) ||
-      product.brand.toLowerCase().includes(searchTerm) ||
-      product.description?.toLowerCase().includes(searchTerm),
-  );
+  const searchTerm = escapeRegex(query);
+  result = await Product.find({
+    $or: [
+      {
+        product_name: { $regex: searchTerm, $options: "i" },
+      },
+      {
+        brands: { $regex: searchTerm, $options: "i" },
+      },
+      {
+        description: { $regex: searchTerm, $options: "i" },
+      },
+    ],
+  });
+  console.log(result);
 
   if (result.length === 0) {
     const error = new ExtendedError(`No products found matching: ${query}`);
@@ -242,22 +256,39 @@ async function getEnrichedProduct(product: IProduct): Promise<EnrichedProduct> {
   return enrichedProduct;
 }
 
-// TODO(liam): continue here
 async function getAllProducts(req: Request, res: Response): Promise<Response> {
   try {
     const { upc, ean, gtin, q } = req.query as ProductQueryParams;
 
+    let products: IProduct[];
     if (!upc && !ean && !gtin && !q) {
-      return res.status(400).json({
-        error: {
-          code: "INVALID_ARGUMENT",
-          message:
-            "Missing required parameters. Provide either upc, ean, gtin, or q for search",
-        },
-      } as ErrorResponse);
+      try {
+        products = [(await Product.findOne({})) as IProduct];
+
+        return res.json(products);
+      } catch (error) {
+        let error_code: string = "SERVER_ERROR";
+        let return_code: number = 400;
+        let error_message: string;
+
+        if (error instanceof ExtendedError) {
+          const serviceError = error as ExtendedError;
+          error_code = coalesceStrictString([serviceError.code], error_code);
+          error_message = serviceError.message;
+        } else {
+          const anyError = error as Error;
+          error_message = anyError.message;
+        }
+
+        return res.status(return_code).json({
+          error: {
+            code: error_code,
+            message: error_message,
+          },
+        } as ErrorResponse);
+      }
     }
 
-    let products: IProduct[];
     try {
       const code: string = coalesceStrictString([upc, ean, gtin], "");
       if (code === "") {
@@ -295,11 +326,11 @@ async function getAllProducts(req: Request, res: Response): Promise<Response> {
       } as ErrorResponse);
     }
 
-    const enrichedProducts: EnrichedProduct[] = await Promise.all(
-      products.map(getEnrichedProduct),
-    );
+    // const enrichedProducts: EnrichedProduct[] = await Promise.all(
+    //   products.map(getEnrichedProduct),
+    // );
 
-    return res.json({ enrichedProducts });
+    return res.json({ products });
   } catch (error) {
     const encodedError = error as ExtendedError;
 
@@ -346,9 +377,9 @@ async function getProductById(req: Request, res: Response): Promise<Response> {
 
     const product: IProduct = await lookupProductById(productId);
 
-    const enrichedProduct = getEnrichedProduct(product);
+    // const enrichedProduct = getEnrichedProduct(product);
 
-    return res.json(enrichedProduct);
+    return res.json(product);
   } catch (error) {
     const encodedError = error as ExtendedError;
 
@@ -398,9 +429,9 @@ async function getProductByCode(
 
     const product: IProduct = await lookupProductByCode(productCode);
 
-    const enrichedProduct = getEnrichedProduct(product);
+    // const enrichedProduct = getEnrichedProduct(product);
 
-    return res.json(enrichedProduct);
+    return res.json(product);
   } catch (error) {
     const customError = error as ExtendedError;
 
@@ -793,19 +824,18 @@ async function getProductAlternatives(
     const specificCategory = query.specificCategory;
     const broadCategory = query.broadCategory;
 
-    const productAsFood: IFood | null = await Food.findOne({
-      code: { $regex: product.code, $options: "i" },
-    });
+    // const product: IProduct | null = await Product.findOne({
+    //   code: { $regex: product.code, $options: "i" },
+    // });
 
     let productEnvironmentScoreGrade: string | boolean = false;
-    if (productAsFood) {
-      productEnvironmentScoreGrade =
-        productAsFood.environmental_score_grade ?? false;
+    if (product) {
+      productEnvironmentScoreGrade = product.environmental_score_grade ?? false;
     } else {
-      console.warn("Product's Food data could not be found.");
+      console.warn("Product's data could not be found.");
     }
 
-    const candidates: IFood[] = await Food.find(query);
+    const candidates: IProduct[] = await Product.find(query);
 
     const alternatives = [];
 
@@ -829,7 +859,7 @@ async function getProductAlternatives(
 
         if (shouldInclude) {
           const altEsgScore: IEsgScore | undefined =
-            (await getProductESGData(String(candidate.brands))) ?? undefined;
+            (await getProductESGData(candidate.brand)) ?? undefined;
           const overallScore: number = altEsgScore?.score_final || 0;
 
           alternatives.push({
