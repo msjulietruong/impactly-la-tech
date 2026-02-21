@@ -25,7 +25,8 @@ interface ProductQueryParams {
   q?: string;
 }
 
-interface EnrichedProduct extends IProduct {
+interface EnrichedProduct {
+  product: IProduct;
   esg: IEsgScore | null;
 }
 
@@ -213,7 +214,10 @@ function escapeRegex(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-async function lookupProductByQuery(query: string | null): Promise<IProduct[]> {
+async function lookupProductByQuery(
+  query: string | null,
+  limit: number = 10,
+): Promise<IProduct[]> {
   await new Promise((resolve) => setTimeout(resolve, 100));
 
   let result: IProduct[] = [];
@@ -235,8 +239,8 @@ async function lookupProductByQuery(query: string | null): Promise<IProduct[]> {
         description: { $regex: searchTerm, $options: "i" },
       },
     ],
-  });
-  console.log(result);
+  }).limit(limit);
+  // console.log(result);
 
   if (result.length === 0) {
     const error = new ExtendedError(`No products found matching: ${query}`);
@@ -250,22 +254,74 @@ async function lookupProductByQuery(query: string | null): Promise<IProduct[]> {
 async function getEnrichedProduct(product: IProduct): Promise<EnrichedProduct> {
   const esgScore = await getProductESGData(product.brand);
 
-  let enrichedProduct = product as EnrichedProduct;
-  enrichedProduct.esg = esgScore;
+  const enrichedProduct = {
+    product: product.toObject(),
+    esg: esgScore?.toObject() ?? null,
+  };
 
   return enrichedProduct;
 }
 
-async function getAllProducts(req: Request, res: Response): Promise<Response> {
+async function searchProducts(req: Request, res: Response): Promise<Response> {
+  const { query } = req.params;
+  const productQuery = query as string;
+  const limit: number = parseStrictInt(
+    req.query.limit as string | undefined,
+    5,
+  );
+
+  try {
+    if (productQuery === null) {
+      return res.status(400).json({
+        error: {
+          code: "INVALID_ARGUMENT",
+          message: "Missing required parameters.",
+        },
+      } as ErrorResponse);
+    }
+    let products = await lookupProductByQuery(productQuery ?? "", limit);
+
+    const enriched_products: EnrichedProduct[] = await Promise.all(
+      products.map(getEnrichedProduct),
+    );
+
+    return res.json({ enriched_products });
+  } catch (error) {
+    const encodedError = error as ExtendedError;
+
+    if (encodedError.code) {
+      return res.status(404).json({
+        error: {
+          code: encodedError.code,
+          message: encodedError.message,
+        },
+      } as ErrorResponse);
+    }
+
+    console.error("Product search error:", error);
+    return res.status(500).json({
+      error: {
+        code: "INTERNAL_ERROR",
+        message: "Failed to search products",
+      },
+    } as ErrorResponse);
+  }
+}
+
+async function getProducts(req: Request, res: Response): Promise<Response> {
   try {
     const { upc, ean, gtin, q } = req.query as ProductQueryParams;
+    const limit: number = parseStrictInt(
+      req.query.limit as string | undefined,
+      5,
+    );
 
     let products: IProduct[];
     if (!upc && !ean && !gtin && !q) {
       try {
         products = [(await Product.findOne({})) as IProduct];
 
-        return res.json(products);
+        return res.json({ products });
       } catch (error) {
         let error_code: string = "SERVER_ERROR";
         let return_code: number = 400;
@@ -300,9 +356,9 @@ async function getAllProducts(req: Request, res: Response): Promise<Response> {
             },
           } as ErrorResponse);
         }
-        products = await lookupProductByQuery(q ?? "");
+        products = await lookupProductByQuery(q ?? "", limit);
       } else {
-        products = [await lookupProductById(code)];
+        products = [await lookupProductByCode(code)];
       }
     } catch (error) {
       let error_code: string = "SERVER_ERROR";
@@ -326,11 +382,11 @@ async function getAllProducts(req: Request, res: Response): Promise<Response> {
       } as ErrorResponse);
     }
 
-    // const enrichedProducts: EnrichedProduct[] = await Promise.all(
-    //   products.map(getEnrichedProduct),
-    // );
+    const enriched_products: EnrichedProduct[] = await Promise.all(
+      products.map(getEnrichedProduct),
+    );
 
-    return res.json({ products });
+    return res.json({ enriched_products });
   } catch (error) {
     const encodedError = error as ExtendedError;
 
@@ -377,9 +433,9 @@ async function getProductById(req: Request, res: Response): Promise<Response> {
 
     const product: IProduct = await lookupProductById(productId);
 
-    // const enrichedProduct = getEnrichedProduct(product);
+    const enriched_product = await getEnrichedProduct(product);
 
-    return res.json(product);
+    return res.json(enriched_product);
   } catch (error) {
     const encodedError = error as ExtendedError;
 
@@ -429,9 +485,9 @@ async function getProductByCode(
 
     const product: IProduct = await lookupProductByCode(productCode);
 
-    // const enrichedProduct = getEnrichedProduct(product);
+    const enriched_product = await getEnrichedProduct(product);
 
-    return res.json(product);
+    return res.json(enriched_product);
   } catch (error) {
     const customError = error as ExtendedError;
 
@@ -791,13 +847,13 @@ async function getProductAlternatives(
     }
 
     const enrichedProduct = await getEnrichedProduct(product);
-    const company = await getBrandCompany(product.brand);
+    const company = await getBrandCompany(enrichedProduct.product.brand);
 
     if (company === null) {
       return res.status(404).json({
         error: {
           code: "NOT_FOUND",
-          message: `Product company was not found: ${product.brand}`,
+          message: `Product company was not found: ${enrichedProduct.product.brand}`,
         },
       } as ErrorResponse);
     }
@@ -830,7 +886,8 @@ async function getProductAlternatives(
 
     let productEnvironmentScoreGrade: string | boolean = false;
     if (product) {
-      productEnvironmentScoreGrade = product.environmental_score_grade ?? false;
+      productEnvironmentScoreGrade =
+        enrichedProduct.product.environmental_score_grade ?? false;
     } else {
       console.warn("Product's data could not be found.");
     }
@@ -887,18 +944,18 @@ async function getProductAlternatives(
     const limitedAlternatives = alternatives.slice(0, limit);
 
     // Also get ESG for the original product
-    const originalProductESG = await getProductESGData(product.brand);
+    // const originalProductESG = await getProductESGData(product.brand);
 
     let return_message: string = isUnknownGrade
       ? "Showing graded alternatives from all categories (original product has no environmental data)"
       : "";
 
     return res.json({
-      productId: product.id,
-      productName: product.name,
-      brand: product.brand,
+      productId: enrichedProduct.product.id,
+      productName: enrichedProduct.product.name,
+      brand: enrichedProduct.product.brand,
       environmental_score_grade: productEnvironmentScoreGrade,
-      company_esg: originalProductESG,
+      company_esg: enrichedProduct.esg,
       alternatives: limitedAlternatives,
       count: limitedAlternatives.length,
       matchedCategory: isUnknownGrade
@@ -1092,10 +1149,10 @@ async function getProductAlternatives(
  * OR gets a cached summary from the redis database.
  *
  */
-async function generateProductSummary(id: string): Promise<IProduct> {
+async function generateProductSummary(code: string): Promise<IProduct> {
   try {
     const cached = (await ProductCache.findOne({
-      id: id,
+      code: code,
     })) as IProductCache | null;
 
     let product: IProduct | null;
@@ -1104,7 +1161,7 @@ async function generateProductSummary(id: string): Promise<IProduct> {
       product = cached.data;
     } else {
       console.log("[redis] Cache miss!");
-      product = await lookupProductByCode(id);
+      product = await lookupProductByCode(code);
     }
 
     if (!product) {
@@ -1117,7 +1174,7 @@ async function generateProductSummary(id: string): Promise<IProduct> {
     };
 
     const payload = {
-      product_identifier: id,
+      product_identifier: code,
     };
 
     console.info(
@@ -1145,11 +1202,11 @@ async function generateProductSummary(id: string): Promise<IProduct> {
     };
     product.summary = summary;
 
-    const companyRaw: string = product.brand || id;
+    const companyRaw: string = product.brand || code;
     const companyKey: string =
       encodeURIComponent(
         companyRaw.split(",")[0].trim().toLowerCase().replace(/\s+/g, "_"),
-      ) || id;
+      ) || code;
     const cacheKey = `brandSummary:${companyKey}`;
 
     console.log(`[redis] caching with key: '${cacheKey}'`);
@@ -1174,10 +1231,10 @@ async function getProductSummary(
   res: Response,
 ): Promise<Response> {
   try {
-    const { id } = req.params;
-    const productId = id as string;
+    const { code } = req.params;
+    const productCode = code as string;
 
-    const product: IProduct = await generateProductSummary(productId);
+    const product: IProduct = await generateProductSummary(productCode);
 
     return res.json(product);
   } catch (error) {
@@ -1197,7 +1254,8 @@ async function getProductSummary(
 // ============================================================================
 
 export {
-  getAllProducts,
+  searchProducts,
+  getProducts,
   getProductById,
   getProductByCode,
   getProductAlternatives,

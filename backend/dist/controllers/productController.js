@@ -124,7 +124,7 @@ async function lookupProductById(id) {
 function escapeRegex(text) {
     return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
-async function lookupProductByQuery(query) {
+async function lookupProductByQuery(query, limit = 10) {
     await new Promise((resolve) => setTimeout(resolve, 100));
     let result = [];
     if (query === null) {
@@ -143,8 +143,8 @@ async function lookupProductByQuery(query) {
                 description: { $regex: searchTerm, $options: "i" },
             },
         ],
-    });
-    console.log(result);
+    }).limit(limit);
+    // console.log(result);
     if (result.length === 0) {
         const error = new ExtendedError(`No products found matching: ${query}`);
         error.code = "NOT_FOUND";
@@ -154,18 +154,57 @@ async function lookupProductByQuery(query) {
 }
 async function getEnrichedProduct(product) {
     const esgScore = await getProductESGData(product.brand);
-    let enrichedProduct = product;
-    enrichedProduct.esg = esgScore;
+    const enrichedProduct = {
+        product: product.toObject(),
+        esg: esgScore?.toObject() ?? null,
+    };
     return enrichedProduct;
 }
-async function getAllProducts(req, res) {
+async function searchProducts(req, res) {
+    const { query } = req.params;
+    const productQuery = query;
+    const limit = parseStrictInt(req.query.limit, 5);
+    try {
+        if (productQuery === null) {
+            return res.status(400).json({
+                error: {
+                    code: "INVALID_ARGUMENT",
+                    message: "Missing required parameters.",
+                },
+            });
+        }
+        let products = await lookupProductByQuery(productQuery ?? "", limit);
+        const enriched_products = await Promise.all(products.map(getEnrichedProduct));
+        return res.json({ enriched_products });
+    }
+    catch (error) {
+        const encodedError = error;
+        if (encodedError.code) {
+            return res.status(404).json({
+                error: {
+                    code: encodedError.code,
+                    message: encodedError.message,
+                },
+            });
+        }
+        console.error("Product search error:", error);
+        return res.status(500).json({
+            error: {
+                code: "INTERNAL_ERROR",
+                message: "Failed to search products",
+            },
+        });
+    }
+}
+async function getProducts(req, res) {
     try {
         const { upc, ean, gtin, q } = req.query;
+        const limit = parseStrictInt(req.query.limit, 5);
         let products;
         if (!upc && !ean && !gtin && !q) {
             try {
                 products = [(await Product.findOne({}))];
-                return res.json(products);
+                return res.json({ products });
             }
             catch (error) {
                 let error_code = "SERVER_ERROR";
@@ -199,10 +238,10 @@ async function getAllProducts(req, res) {
                         },
                     });
                 }
-                products = await lookupProductByQuery(q ?? "");
+                products = await lookupProductByQuery(q ?? "", limit);
             }
             else {
-                products = [await lookupProductById(code)];
+                products = [await lookupProductByCode(code)];
             }
         }
         catch (error) {
@@ -225,10 +264,8 @@ async function getAllProducts(req, res) {
                 },
             });
         }
-        // const enrichedProducts: EnrichedProduct[] = await Promise.all(
-        //   products.map(getEnrichedProduct),
-        // );
-        return res.json({ products });
+        const enriched_products = await Promise.all(products.map(getEnrichedProduct));
+        return res.json({ enriched_products });
     }
     catch (error) {
         const encodedError = error;
@@ -268,8 +305,8 @@ async function getProductById(req, res) {
             return res.json(cached.data);
         }
         const product = await lookupProductById(productId);
-        // const enrichedProduct = getEnrichedProduct(product);
-        return res.json(product);
+        const enriched_product = await getEnrichedProduct(product);
+        return res.json(enriched_product);
     }
     catch (error) {
         const encodedError = error;
@@ -309,8 +346,8 @@ async function getProductByCode(req, res) {
             return res.json(cached.data);
         }
         const product = await lookupProductByCode(productCode);
-        // const enrichedProduct = getEnrichedProduct(product);
-        return res.json(product);
+        const enriched_product = await getEnrichedProduct(product);
+        return res.json(enriched_product);
     }
     catch (error) {
         const customError = error;
@@ -618,12 +655,12 @@ async function getProductAlternatives(req, res) {
             });
         }
         const enrichedProduct = await getEnrichedProduct(product);
-        const company = await getBrandCompany(product.brand);
+        const company = await getBrandCompany(enrichedProduct.product.brand);
         if (company === null) {
             return res.status(404).json({
                 error: {
                     code: "NOT_FOUND",
-                    message: `Product company was not found: ${product.brand}`,
+                    message: `Product company was not found: ${enrichedProduct.product.brand}`,
                 },
             });
         }
@@ -648,7 +685,8 @@ async function getProductAlternatives(req, res) {
         // });
         let productEnvironmentScoreGrade = false;
         if (product) {
-            productEnvironmentScoreGrade = product.environmental_score_grade ?? false;
+            productEnvironmentScoreGrade =
+                enrichedProduct.product.environmental_score_grade ?? false;
         }
         else {
             console.warn("Product's data could not be found.");
@@ -689,16 +727,16 @@ async function getProductAlternatives(req, res) {
         });
         const limitedAlternatives = alternatives.slice(0, limit);
         // Also get ESG for the original product
-        const originalProductESG = await getProductESGData(product.brand);
+        // const originalProductESG = await getProductESGData(product.brand);
         let return_message = isUnknownGrade
             ? "Showing graded alternatives from all categories (original product has no environmental data)"
             : "";
         return res.json({
-            productId: product.id,
-            productName: product.name,
-            brand: product.brand,
+            productId: enrichedProduct.product.id,
+            productName: enrichedProduct.product.name,
+            brand: enrichedProduct.product.brand,
             environmental_score_grade: productEnvironmentScoreGrade,
-            company_esg: originalProductESG,
+            company_esg: enrichedProduct.esg,
             alternatives: limitedAlternatives,
             count: limitedAlternatives.length,
             matchedCategory: isUnknownGrade
@@ -875,10 +913,10 @@ async function getProductAlternatives(req, res) {
  * OR gets a cached summary from the redis database.
  *
  */
-async function generateProductSummary(id) {
+async function generateProductSummary(code) {
     try {
         const cached = (await ProductCache.findOne({
-            id: id,
+            code: code,
         }));
         let product;
         if (cached) {
@@ -887,7 +925,7 @@ async function generateProductSummary(id) {
         }
         else {
             console.log("[redis] Cache miss!");
-            product = await lookupProductByCode(id);
+            product = await lookupProductByCode(code);
         }
         if (!product) {
         }
@@ -896,7 +934,7 @@ async function generateProductSummary(id) {
             "x-internal-key": AGENT_API_KEY,
         };
         const payload = {
-            product_identifier: id,
+            product_identifier: code,
         };
         console.info("Calling summary agent:", agentUrl, "payload keys:", Object.keys(payload));
         const res = await axios.post(agentUrl, payload, {
@@ -913,8 +951,8 @@ async function generateProductSummary(id) {
             generatedAt: new Date().toISOString(),
         };
         product.summary = summary;
-        const companyRaw = product.brand || id;
-        const companyKey = encodeURIComponent(companyRaw.split(",")[0].trim().toLowerCase().replace(/\s+/g, "_")) || id;
+        const companyRaw = product.brand || code;
+        const companyKey = encodeURIComponent(companyRaw.split(",")[0].trim().toLowerCase().replace(/\s+/g, "_")) || code;
         const cacheKey = `brandSummary:${companyKey}`;
         console.log(`[redis] caching with key: '${cacheKey}'`);
         await redisClient.set(cacheKey, JSON.stringify(product), {
@@ -930,9 +968,9 @@ async function generateProductSummary(id) {
 }
 async function getProductSummary(req, res) {
     try {
-        const { id } = req.params;
-        const productId = id;
-        const product = await generateProductSummary(productId);
+        const { code } = req.params;
+        const productCode = code;
+        const product = await generateProductSummary(productCode);
         return res.json(product);
     }
     catch (error) {
@@ -949,4 +987,4 @@ async function getProductSummary(req, res) {
 // ============================================================================
 // EXPORTS
 // ============================================================================
-export { getAllProducts, getProductById, getProductByCode, getProductAlternatives, generateProductSummary, getProductSummary, };
+export { searchProducts, getProducts, getProductById, getProductByCode, getProductAlternatives, generateProductSummary, getProductSummary, };

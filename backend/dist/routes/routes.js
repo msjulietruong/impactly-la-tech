@@ -2,91 +2,31 @@ import express from "express";
 import * as healthController from "../controllers/healthController.js";
 import * as productController from "../controllers/productController.js";
 import * as companyController from "../controllers/companyController.js";
+import * as embeddingsController from "../controllers/embeddingController.js";
 import validateObjectId from "../middleware/validateObjectId.js";
-// Create the router (this will hold all our routes)
 const router = express.Router();
-// ============================================================================
-// HEALTH CHECK ENDPOINTS
-// ============================================================================
-// These check if the server is running and healthy
-/**
- * Health check endpoint
- *
- * What it does: Tells you if the server is alive and working
- *
- * Available at TWO URLs for convenience:
- *   - /health        (short and simple)
- *   - /api/health    (follows API naming pattern)
- */
 router.get("/health", healthController.getHealth);
 router.get("/api/health", healthController.getHealth);
-// ============================================================================
-// PRODUCT ENDPOINTS - The Main API!
-// ============================================================================
-// These endpoints let you search and get information about products
-/**
- * ENDPOINT 1: Product search and listing
- *
- * What it does: Finds products by name or barcode
- *
+// Search products by name
+router.get("/search/:query", productController.searchProducts);
+router.get("/api/search/:query", productController.searchProducts);
+/*
  * How to use:
  *   GET /api/products?q=chocolate        → Search for "chocolate"
  *   GET /api/products?upc=123456789012   → Find exact product by barcode
  */
-router.get("/api/products", productController.getAllProducts);
-/**
- * ENDPOINT 2: Product details by ID
- *
- * What it does: Shows ALL information about one specific product
- *
- * How to use:
- *   GET /api/products/3274080005003   → Get details for product 3274080005003
- */
-router.get("/api/products/:id", productController.getProductById);
-/**
- * Product lookup by barcode (alternative route)
- *
- * What it does: Same as above, but different URL format
- *
- * How to use:
- *   GET /api/products/barcode/3274080005003
- */
+router.get("/api/products", productController.getProducts);
+router.get("/api/products/:code", productController.getProductByCode);
+router.get("/api/products/code/:code", productController.getProductByCode);
 router.get("/api/products/barcode/:code", productController.getProductByCode);
-// THIS ROUTE DOES NOT EXIST ANYMORE; ESG IS CALCULATED WHEN QUERYING PRODUCT.
-// router.get("/api/products/:id/esg", productController.getProductESG);
-/**
- * Product alternatives (Future feature - vector search)
- *
- * What it will do: Find similar products that are more ethical
- * Status: Coming soon!
- *
- * How to use:
- *   GET /api/products/:id/alternatives?limit=5
- */
-router.get("/api/products/:id/alternatives", productController.getProductAlternatives);
-/**
- * Product summaries (Future feature - AI powered)
- *
- * What it will do: Generate smart summaries using AI
- * Status: Coming soon!
- *
- * How to use:
- *   GET /api/products/:id/summary    → Get existing or generate new summary
- */
-router.get("/api/products/:id/summary", productController.getProductSummary);
-// ============================================================================
-// COMPANY ENDPOINTS
-// ============================================================================
-// These endpoints give you information about companies directly
-/**
- * Company details by ID
- *
- * What it does: Gets all info about a company using its database ID
- *
- * How to use:
- *   GET /api/companies/507f1f77bcf86cd799439011
- *
- * Note: validateObjectId checks that the ID is valid before running
- */
+router.get("/api/products/id/:id", productController.getProductById);
+router.get("/api/products/:code/alternatives", productController.getProductAlternatives);
+router.get("/api/products/code/:code/alternatives", productController.getProductAlternatives);
+router.get("/api/products/barcode/:code/alternatives", productController.getProductAlternatives);
+router.get("/api/products/:code/summary", productController.getProductSummary);
 router.get("/api/companies/:id", validateObjectId("id"), companyController.getCompanyById);
+// Generate embeddings (run once)
+router.post("/api/generate", embeddingsController.generateEmbeddings);
+router.get("/debug/grades", embeddingsController.debugGradeStats);
+router.get("/api/debug/grades", embeddingsController.debugGradeStats);
 export default router;
