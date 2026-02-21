@@ -1,0 +1,42 @@
+info:
+  name: product by id
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: http://localhost:3001/api/products/id/68f2f67929c30dce3c072dcd
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const body = res.getBody();
+
+        test("Product is valid", () => {
+          expect(body).to.have.property("product");
+        });
+
+        test("Product has correct code", () => {
+          expect(body.product._id).to.equal("68f2f67929c30dce3c072dcd");
+        });
+
+        test("Product has correct name", () => {
+          expect(body.product.product_name).to.equal("Chopped spinach");
+        })
+
+        test("Product has valid embeddings", () => {
+          expect(body.product.embedding).to.be.an("array");
+          expect(body.product.embedding.length).to.be.greaterThan(0);
+        });
+
+        test("Product esg is valid", () => {
+          expect(body.esg).to.not.equal(null);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

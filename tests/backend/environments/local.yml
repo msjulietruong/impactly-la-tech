@@ -1,0 +1,4 @@
+name: local
+variables:
+  - name: URI
+    value: http://localhost:3001
