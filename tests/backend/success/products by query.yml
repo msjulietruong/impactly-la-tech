@@ -1,0 +1,51 @@
+info:
+  name: products by query
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://localhost:3001/api/products?q=chocolate&limit=9
+  params:
+    - name: q
+      value: chocolate
+      type: query
+    - name: limit
+      value: "9"
+      type: query
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const body = res.getBody();
+
+        test("Enriched Products are valid", () => {
+          expect(body).to.have.property("enriched_products");
+          expect(body.enriched_products).to.be.an("array");
+          expect(body.enriched_products.length).to.be.greaterThan(0);
+        });
+
+        const product = body.enriched_products[0].product;
+        const esg = body.enriched_products[0].esg;
+
+        test("Product has a name", () => {
+          expect(product).to.have.property("product_name");
+          expect(product).to.have.property("code");
+        })
+
+        test("Product has valid embeddings", () => {
+          expect(product.embedding).to.be.an("array");
+          expect(product.embedding.length).to.be.greaterThan(0);
+        });
+
+        test("Product esg is valid", () => {
+          expect(esg).to.not.equal(null);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
