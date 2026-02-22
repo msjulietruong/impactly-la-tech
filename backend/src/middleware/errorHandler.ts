@@ -1,28 +1,28 @@
 import { Request, Response, NextFunction } from "express";
 
 export interface ResponseError extends Error {
-  statusCode?: number;
-  code?: string;
+    statusCode?: number;
+    code?: string;
 }
 
 function errorHandler(
-  error: ResponseError,
-  req: Request,
-  res: Response,
-  next: NextFunction,
+    error: ResponseError,
+    req: Request,
+    res: Response,
+    next: NextFunction,
 ): Response {
-  console.error("❌ Error occurred:", error.message);
+    console.error("❌ Error occurred:", error.message);
 
-  const statusCode = error.statusCode || 500;
-  const errorCode = error.code || "INTERNAL_ERROR";
-  const message = error.message || "Something went wrong on our server";
+    const statusCode = error.statusCode || 500;
+    const errorCode = error.code || "INTERNAL_ERROR";
+    const message = error.message || "Something went wrong on our server";
 
-  return res.status(statusCode).json({
-    error: {
-      code: errorCode,
-      message: message,
-    },
-  });
+    return res.status(statusCode).json({
+        error: {
+            code: errorCode,
+            message: message,
+        },
+    });
 }
 
 /**
@@ -30,12 +30,12 @@ function errorHandler(
  * This runs when someone tries to visit a URL that doesn't exist
  */
 function notFoundHandler(req: Request, res: Response): Response {
-  return res.status(404).json({
-    error: {
-      code: "NOT_FOUND",
-      message: `Cannot find ${req.method} ${req.originalUrl}`,
-    },
-  });
+    return res.status(404).json({
+        error: {
+            code: "NOT_FOUND",
+            message: `Cannot find ${req.method} ${req.originalUrl}`,
+        },
+    });
 }
 
 /**
@@ -46,14 +46,14 @@ function notFoundHandler(req: Request, res: Response): Response {
  *   throw createError(400, 'INVALID_ARGUMENT', 'Please provide a product ID')
  */
 function createError(
-  statusCode: number,
-  code: string,
-  message: string,
+    statusCode: number,
+    code: string,
+    message: string,
 ): ResponseError {
-  const error = new Error(message) as ResponseError;
-  error.statusCode = statusCode;
-  error.code = code;
-  return error;
+    const error = new Error(message) as ResponseError;
+    error.statusCode = statusCode;
+    error.code = code;
+    return error;
 }
 
 // Export so other files can use these

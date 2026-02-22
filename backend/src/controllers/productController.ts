@@ -11,156 +11,156 @@ import mongoose from "mongoose";
 import axios, { HttpStatusCode } from "axios";
 import redisClient from "../utils/redisClient.js";
 import {
-  AGENT_API_ENDPOINT,
-  AGENT_API_KEY,
-  CACHE_TTL,
+    AGENT_API_ENDPOINT,
+    AGENT_API_KEY,
+    CACHE_TTL,
 } from "../utils/config.js";
 
 import { Request, Response } from "express";
 
 interface ProductQueryParams {
-  upc?: string;
-  ean?: string;
-  gtin?: string;
-  q?: string;
+    upc?: string;
+    ean?: string;
+    gtin?: string;
+    q?: string;
 }
 
 interface EnrichedProduct {
-  product: IProduct;
-  esg: IEsgScore | null;
+    product: IProduct;
+    esg: IEsgScore | null;
 }
 
 interface ProductAlternative {
-  product: IProduct;
-  esg?: IEsgScore;
+    product: IProduct;
+    esg?: IEsgScore;
 
-  final_score: number;
-  similarity: number;
-  grade_improvement: number;
+    final_score: number;
+    similarity: number;
+    grade_improvement: number;
 }
 
 interface ProductAlternativeResponse {
-  productId: string;
-  productName: string | number;
-  brand: string | string[] | number;
-  environmental_score_grade: string | boolean;
-  company_esg: IEsgScore | null;
-  alternatives: ProductAlternative[];
-  count: number;
-  matchedCategory: string;
-  isUnknownGrade: boolean;
-  similarityThreshold: number;
-  message?: string;
-  implementation: {
-    status: string;
-    method?: string;
-    features?: string[];
-  };
+    productId: string;
+    productName: string | number;
+    brand: string | string[] | number;
+    environmental_score_grade: string | boolean;
+    company_esg: IEsgScore | null;
+    alternatives: ProductAlternative[];
+    count: number;
+    matchedCategory: string;
+    isUnknownGrade: boolean;
+    similarityThreshold: number;
+    message?: string;
+    implementation: {
+        status: string;
+        method?: string;
+        features?: string[];
+    };
 }
 
 /**
  * Convert brand name to parent company name
  */
 function getBrandCompanyName(
-  brandName: string | null | undefined,
+    brandName: string | null | undefined,
 ): string | null {
-  if (!brandName) return null;
-  const normalized = brandName.toLowerCase().trim();
-  return COMPANY_BRAND_MAP[normalized] || brandName;
+    if (!brandName) return null;
+    const normalized = brandName.toLowerCase().trim();
+    return COMPANY_BRAND_MAP[normalized] || brandName;
 }
 
 function calculateEsg(E: number, S: number, G: number): number {
-  const scores = { E, S, G };
-  const available = Object.entries(scores).filter(([, v]) => v !== null);
+    const scores = { E, S, G };
+    const available = Object.entries(scores).filter(([, v]) => v !== null);
 
-  if (available.length === 0) return 0;
+    if (available.length === 0) return 0;
 
-  const equalWeight = 1 / available.length;
+    const equalWeight = 1 / available.length;
 
-  let wE: number = equalWeight;
-  let wS: number = equalWeight;
-  let wG: number = equalWeight;
-  if (available.length === 3) {
-    wE = 0.4;
-    wS = 0.4;
-    wG = 0.2;
-  }
+    let wE: number = equalWeight;
+    let wS: number = equalWeight;
+    let wG: number = equalWeight;
+    if (available.length === 3) {
+        wE = 0.4;
+        wS = 0.4;
+        wG = 0.2;
+    }
 
-  const result = Math.round(
-    (E ?? 0) * (E !== null ? wE : 0) +
-      (S ?? 0) * (S !== null ? wS : 0) +
-      (G ?? 0) * (G !== null ? wG : 0),
-  );
+    const result = Math.round(
+        (E ?? 0) * (E !== null ? wE : 0) +
+            (S ?? 0) * (S !== null ? wS : 0) +
+            (G ?? 0) * (G !== null ? wG : 0),
+    );
 
-  return result;
+    return result;
 }
 
 export function parseStrictInt(
-  value: string | null | undefined,
-  fallback: number = 0,
+    value: string | null | undefined,
+    fallback: number = 0,
 ): number {
-  if (value == null) return fallback;
-  const n = parseInt(value, 10);
-  return Number.isNaN(n) ? fallback : n;
+    if (value == null) return fallback;
+    const n = parseInt(value, 10);
+    return Number.isNaN(n) ? fallback : n;
 }
 
 function coalesceStrictString(
-  values: (string | null | undefined)[],
-  defaultValue: string,
+    values: (string | null | undefined)[],
+    defaultValue: string,
 ): string {
-  for (const v of values) {
-    if (v != null && v.trim() !== "") {
-      return v;
+    for (const v of values) {
+        if (v != null && v.trim() !== "") {
+            return v;
+        }
     }
-  }
-  return defaultValue;
+    return defaultValue;
 }
 
 async function getProductESGData(
-  brandName: string | null | undefined,
+    brandName: string | null | undefined,
 ): Promise<IEsgScore | null> {
-  if (!brandName) return null;
+    if (!brandName) return null;
 
-  try {
-    const companyName: string | null = getBrandCompanyName(brandName);
+    try {
+        const companyName: string | null = getBrandCompanyName(brandName);
 
-    const brand: IBrand | null = await Brand.findOne({
-      name: { $regex: companyName, $options: "i" },
-    });
+        const brand: IBrand | null = await Brand.findOne({
+            name: { $regex: companyName, $options: "i" },
+        });
 
-    if (!brand) {
-      console.warn("Brand not found.");
-      return null;
-    }
+        if (!brand) {
+            console.warn("Brand not found.");
+            return null;
+        }
 
-    let esgScore: IEsgScore | null = await EsgScore.findOne({
-      brand_id: brand.id,
-    });
+        let esgScore: IEsgScore | null = await EsgScore.findOne({
+            brand_id: brand.id,
+        });
 
-    if (!esgScore) {
-      console.warn("Esg Score missing for brand.");
-      return null;
-    }
+        if (!esgScore) {
+            console.warn("Esg Score missing for brand.");
+            return null;
+        }
 
-    let overall: number = esgScore.score_final ?? 0;
-    if (overall === 0) {
-      const E: number = esgScore.score_environmental ?? 0;
-      const S: number = esgScore.score_social ?? 0;
-      const G: number = esgScore.score_governance ?? 0;
-      if (E + S + G === 0) {
-        console.warn("Total Esg Score is 0.");
+        let overall: number = esgScore.score_final ?? 0;
+        if (overall === 0) {
+            const E: number = esgScore.score_environmental ?? 0;
+            const S: number = esgScore.score_social ?? 0;
+            const G: number = esgScore.score_governance ?? 0;
+            if (E + S + G === 0) {
+                console.warn("Total Esg Score is 0.");
+                return null;
+            }
+            overall = calculateEsg(E, S, G);
+
+            esgScore.score_final = overall;
+        }
+
+        return esgScore;
+    } catch (error) {
+        console.error("Error fetching ESG data:", error);
         return null;
-      }
-      overall = calculateEsg(E, S, G);
-
-      esgScore.score_final = overall;
     }
-
-    return esgScore;
-  } catch (error) {
-    console.error("Error fetching ESG data:", error);
-    return null;
-  }
 }
 
 // TODO(Liam): do below
@@ -170,344 +170,350 @@ async function getProductESGData(
 // ============================================================================
 
 async function lookupProductByCode(code: string): Promise<IProduct> {
-  await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
-  const parsedCode: number = parseStrictInt(code, 0);
-  const product: IProduct | null = await Product.findOne({
-    code: parsedCode,
-  });
+    const parsedCode: number = parseStrictInt(code, 0);
+    const product: IProduct | null = await Product.findOne({
+        code: parsedCode,
+    });
 
-  if (!product) {
-    const error = new ExtendedError(`Product not found with code: ${code}`);
-    error.code = "NOT_FOUND";
-    throw error;
-  }
+    if (!product) {
+        const error = new ExtendedError(`Product not found with code: ${code}`);
+        error.code = "NOT_FOUND";
+        throw error;
+    }
 
-  return product;
+    return product;
 }
 
 async function lookupProductById(id: string): Promise<IProduct> {
-  await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    const error = new ExtendedError(
-      `Failed to search product due to invalid id provided: ${id}`,
-    );
-    error.code = "NOT_FOUND";
-    throw error;
-  }
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        const error = new ExtendedError(
+            `Failed to search product due to invalid id provided: ${id}`,
+        );
+        error.code = "NOT_FOUND";
+        throw error;
+    }
 
-  const product: IProduct | null = await Product.findById(id);
+    const product: IProduct | null = await Product.findById(id);
 
-  if (!product) {
-    const error = new ExtendedError(
-      `Product not found with internal product id: ${id}`,
-    );
-    error.code = "NOT_FOUND";
-    throw error;
-  }
+    if (!product) {
+        const error = new ExtendedError(
+            `Product not found with internal product id: ${id}`,
+        );
+        error.code = "NOT_FOUND";
+        throw error;
+    }
 
-  return product;
+    return product;
 }
 
 function escapeRegex(text: string): string {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 async function lookupProductByQuery(
-  query: string | null,
-  limit: number = 10,
+    query: string | null,
+    limit: number = 10,
 ): Promise<IProduct[]> {
-  await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
-  let result: IProduct[] = [];
+    let result: IProduct[] = [];
 
-  if (query === null) {
+    if (query === null) {
+        return result;
+    }
+
+    const searchTerm = escapeRegex(query);
+    result = await Product.find({
+        $or: [
+            {
+                product_name: { $regex: searchTerm, $options: "i" },
+            },
+            {
+                brands: { $regex: searchTerm, $options: "i" },
+            },
+            {
+                description: { $regex: searchTerm, $options: "i" },
+            },
+        ],
+    }).limit(limit);
+    // console.log(result);
+
+    if (result.length === 0) {
+        const error = new ExtendedError(`No products found matching: ${query}`);
+        error.code = "NOT_FOUND";
+        throw error;
+    }
+
     return result;
-  }
-
-  const searchTerm = escapeRegex(query);
-  result = await Product.find({
-    $or: [
-      {
-        product_name: { $regex: searchTerm, $options: "i" },
-      },
-      {
-        brands: { $regex: searchTerm, $options: "i" },
-      },
-      {
-        description: { $regex: searchTerm, $options: "i" },
-      },
-    ],
-  }).limit(limit);
-  // console.log(result);
-
-  if (result.length === 0) {
-    const error = new ExtendedError(`No products found matching: ${query}`);
-    error.code = "NOT_FOUND";
-    throw error;
-  }
-
-  return result;
 }
 
 async function getEnrichedProduct(product: IProduct): Promise<EnrichedProduct> {
-  const esgScore = await getProductESGData(product.brand);
+    const esgScore = await getProductESGData(product.brand);
 
-  const enrichedProduct = {
-    product: product.toObject(),
-    esg: esgScore?.toObject() ?? null,
-  };
+    const enrichedProduct = {
+        product: product.toObject(),
+        esg: esgScore?.toObject() ?? null,
+    };
 
-  return enrichedProduct;
+    return enrichedProduct;
 }
 
 async function searchProducts(req: Request, res: Response): Promise<Response> {
-  const { query } = req.params;
-  const productQuery = query as string;
-  const limit: number = parseStrictInt(
-    req.query.limit as string | undefined,
-    5,
-  );
-
-  try {
-    if (productQuery === null) {
-      return res.status(400).json({
-        error: {
-          code: "INVALID_ARGUMENT",
-          message: "Missing required parameters.",
-        },
-      } as ErrorResponse);
-    }
-    let products = await lookupProductByQuery(productQuery ?? "", limit);
-
-    const enriched_products: EnrichedProduct[] = await Promise.all(
-      products.map(getEnrichedProduct),
+    const { query } = req.params;
+    const productQuery = query as string;
+    const limit: number = parseStrictInt(
+        req.query.limit as string | undefined,
+        5,
     );
 
-    return res.json({ enriched_products });
-  } catch (error) {
-    const encodedError = error as ExtendedError;
+    try {
+        if (productQuery === null) {
+            return res.status(400).json({
+                error: {
+                    code: "INVALID_ARGUMENT",
+                    message: "Missing required parameters.",
+                },
+            } as ErrorResponse);
+        }
+        let products = await lookupProductByQuery(productQuery ?? "", limit);
 
-    if (encodedError.code) {
-      return res.status(404).json({
-        error: {
-          code: encodedError.code,
-          message: encodedError.message,
-        },
-      } as ErrorResponse);
+        const enriched_products: EnrichedProduct[] = await Promise.all(
+            products.map(getEnrichedProduct),
+        );
+
+        return res.json({ enriched_products });
+    } catch (error) {
+        const encodedError = error as ExtendedError;
+
+        if (encodedError.code) {
+            return res.status(404).json({
+                error: {
+                    code: encodedError.code,
+                    message: encodedError.message,
+                },
+            } as ErrorResponse);
+        }
+
+        console.error("Product search error:", error);
+        return res.status(500).json({
+            error: {
+                code: "INTERNAL_ERROR",
+                message: "Failed to search products",
+            },
+        } as ErrorResponse);
     }
-
-    console.error("Product search error:", error);
-    return res.status(500).json({
-      error: {
-        code: "INTERNAL_ERROR",
-        message: "Failed to search products",
-      },
-    } as ErrorResponse);
-  }
 }
 
 async function getProducts(req: Request, res: Response): Promise<Response> {
-  try {
-    const { upc, ean, gtin, q } = req.query as ProductQueryParams;
-    const limit: number = parseStrictInt(
-      req.query.limit as string | undefined,
-      5,
-    );
-
-    let products: IProduct[];
-    if (!upc && !ean && !gtin && !q) {
-      try {
-        products = [(await Product.findOne({})) as IProduct];
-
-        return res.json({ products });
-      } catch (error) {
-        let error_code: string = "SERVER_ERROR";
-        let return_code: number = 400;
-        let error_message: string;
-
-        if (error instanceof ExtendedError) {
-          const serviceError = error as ExtendedError;
-          error_code = coalesceStrictString([serviceError.code], error_code);
-          error_message = serviceError.message;
-        } else {
-          const anyError = error as Error;
-          error_message = anyError.message;
-        }
-
-        return res.status(return_code).json({
-          error: {
-            code: error_code,
-            message: error_message,
-          },
-        } as ErrorResponse);
-      }
-    }
-
     try {
-      const code: string = coalesceStrictString([upc, ean, gtin], "");
-      if (code === "") {
-        if (q === null) {
-          return res.status(400).json({
-            error: {
-              code: "INVALID_ARGUMENT",
-              message: "Missing required parameters.",
-            },
-          } as ErrorResponse);
+        const { upc, ean, gtin, q } = req.query as ProductQueryParams;
+        const limit: number = parseStrictInt(
+            req.query.limit as string | undefined,
+            5,
+        );
+
+        let products: IProduct[];
+        if (!upc && !ean && !gtin && !q) {
+            try {
+                products = [(await Product.findOne({})) as IProduct];
+
+                return res.json({ products });
+            } catch (error) {
+                let error_code: string = "SERVER_ERROR";
+                let return_code: number = 400;
+                let error_message: string;
+
+                if (error instanceof ExtendedError) {
+                    const serviceError = error as ExtendedError;
+                    error_code = coalesceStrictString(
+                        [serviceError.code],
+                        error_code,
+                    );
+                    error_message = serviceError.message;
+                } else {
+                    const anyError = error as Error;
+                    error_message = anyError.message;
+                }
+
+                return res.status(return_code).json({
+                    error: {
+                        code: error_code,
+                        message: error_message,
+                    },
+                } as ErrorResponse);
+            }
         }
-        products = await lookupProductByQuery(q ?? "", limit);
-      } else {
-        products = [await lookupProductByCode(code)];
-      }
+
+        try {
+            const code: string = coalesceStrictString([upc, ean, gtin], "");
+            if (code === "") {
+                if (q === null) {
+                    return res.status(400).json({
+                        error: {
+                            code: "INVALID_ARGUMENT",
+                            message: "Missing required parameters.",
+                        },
+                    } as ErrorResponse);
+                }
+                products = await lookupProductByQuery(q ?? "", limit);
+            } else {
+                products = [await lookupProductByCode(code)];
+            }
+        } catch (error) {
+            let error_code: string = "SERVER_ERROR";
+            let return_code: number = 400;
+            let error_message: string;
+
+            if (error instanceof ExtendedError) {
+                const serviceError = error as ExtendedError;
+                error_code = coalesceStrictString(
+                    [serviceError.code],
+                    error_code,
+                );
+                error_message = serviceError.message;
+            } else {
+                const anyError = error as Error;
+                error_message = anyError.message;
+            }
+
+            return res.status(return_code).json({
+                error: {
+                    code: error_code,
+                    message: error_message,
+                },
+            } as ErrorResponse);
+        }
+
+        const enriched_products: EnrichedProduct[] = await Promise.all(
+            products.map(getEnrichedProduct),
+        );
+
+        return res.json({ enriched_products });
     } catch (error) {
-      let error_code: string = "SERVER_ERROR";
-      let return_code: number = 400;
-      let error_message: string;
+        const encodedError = error as ExtendedError;
 
-      if (error instanceof ExtendedError) {
-        const serviceError = error as ExtendedError;
-        error_code = coalesceStrictString([serviceError.code], error_code);
-        error_message = serviceError.message;
-      } else {
-        const anyError = error as Error;
-        error_message = anyError.message;
-      }
+        if (encodedError.code) {
+            return res.status(404).json({
+                error: {
+                    code: encodedError.code,
+                    message: encodedError.message,
+                },
+            } as ErrorResponse);
+        }
 
-      return res.status(return_code).json({
-        error: {
-          code: error_code,
-          message: error_message,
-        },
-      } as ErrorResponse);
+        console.error("Product search error:", error);
+        return res.status(500).json({
+            error: {
+                code: "INTERNAL_ERROR",
+                message: "Failed to search products",
+            },
+        } as ErrorResponse);
     }
-
-    const enriched_products: EnrichedProduct[] = await Promise.all(
-      products.map(getEnrichedProduct),
-    );
-
-    return res.json({ enriched_products });
-  } catch (error) {
-    const encodedError = error as ExtendedError;
-
-    if (encodedError.code) {
-      return res.status(404).json({
-        error: {
-          code: encodedError.code,
-          message: encodedError.message,
-        },
-      } as ErrorResponse);
-    }
-
-    console.error("Product search error:", error);
-    return res.status(500).json({
-      error: {
-        code: "INTERNAL_ERROR",
-        message: "Failed to search products",
-      },
-    } as ErrorResponse);
-  }
 }
 
 async function getProductById(req: Request, res: Response): Promise<Response> {
-  try {
-    const { id } = req.params;
-    const productId = id as string;
+    try {
+        const { id } = req.params;
+        const productId = id as string;
 
-    if (!productId) {
-      return res.status(400).json({
-        error: {
-          code: "INVALID_ARGUMENT",
-          message: "Product ID is required",
-        },
-      } as ErrorResponse);
+        if (!productId) {
+            return res.status(400).json({
+                error: {
+                    code: "INVALID_ARGUMENT",
+                    message: "Product ID is required",
+                },
+            } as ErrorResponse);
+        }
+
+        const cached = (await ProductCache.findOne({
+            id: productId,
+        })) as IProductCache | null;
+
+        if (cached) {
+            return res.json(cached.data);
+        }
+
+        const product: IProduct = await lookupProductById(productId);
+
+        const enriched_product = await getEnrichedProduct(product);
+
+        return res.json(enriched_product);
+    } catch (error) {
+        const encodedError = error as ExtendedError;
+
+        if (encodedError.code === "NOT_FOUND") {
+            return res.status(404).json({
+                error: {
+                    code: encodedError.code,
+                    message: `Product not found with ID: ${req.params.id}`,
+                },
+            } as ErrorResponse);
+        }
+
+        console.error("Product lookup error:", error);
+        return res.status(500).json({
+            error: {
+                code: "INTERNAL_ERROR",
+                message: "Failed to get product details",
+            },
+        } as ErrorResponse);
     }
-
-    const cached = (await ProductCache.findOne({
-      id: productId,
-    })) as IProductCache | null;
-
-    if (cached) {
-      return res.json(cached.data);
-    }
-
-    const product: IProduct = await lookupProductById(productId);
-
-    const enriched_product = await getEnrichedProduct(product);
-
-    return res.json(enriched_product);
-  } catch (error) {
-    const encodedError = error as ExtendedError;
-
-    if (encodedError.code === "NOT_FOUND") {
-      return res.status(404).json({
-        error: {
-          code: encodedError.code,
-          message: `Product not found with ID: ${req.params.id}`,
-        },
-      } as ErrorResponse);
-    }
-
-    console.error("Product lookup error:", error);
-    return res.status(500).json({
-      error: {
-        code: "INTERNAL_ERROR",
-        message: "Failed to get product details",
-      },
-    } as ErrorResponse);
-  }
 }
 
 async function getProductByCode(
-  req: Request,
-  res: Response,
+    req: Request,
+    res: Response,
 ): Promise<Response> {
-  try {
-    const { code } = req.params;
-    const productCode = code as string;
+    try {
+        const { code } = req.params;
+        const productCode = code as string;
 
-    if (!productCode) {
-      return res.status(400).json({
-        error: {
-          code: "INVALID_ARGUMENT",
-          message: "Product Code is required",
-        },
-      } as ErrorResponse);
+        if (!productCode) {
+            return res.status(400).json({
+                error: {
+                    code: "INVALID_ARGUMENT",
+                    message: "Product Code is required",
+                },
+            } as ErrorResponse);
+        }
+
+        const cached = (await ProductCache.findOne({
+            code: productCode,
+        })) as IProductCache | null;
+
+        if (cached) {
+            return res.json(cached.data);
+        }
+
+        const product: IProduct = await lookupProductByCode(productCode);
+
+        const enriched_product = await getEnrichedProduct(product);
+
+        return res.json(enriched_product);
+    } catch (error) {
+        const customError = error as ExtendedError;
+
+        if (customError.code === "NOT_FOUND") {
+            return res.status(404).json({
+                error: {
+                    code: "NOT_FOUND",
+                    message: `Product not found with Code: ${req.params.code}`,
+                },
+            } as ErrorResponse);
+        }
+
+        console.error("Product lookup error:", error);
+        return res.status(500).json({
+            error: {
+                code: "INTERNAL_ERROR",
+                message: "Failed to get product details",
+            },
+        } as ErrorResponse);
     }
-
-    const cached = (await ProductCache.findOne({
-      code: productCode,
-    })) as IProductCache | null;
-
-    if (cached) {
-      return res.json(cached.data);
-    }
-
-    const product: IProduct = await lookupProductByCode(productCode);
-
-    const enriched_product = await getEnrichedProduct(product);
-
-    return res.json(enriched_product);
-  } catch (error) {
-    const customError = error as ExtendedError;
-
-    if (customError.code === "NOT_FOUND") {
-      return res.status(404).json({
-        error: {
-          code: "NOT_FOUND",
-          message: `Product not found with Code: ${req.params.code}`,
-        },
-      } as ErrorResponse);
-    }
-
-    console.error("Product lookup error:", error);
-    return res.status(500).json({
-      error: {
-        code: "INTERNAL_ERROR",
-        message: "Failed to get product details",
-      },
-    } as ErrorResponse);
-  }
 }
 
 // ============================================================================
@@ -722,276 +728,280 @@ async function getProductByCode(
 // ============================================================================
 
 export function calculateCosineSimilarity(
-  vecA: number[],
-  vecB: number[],
+    vecA: number[],
+    vecB: number[],
 ): number {
-  const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
-  const magnitudeA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
-  const magnitudeB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
-  return dotProduct / (magnitudeA * magnitudeB);
+    const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
+    const magnitudeA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
+    const magnitudeB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
+    return dotProduct / (magnitudeA * magnitudeB);
 }
 
 async function getBrandCompany(
-  brandName: string | undefined | null,
+    brandName: string | undefined | null,
 ): Promise<ICompany | null> {
-  if (!brandName) return null;
+    if (!brandName) return null;
 
-  const companyName: string = getBrandCompanyName(brandName) ?? "";
-  const cleanName = companyName.split(",")[0].trim();
+    const companyName: string = getBrandCompanyName(brandName) ?? "";
+    const cleanName = companyName.split(",")[0].trim();
 
-  if (cleanName === "") {
-    return null;
-  }
+    if (cleanName === "") {
+        return null;
+    }
 
-  let company = Company.findOne({
-    name: { $regex: new RegExp(`^${cleanName}`, "i") },
-  });
-
-  if (!company) {
-    company = Company.findOne({
-      name: { $regex: cleanName, $options: "i" },
+    let company = Company.findOne({
+        name: { $regex: new RegExp(`^${cleanName}`, "i") },
     });
-  }
 
-  if (!company) return null;
+    if (!company) {
+        company = Company.findOne({
+            name: { $regex: cleanName, $options: "i" },
+        });
+    }
 
-  return company;
+    if (!company) return null;
+
+    return company;
 }
 
 function buildCandidateQuery(product: IProduct, isUnknownGrade: boolean) {
-  const categories = product.categories?.split(",").map((c) => c.trim()) || [];
-  const specificCategory = categories[categories.length - 1];
-  const broadCategory = categories[categories.length - 2];
+    const categories =
+        product.categories?.split(",").map((c) => c.trim()) || [];
+    const specificCategory = categories[categories.length - 1];
+    const broadCategory = categories[categories.length - 2];
 
-  const query: any = {
-    _id: { $ne: product._id },
-    embedding: { $exists: true, $ne: [] },
-  };
+    const query: any = {
+        _id: { $ne: product._id },
+        embedding: { $exists: true, $ne: [] },
+    };
 
-  if (!isUnknownGrade && specificCategory) {
-    query.$or = [{ categories: { $regex: specificCategory, $options: "i" } }];
-    if (broadCategory) {
-      query.$or.push({ categories: { $regex: broadCategory, $options: "i" } });
+    if (!isUnknownGrade && specificCategory) {
+        query.$or = [
+            { categories: { $regex: specificCategory, $options: "i" } },
+        ];
+        if (broadCategory) {
+            query.$or.push({
+                categories: { $regex: broadCategory, $options: "i" },
+            });
+        }
     }
-  }
 
-  return { query, specificCategory, broadCategory };
+    return { query, specificCategory, broadCategory };
 }
 
 // TODO(liam): fix Food Model and then fix this
 async function getProductAlternatives(
-  req: Request,
-  res: Response,
+    req: Request,
+    res: Response,
 ): Promise<Response> {
-  try {
-    const { code } = req.params;
-    const productCode = code as string;
-    const limit: number = parseStrictInt(
-      req.query.limit as string | undefined,
-      5,
-    );
+    try {
+        const { code } = req.params;
+        const productCode = code as string;
+        const limit: number = parseStrictInt(
+            req.query.limit as string | undefined,
+            5,
+        );
 
-    if (!productCode) {
-      return res.status(400).json({
-        error: {
-          code: "INVALID_ARGUMENT",
-          message: "Product Code is required",
-        },
-      } as ErrorResponse);
-    }
-
-    const dbconn = mongoose.default.connection.db;
-    if (!dbconn) {
-      return res.status(500).json({
-        error: {
-          code: "DB_ERROR",
-          message: "Cannot establish connection to database.",
-        },
-      } as ErrorResponse);
-    }
-
-    // Use the outer getCompanyESG helper that includes brand mapping
-    // Note: Make sure the outer getCompanyESG function has access to esgCollection
-
-    // Find product in food collection by code (barcode)
-    const product: IProduct = await lookupProductByCode(productCode);
-
-    if (!product) {
-      return res.status(404).json({
-        error: {
-          code: "NOT_FOUND",
-          message: `Product not found with Code: ${productCode}`,
-        },
-      } as ErrorResponse);
-    }
-
-    // Check if product has embeddings
-    if (!product.embedding || product.embedding.length === 0) {
-      return res.json({
-        productId: product.id,
-        productName: product.name,
-        brand: product.brand,
-        environmental_score_grade: false,
-        company_esg: null,
-        alternatives: [],
-        count: 0,
-        matchedCategory: "",
-        isUnknownGrade: true,
-        similarityThreshold: 0,
-        message:
-          "Product does not have embeddings yet. Generate embeddings by running: POST /api/food/generate",
-        implementation: {
-          status: "inactive",
-        },
-      } satisfies ProductAlternativeResponse);
-    }
-
-    const enrichedProduct = await getEnrichedProduct(product);
-    const company = await getBrandCompany(enrichedProduct.product.brand);
-
-    if (company === null) {
-      return res.status(404).json({
-        error: {
-          code: "NOT_FOUND",
-          message: `Product company was not found: ${enrichedProduct.product.brand}`,
-        },
-      } as ErrorResponse);
-    }
-
-    // Get product's environmental grade
-    const GRADE_SCORES: Record<string, number> = {
-      a: 5,
-      b: 4,
-      c: 3,
-      d: 2,
-      e: 1,
-      "": 0,
-    } as const;
-
-    const originalGrade: string = coalesceStrictString(
-      [company.environmental_grade],
-      "",
-    ).toLowerCase();
-    const originalScore = GRADE_SCORES[originalGrade] || 0;
-    const isUnknownGrade = originalScore <= 0;
-    const similarityThreshold = isUnknownGrade ? 0.65 : 0.75;
-
-    const query = buildCandidateQuery(product, isUnknownGrade);
-    const specificCategory = query.specificCategory;
-    const broadCategory = query.broadCategory;
-
-    // const product: IProduct | null = await Product.findOne({
-    //   code: { $regex: product.code, $options: "i" },
-    // });
-
-    let productEnvironmentScoreGrade: string | boolean = false;
-    if (product) {
-      productEnvironmentScoreGrade =
-        enrichedProduct.product.environmental_score_grade ?? false;
-    } else {
-      console.warn("Product's data could not be found.");
-    }
-
-    const candidates: IProduct[] = await Product.find(query);
-
-    const alternatives = [];
-
-    for (const candidate of candidates) {
-      const similarity = calculateCosineSimilarity(
-        product.embedding,
-        candidate.embedding ?? Array(product.embedding.length).fill(0),
-      );
-
-      if (similarity > similarityThreshold) {
-        const candidateGrade = String(
-          candidate.environmental_score_grade || "",
-        ).toLowerCase();
-        const candidateScore = GRADE_SCORES[candidateGrade] || 0;
-
-        if (candidateScore === 0) continue;
-
-        const shouldInclude = isUnknownGrade
-          ? true
-          : candidateScore > originalScore;
-
-        if (shouldInclude) {
-          const altEsgScore: IEsgScore | undefined =
-            (await getProductESGData(candidate.brand)) ?? undefined;
-          const overallScore: number = altEsgScore?.score_final || 0;
-
-          alternatives.push({
-            product: candidate,
-            esg: altEsgScore,
-
-            final_score: overallScore,
-            similarity: Math.round(similarity * 100) / 100,
-            grade_improvement: isUnknownGrade
-              ? candidateScore
-              : candidateScore - originalScore,
-          } satisfies ProductAlternative);
+        if (!productCode) {
+            return res.status(400).json({
+                error: {
+                    code: "INVALID_ARGUMENT",
+                    message: "Product Code is required",
+                },
+            } as ErrorResponse);
         }
-      }
+
+        const dbconn = mongoose.default.connection.db;
+        if (!dbconn) {
+            return res.status(500).json({
+                error: {
+                    code: "DB_ERROR",
+                    message: "Cannot establish connection to database.",
+                },
+            } as ErrorResponse);
+        }
+
+        // Use the outer getCompanyESG helper that includes brand mapping
+        // Note: Make sure the outer getCompanyESG function has access to esgCollection
+
+        // Find product in food collection by code (barcode)
+        const product: IProduct = await lookupProductByCode(productCode);
+
+        if (!product) {
+            return res.status(404).json({
+                error: {
+                    code: "NOT_FOUND",
+                    message: `Product not found with Code: ${productCode}`,
+                },
+            } as ErrorResponse);
+        }
+
+        // Check if product has embeddings
+        if (!product.embedding || product.embedding.length === 0) {
+            return res.json({
+                productId: product.id,
+                productName: product.name,
+                brand: product.brand,
+                environmental_score_grade: false,
+                company_esg: null,
+                alternatives: [],
+                count: 0,
+                matchedCategory: "",
+                isUnknownGrade: true,
+                similarityThreshold: 0,
+                message:
+                    "Product does not have embeddings yet. Generate embeddings by running: POST /api/food/generate",
+                implementation: {
+                    status: "inactive",
+                },
+            } satisfies ProductAlternativeResponse);
+        }
+
+        const enrichedProduct = await getEnrichedProduct(product);
+        const company = await getBrandCompany(enrichedProduct.product.brand);
+
+        if (company === null) {
+            return res.status(404).json({
+                error: {
+                    code: "NOT_FOUND",
+                    message: `Product company was not found: ${enrichedProduct.product.brand}`,
+                },
+            } as ErrorResponse);
+        }
+
+        // Get product's environmental grade
+        const GRADE_SCORES: Record<string, number> = {
+            a: 5,
+            b: 4,
+            c: 3,
+            d: 2,
+            e: 1,
+            "": 0,
+        } as const;
+
+        const originalGrade: string = coalesceStrictString(
+            [company.environmental_grade],
+            "",
+        ).toLowerCase();
+        const originalScore = GRADE_SCORES[originalGrade] || 0;
+        const isUnknownGrade = originalScore <= 0;
+        const similarityThreshold = isUnknownGrade ? 0.65 : 0.75;
+
+        const query = buildCandidateQuery(product, isUnknownGrade);
+        const specificCategory = query.specificCategory;
+        const broadCategory = query.broadCategory;
+
+        // const product: IProduct | null = await Product.findOne({
+        //   code: { $regex: product.code, $options: "i" },
+        // });
+
+        let productEnvironmentScoreGrade: string | boolean = false;
+        if (product) {
+            productEnvironmentScoreGrade =
+                enrichedProduct.product.environmental_score_grade ?? false;
+        } else {
+            console.warn("Product's data could not be found.");
+        }
+
+        const candidates: IProduct[] = await Product.find(query);
+
+        const alternatives = [];
+
+        for (const candidate of candidates) {
+            const similarity = calculateCosineSimilarity(
+                product.embedding,
+                candidate.embedding ?? Array(product.embedding.length).fill(0),
+            );
+
+            if (similarity > similarityThreshold) {
+                const candidateGrade = String(
+                    candidate.environmental_score_grade || "",
+                ).toLowerCase();
+                const candidateScore = GRADE_SCORES[candidateGrade] || 0;
+
+                if (candidateScore === 0) continue;
+
+                const shouldInclude = isUnknownGrade
+                    ? true
+                    : candidateScore > originalScore;
+
+                if (shouldInclude) {
+                    const altEsgScore: IEsgScore | undefined =
+                        (await getProductESGData(candidate.brand)) ?? undefined;
+                    const overallScore: number = altEsgScore?.score_final || 0;
+
+                    alternatives.push({
+                        product: candidate,
+                        esg: altEsgScore,
+
+                        final_score: overallScore,
+                        similarity: Math.round(similarity * 100) / 100,
+                        grade_improvement: isUnknownGrade
+                            ? candidateScore
+                            : candidateScore - originalScore,
+                    } satisfies ProductAlternative);
+                }
+            }
+        }
+
+        // Sort by similarity first (most relevant), then grade improvement
+        alternatives.sort((a, b) => {
+            if (Math.abs(b.similarity - a.similarity) > 0.05) {
+                return b.similarity - a.similarity;
+            }
+            return b.grade_improvement - a.grade_improvement;
+        });
+
+        const limitedAlternatives = alternatives.slice(0, limit);
+
+        // Also get ESG for the original product
+        // const originalProductESG = await getProductESGData(product.brand);
+
+        let return_message: string = isUnknownGrade
+            ? "Showing graded alternatives from all categories (original product has no environmental data)"
+            : "";
+
+        return res.json({
+            productId: enrichedProduct.product.id,
+            productName: enrichedProduct.product.name,
+            brand: enrichedProduct.product.brand,
+            environmental_score_grade: productEnvironmentScoreGrade,
+            company_esg: enrichedProduct.esg,
+            alternatives: limitedAlternatives,
+            count: limitedAlternatives.length,
+            matchedCategory: isUnknownGrade
+                ? "all categories"
+                : specificCategory || broadCategory || "",
+            isUnknownGrade: isUnknownGrade,
+            similarityThreshold: similarityThreshold,
+            message: return_message,
+            implementation: {
+                status: "active",
+                method: "Vector search using HuggingFace embeddings with ESG enrichment",
+                features: [
+                    "Semantic similarity using AI embeddings (384-d vectors)",
+                    isUnknownGrade
+                        ? "Minimum 65% similarity for unknown products"
+                        : "Minimum 75% similarity threshold for relevance",
+                    "Filtered by better environmental grades",
+                    "Never recommends unknown grade products",
+                    isUnknownGrade
+                        ? "Searches all categories for unknown products"
+                        : "Specific category matching for graded products",
+                    "Sorted by similarity and grade improvement",
+                    "Enriched with company ESG scores with brand-to-company mapping",
+                ],
+            },
+        } satisfies ProductAlternativeResponse);
+    } catch (error) {
+        console.error("Alternatives lookup error:", error);
+        return res.status(500).json({
+            error: {
+                code: "INTERNAL_ERROR",
+                message: "Failed to get product alternatives",
+            },
+        } as ErrorResponse);
     }
-
-    // Sort by similarity first (most relevant), then grade improvement
-    alternatives.sort((a, b) => {
-      if (Math.abs(b.similarity - a.similarity) > 0.05) {
-        return b.similarity - a.similarity;
-      }
-      return b.grade_improvement - a.grade_improvement;
-    });
-
-    const limitedAlternatives = alternatives.slice(0, limit);
-
-    // Also get ESG for the original product
-    // const originalProductESG = await getProductESGData(product.brand);
-
-    let return_message: string = isUnknownGrade
-      ? "Showing graded alternatives from all categories (original product has no environmental data)"
-      : "";
-
-    return res.json({
-      productId: enrichedProduct.product.id,
-      productName: enrichedProduct.product.name,
-      brand: enrichedProduct.product.brand,
-      environmental_score_grade: productEnvironmentScoreGrade,
-      company_esg: enrichedProduct.esg,
-      alternatives: limitedAlternatives,
-      count: limitedAlternatives.length,
-      matchedCategory: isUnknownGrade
-        ? "all categories"
-        : specificCategory || broadCategory || "",
-      isUnknownGrade: isUnknownGrade,
-      similarityThreshold: similarityThreshold,
-      message: return_message,
-      implementation: {
-        status: "active",
-        method:
-          "Vector search using HuggingFace embeddings with ESG enrichment",
-        features: [
-          "Semantic similarity using AI embeddings (384-d vectors)",
-          isUnknownGrade
-            ? "Minimum 65% similarity for unknown products"
-            : "Minimum 75% similarity threshold for relevance",
-          "Filtered by better environmental grades",
-          "Never recommends unknown grade products",
-          isUnknownGrade
-            ? "Searches all categories for unknown products"
-            : "Specific category matching for graded products",
-          "Sorted by similarity and grade improvement",
-          "Enriched with company ESG scores with brand-to-company mapping",
-        ],
-      },
-    } satisfies ProductAlternativeResponse);
-  } catch (error) {
-    console.error("Alternatives lookup error:", error);
-    return res.status(500).json({
-      error: {
-        code: "INTERNAL_ERROR",
-        message: "Failed to get product alternatives",
-      },
-    } as ErrorResponse);
-  }
 }
 
 // NOTE(liam): flag ingredients endpoint
@@ -1150,103 +1160,107 @@ async function getProductAlternatives(
  *
  */
 async function generateProductSummary(code: string): Promise<IProduct> {
-  try {
-    const cached = (await ProductCache.findOne({
-      code: code,
-    })) as IProductCache | null;
+    try {
+        const cached = (await ProductCache.findOne({
+            code: code,
+        })) as IProductCache | null;
 
-    let product: IProduct | null;
-    if (cached) {
-      console.log("[redis] Cache hit:", cached);
-      product = cached.data;
-    } else {
-      console.log("[redis] Cache miss!");
-      product = await lookupProductByCode(code);
+        let product: IProduct | null;
+        if (cached) {
+            console.log("[redis] Cache hit:", cached);
+            product = cached.data;
+        } else {
+            console.log("[redis] Cache miss!");
+            product = await lookupProductByCode(code);
+        }
+
+        if (!product) {
+        }
+
+        const agentUrl = `${AGENT_API_ENDPOINT.replace(/\/$/, "")}/workflow/run`;
+
+        const headers = {
+            "x-internal-key": AGENT_API_KEY,
+        };
+
+        const payload = {
+            product_identifier: code,
+        };
+
+        console.info(
+            "Calling summary agent:",
+            agentUrl,
+            "payload keys:",
+            Object.keys(payload),
+        );
+
+        const res = await axios.post(agentUrl, payload, {
+            headers,
+            timeout: 100000,
+        });
+
+        if (!res || !res.data) {
+            throw new Error("Agent did not respond.") as ExtendedError;
+        }
+
+        const finalReport = res.data || {};
+
+        const summary: ProductSummary = {
+            data: finalReport.summary || [],
+            metadata: finalReport.metadata || {},
+            generatedAt: new Date().toISOString(),
+        };
+        product.summary = summary;
+
+        const companyRaw: string = product.brand || code;
+        const companyKey: string =
+            encodeURIComponent(
+                companyRaw
+                    .split(",")[0]
+                    .trim()
+                    .toLowerCase()
+                    .replace(/\s+/g, "_"),
+            ) || code;
+        const cacheKey = `brandSummary:${companyKey}`;
+
+        console.log(`[redis] caching with key: '${cacheKey}'`);
+
+        await redisClient.set(cacheKey, JSON.stringify(product), {
+            EX: CACHE_TTL,
+        });
+
+        return product;
+    } catch (error) {
+        const encodedError = error as ExtendedError;
+        console.error(
+            "Failed to generate a product summary:",
+            encodedError.message,
+        );
+        throw encodedError;
     }
-
-    if (!product) {
-    }
-
-    const agentUrl = `${AGENT_API_ENDPOINT.replace(/\/$/, "")}/workflow/run`;
-
-    const headers = {
-      "x-internal-key": AGENT_API_KEY,
-    };
-
-    const payload = {
-      product_identifier: code,
-    };
-
-    console.info(
-      "Calling summary agent:",
-      agentUrl,
-      "payload keys:",
-      Object.keys(payload),
-    );
-
-    const res = await axios.post(agentUrl, payload, {
-      headers,
-      timeout: 100000,
-    });
-
-    if (!res || !res.data) {
-      throw new Error("Agent did not respond.") as ExtendedError;
-    }
-
-    const finalReport = res.data || {};
-
-    const summary: ProductSummary = {
-      data: finalReport.summary || [],
-      metadata: finalReport.metadata || {},
-      generatedAt: new Date().toISOString(),
-    };
-    product.summary = summary;
-
-    const companyRaw: string = product.brand || code;
-    const companyKey: string =
-      encodeURIComponent(
-        companyRaw.split(",")[0].trim().toLowerCase().replace(/\s+/g, "_"),
-      ) || code;
-    const cacheKey = `brandSummary:${companyKey}`;
-
-    console.log(`[redis] caching with key: '${cacheKey}'`);
-
-    await redisClient.set(cacheKey, JSON.stringify(product), {
-      EX: CACHE_TTL,
-    });
-
-    return product;
-  } catch (error) {
-    const encodedError = error as ExtendedError;
-    console.error(
-      "Failed to generate a product summary:",
-      encodedError.message,
-    );
-    throw encodedError;
-  }
 }
 
 async function getProductSummary(
-  req: Request,
-  res: Response,
+    req: Request,
+    res: Response,
 ): Promise<Response> {
-  try {
-    const { code } = req.params;
-    const productCode = code as string;
+    try {
+        const { code } = req.params;
+        const productCode = code as string;
 
-    const product: IProduct = await generateProductSummary(productCode);
+        const product: IProduct = await generateProductSummary(productCode);
 
-    return res.json(product);
-  } catch (error) {
-    const encodedError = error as ExtendedError;
-    console.error(error);
-    return res.status(500).json({
-      error: {
-        code: encodedError.code || "INTERNAL_ERROR",
-        message: encodedError.message,
-      },
-    } as ErrorResponse);
-  }
+        return res.json(product);
+    } catch (error) {
+        const encodedError = error as ExtendedError;
+        console.error(error);
+        return res.status(500).json({
+            error: {
+                code: encodedError.code || "INTERNAL_ERROR",
+                message: encodedError.message,
+            },
+        } as ErrorResponse);
+    }
 }
 
 // ============================================================================
@@ -1254,11 +1268,11 @@ async function getProductSummary(
 // ============================================================================
 
 export {
-  searchProducts,
-  getProducts,
-  getProductById,
-  getProductByCode,
-  getProductAlternatives,
-  generateProductSummary,
-  getProductSummary,
+    searchProducts,
+    getProducts,
+    getProductById,
+    getProductByCode,
+    getProductAlternatives,
+    generateProductSummary,
+    getProductSummary,
 };
