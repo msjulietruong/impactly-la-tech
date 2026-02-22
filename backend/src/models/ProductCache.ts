@@ -4,42 +4,42 @@ import { IProduct } from "../models/Product.js";
 export type ProductData = Record<string, unknown>;
 
 export interface IProductCache extends Document {
-  code: string;
-  data: IProduct;
-  createdAt: Date;
-  updatedAt: Date;
+    code: string;
+    data: IProduct;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const productCacheSchema: Schema<IProductCache> = new Schema(
-  {
-    code: {
-      type: String,
-      required: true,
-      unique: true,
-      index: true,
-      description:
-        "Product identifier (barcode, UPC, EAN, GTIN, or search query)",
-      trim: true,
+    {
+        code: {
+            type: String,
+            required: true,
+            unique: true,
+            index: true,
+            description:
+                "Product identifier (barcode, UPC, EAN, GTIN, or search query)",
+            trim: true,
+        },
+        data: {
+            type: Schema.Types.Mixed as unknown as ProductData,
+            required: true,
+            description: "Cached product data in normalized format",
+        },
     },
-    data: {
-      type: Schema.Types.Mixed as unknown as ProductData,
-      required: true,
-      description: "Cached product data in normalized format",
+    {
+        timestamps: true,
     },
-  },
-  {
-    timestamps: true,
-  },
 );
 
 productCacheSchema.index(
-  { updatedAt: 1 },
-  { expireAfterSeconds: 60 * 60 * 24 * 7 },
+    { updatedAt: 1 },
+    { expireAfterSeconds: 60 * 60 * 24 * 7 },
 );
 
 const ProductCache: Model<IProductCache> = mongoose.model<IProductCache>(
-  "ProductCache",
-  productCacheSchema,
+    "ProductCache",
+    productCacheSchema,
 );
 
 export default ProductCache;

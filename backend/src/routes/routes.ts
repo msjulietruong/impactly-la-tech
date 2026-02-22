@@ -31,24 +31,24 @@ router.get("/api/products/barcode/:code", productController.getProductByCode);
 router.get("/api/products/id/:id", productController.getProductById);
 
 router.get(
-  "/api/products/:code/alternatives",
-  productController.getProductAlternatives,
+    "/api/products/:code/alternatives",
+    productController.getProductAlternatives,
 );
 router.get(
-  "/api/products/code/:code/alternatives",
-  productController.getProductAlternatives,
+    "/api/products/code/:code/alternatives",
+    productController.getProductAlternatives,
 );
 router.get(
-  "/api/products/barcode/:code/alternatives",
-  productController.getProductAlternatives,
+    "/api/products/barcode/:code/alternatives",
+    productController.getProductAlternatives,
 );
 
 router.get("/api/products/:code/summary", productController.getProductSummary);
 
 router.get(
-  "/api/companies/:id",
-  validateObjectId("id"),
-  companyController.getCompanyById,
+    "/api/companies/:id",
+    validateObjectId("id"),
+    companyController.getCompanyById,
 );
 
 // Generate embeddings (run once)
