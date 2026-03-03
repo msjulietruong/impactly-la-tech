@@ -5,7 +5,7 @@ export type ProductData = Record<string, unknown>;
 
 export interface IProductCache extends Document {
     code: string;
-    data: IProduct;
+    data: unknown;
     createdAt: Date;
     updatedAt: Date;
 }
