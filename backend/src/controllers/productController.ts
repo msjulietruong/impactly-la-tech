@@ -170,7 +170,7 @@ async function getProductESGData(
 // ============================================================================
 
 async function lookupProductByCode(code: string): Promise<IProduct> {
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve));
 
     const parsedCode: number = parseStrictInt(code, 0);
     const product: IProduct | null = await Product.findOne({
