@@ -81,8 +81,8 @@ async function generateEmbeddings(
 
         console.log("Products found needing embeddings:", products.length);
         if (products.length === 0) {
-            console.log("First product:", products[0].name);
-            console.log("First product embedding:", products[0].embedding);
+            // console.log("First product:", products[0].name);
+            // console.log("First product embedding:", products[0].embedding);
             return res.json({
                 success: true,
                 message: "All products already have embeddings",
