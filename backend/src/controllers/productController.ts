@@ -256,6 +256,8 @@ type IngredientRating = {
     category: string;
 };
 
+// TODO(liam): this is only for testing purposes,
+// it may be better to reference this via DB in the future.
 const INGREDIENTS: Record<string, IngredientRating> = {
     sugar: { score: -2, category: "sweetener" },
     spinach: { score: 4, category: "vegetable" },
