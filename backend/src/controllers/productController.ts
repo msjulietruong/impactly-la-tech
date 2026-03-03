@@ -5,7 +5,6 @@ import { ExtendedError, ErrorResponse } from "../models/Error.js";
 
 import Company, { ICompany, COMPANY_BRAND_MAP } from "../models/Company.js";
 import Brand, { IBrand } from "../models/Brand.js";
-// import Food, { IFood } from "../models/Food.js";
 
 import mongoose from "mongoose";
 import axios, { HttpStatusCode } from "axios";
@@ -254,9 +253,12 @@ async function lookupProductByQuery(
 async function getEnrichedProduct(product: IProduct): Promise<EnrichedProduct> {
     const esgScore = await getProductESGData(product.brand);
 
+    const riskFlags = null;
+
     const enrichedProduct = {
         product: product.toObject(),
         esg: esgScore?.toObject() ?? null,
+        risk_flags: riskFlags,
     };
 
     return enrichedProduct;

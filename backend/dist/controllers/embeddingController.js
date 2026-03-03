@@ -1,4 +1,3 @@
-// import Food, { IFood } from "../models/Food.js";
 import Product from "../models/Product.js";
 import { pipeline } from "@xenova/transformers";
 // Grade ranking (A is best, E is worst)

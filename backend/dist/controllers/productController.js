@@ -4,7 +4,6 @@ import EsgScore from "../models/EsgScore.js";
 import { ExtendedError } from "../models/Error.js";
 import Company, { COMPANY_BRAND_MAP } from "../models/Company.js";
 import Brand from "../models/Brand.js";
-// import Food, { IFood } from "../models/Food.js";
 import mongoose from "mongoose";
 import axios from "axios";
 import redisClient from "../utils/redisClient.js";
@@ -154,9 +153,11 @@ async function lookupProductByQuery(query, limit = 10) {
 }
 async function getEnrichedProduct(product) {
     const esgScore = await getProductESGData(product.brand);
+    const riskFlags = null;
     const enrichedProduct = {
         product: product.toObject(),
         esg: esgScore?.toObject() ?? null,
+        risk_flags: riskFlags,
     };
     return enrichedProduct;
 }
@@ -593,9 +594,13 @@ function buildCandidateQuery(product, isUnknownGrade) {
         embedding: { $exists: true, $ne: [] },
     };
     if (!isUnknownGrade && specificCategory) {
-        query.$or = [{ categories: { $regex: specificCategory, $options: "i" } }];
+        query.$or = [
+            { categories: { $regex: specificCategory, $options: "i" } },
+        ];
         if (broadCategory) {
-            query.$or.push({ categories: { $regex: broadCategory, $options: "i" } });
+            query.$or.push({
+                categories: { $regex: broadCategory, $options: "i" },
+            });
         }
     }
     return { query, specificCategory, broadCategory };
@@ -952,7 +957,11 @@ async function generateProductSummary(code) {
         };
         product.summary = summary;
         const companyRaw = product.brand || code;
-        const companyKey = encodeURIComponent(companyRaw.split(",")[0].trim().toLowerCase().replace(/\s+/g, "_")) || code;
+        const companyKey = encodeURIComponent(companyRaw
+            .split(",")[0]
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, "_")) || code;
         const cacheKey = `brandSummary:${companyKey}`;
         console.log(`[redis] caching with key: '${cacheKey}'`);
         await redisClient.set(cacheKey, JSON.stringify(product), {

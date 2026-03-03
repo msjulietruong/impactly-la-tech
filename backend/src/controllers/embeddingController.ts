@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-// import Food, { IFood } from "../models/Food.js";
 import Product, { IProduct } from "../models/Product.js";
 import { ObjectId } from "mongodb";
 import { pipeline, FeatureExtractionPipeline } from "@xenova/transformers";
