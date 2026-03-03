@@ -13,6 +13,7 @@ export interface IProduct extends Document {
     description?: string;
     categories?: string;
     image_url?: string;
+    ingredients?: string[];
     embedding?: number[];
     summary?: ProductSummary;
     environmental_score_grade?: string | boolean;
@@ -46,6 +47,9 @@ const productSchema: Schema<IProduct> = new Schema(
         },
         image_url: {
             type: String,
+        },
+        ingredients: {
+            type: [String],
         },
         embedding: {
             type: [Number],

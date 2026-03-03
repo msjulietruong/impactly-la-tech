@@ -8,6 +8,9 @@ import mongoose from "mongoose";
 import axios from "axios";
 import redisClient from "../utils/redisClient.js";
 import { AGENT_API_ENDPOINT, AGENT_API_KEY, CACHE_TTL, } from "../utils/config.js";
+function normalizeString(s) {
+    return s.trim().toLowerCase();
+}
 /**
  * Convert brand name to parent company name
  */
@@ -88,8 +91,6 @@ async function getProductESGData(brandName) {
         return null;
     }
 }
-// TODO(Liam): do below
-// ============================================================================
 // PRODUCT SEARCH AND LISTING
 // ============================================================================
 async function lookupProductByCode(code) {
@@ -151,9 +152,34 @@ async function lookupProductByQuery(query, limit = 10) {
     }
     return result;
 }
+const INGREDIENTS = {
+    sugar: { score: -2, category: "sweetener" },
+    spinach: { score: 4, category: "vegetable" },
+    "sodium benzoate": { score: -1, category: "preservative" },
+};
+function getProductRiskFlags(ingredients) {
+    if (!Array.isArray(ingredients)) {
+        return {
+            averageScore: 0,
+            breakdown: [],
+        };
+    }
+    const ratings = ingredients.map((ingredient) => {
+        const key = normalizeString(ingredient);
+        return {
+            name: key,
+            rating: INGREDIENTS[key] ?? { score: 0, category: "unknown" },
+        };
+    });
+    const total = ratings.reduce((sum, r) => sum + r.rating.score, 0);
+    return {
+        averageScore: total / ratings.length,
+        breakdown: ratings,
+    };
+}
 async function getEnrichedProduct(product) {
     const esgScore = await getProductESGData(product.brand);
-    const riskFlags = null;
+    const riskFlags = getProductRiskFlags(product.ingredients ?? []);
     const enrichedProduct = {
         product: product.toObject(),
         esg: esgScore?.toObject() ?? null,

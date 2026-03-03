@@ -57,6 +57,10 @@ interface ProductAlternativeResponse {
     };
 }
 
+function normalizeString(s: string): string {
+    return s.trim().toLowerCase();
+}
+
 /**
  * Convert brand name to parent company name
  */
@@ -162,9 +166,6 @@ async function getProductESGData(
     }
 }
 
-// TODO(Liam): do below
-
-// ============================================================================
 // PRODUCT SEARCH AND LISTING
 // ============================================================================
 
@@ -250,10 +251,55 @@ async function lookupProductByQuery(
     return result;
 }
 
+type IngredientRating = {
+    score: number;
+    category: string;
+};
+
+const INGREDIENTS: Record<string, IngredientRating> = {
+    sugar: { score: -2, category: "sweetener" },
+    spinach: { score: 4, category: "vegetable" },
+    "sodium benzoate": { score: -1, category: "preservative" },
+};
+
+interface IngredientResult {
+    name: string;
+    rating: IngredientRating;
+}
+
+interface ProductRiskFlags {
+    averageScore: number;
+    breakdown: IngredientResult[];
+}
+
+function getProductRiskFlags(ingredients: string[]): ProductRiskFlags {
+    if (!Array.isArray(ingredients)) {
+        return {
+            averageScore: 0,
+            breakdown: [],
+        };
+    }
+
+    const ratings: IngredientResult[] = ingredients.map((ingredient) => {
+        const key = normalizeString(ingredient);
+        return {
+            name: key,
+            rating: INGREDIENTS[key] ?? { score: 0, category: "unknown" },
+        };
+    });
+
+    const total = ratings.reduce((sum, r) => sum + r.rating.score, 0);
+
+    return {
+        averageScore: total / ratings.length,
+        breakdown: ratings,
+    };
+}
+
 async function getEnrichedProduct(product: IProduct): Promise<EnrichedProduct> {
     const esgScore = await getProductESGData(product.brand);
 
-    const riskFlags = null;
+    const riskFlags = getProductRiskFlags(product.ingredients ?? []);
 
     const enrichedProduct = {
         product: product.toObject(),

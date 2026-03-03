@@ -25,6 +25,9 @@ const productSchema = new Schema({
     image_url: {
         type: String,
     },
+    ingredients: {
+        type: [String],
+    },
     embedding: {
         type: [Number],
     },
