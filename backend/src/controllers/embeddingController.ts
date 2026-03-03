@@ -56,7 +56,7 @@ async function generateEmbeddings(
     res: Response,
 ): Promise<Response> {
     try {
-        const totalProducts = Product.countDocuments();
+        const totalProducts = await Product.countDocuments();
         console.log("Total products in collection:", totalProducts);
 
         // Check a sample product
@@ -153,11 +153,11 @@ async function debugGradeStats(req: Request, res: Response): Promise<Response> {
             { $sort: { count: -1 } },
         ]);
 
-        const totalProducts = Product.countDocuments();
-        const withEmbeddings = Product.countDocuments({
+        const totalProducts = await Product.countDocuments();
+        const withEmbeddings = await Product.countDocuments({
             embedding: { $exists: true, $ne: [] },
         });
-        const withGrades = Product.countDocuments({
+        const withGrades = await Product.countDocuments({
             environmental_score_grade: { $nin: ["unknown", "", null] },
         });
 
