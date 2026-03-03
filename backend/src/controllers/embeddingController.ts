@@ -124,7 +124,7 @@ async function searchProducts(req: Request, res: Response): Promise<Response> {
     try {
         const { query } = req.params;
 
-        const products = Product.find({
+        const products = await Product.find({
             product_name: { $regex: query, $options: "i" },
         }).limit(10);
 

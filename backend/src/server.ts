@@ -11,7 +11,7 @@ import { PORT, MONGODB_URI } from "./utils/config.js";
 import dns from "node:dns/promises";
 
 // console.log(await dns.getServers());
-dns.setServers(["8.8.8.8"]);
+// dns.setServers(["8.8.8.8"]);
 
 const app = express();
 

@@ -799,12 +799,12 @@ async function getBrandCompany(
         return null;
     }
 
-    let company = Company.findOne({
+    let company = await Company.findOne({
         name: { $regex: new RegExp(`^${cleanName}`, "i") },
     });
 
     if (!company) {
-        company = Company.findOne({
+        company = await Company.findOne({
             name: { $regex: cleanName, $options: "i" },
         });
     }

@@ -5,7 +5,7 @@ export type ProductData = Record<string, unknown>;
 
 export interface IProductCache extends Document {
     code: string;
-    data: unknown;
+    data: any;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -22,7 +22,7 @@ const productCacheSchema: Schema<IProductCache> = new Schema(
             trim: true,
         },
         data: {
-            type: Schema.Types.Mixed as unknown as ProductData,
+            type: Schema.Types.Mixed,
             required: true,
             description: "Cached product data in normalized format",
         },
