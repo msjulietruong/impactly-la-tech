@@ -31,7 +31,6 @@ const productSchema: Schema<IProduct> = new Schema(
         brand: {
             type: String,
             required: true,
-            unique: true,
             alias: "brands",
         },
         name: {
