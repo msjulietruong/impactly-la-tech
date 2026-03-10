@@ -480,7 +480,7 @@ async function getProductById(req: Request, res: Response): Promise<Response> {
         }
 
         const cached = (await ProductCache.findOne({
-            id: productId,
+            _id: productId,
         })) as IProductCache | null;
 
         if (cached) {
@@ -937,9 +937,10 @@ async function getProductAlternatives(
         const isUnknownGrade = originalScore <= 0;
         const similarityThreshold = isUnknownGrade ? 0.65 : 0.75;
 
-        const query = buildCandidateQuery(product, isUnknownGrade);
-        const specificCategory = query.specificCategory;
-        const broadCategory = query.broadCategory;
+        const fatQuery = buildCandidateQuery(product, isUnknownGrade);
+        const query = fatQuery.query;
+        const specificCategory = fatQuery.specificCategory;
+        const broadCategory = fatQuery.broadCategory;
 
         // const product: IProduct | null = await Product.findOne({
         //   code: { $regex: product.code, $options: "i" },
@@ -1217,50 +1218,18 @@ async function generateProductSummary(code: string): Promise<IProduct> {
 
         let product: IProduct | null;
         if (cached) {
-            console.log("[redis] Cache hit:", cached);
+            console.log("[database] Cache hit:", cached);
             product = cached.data;
         } else {
-            console.log("[redis] Cache miss!");
+            console.log("[database] Cache miss!");
             product = await lookupProductByCode(code);
         }
 
         if (!product) {
+            throw new Error(
+                "Cannot generate product summary: code does not match with any product.",
+            );
         }
-
-        const agentUrl = `${AGENT_API_ENDPOINT.replace(/\/$/, "")}/workflow/run`;
-
-        const headers = {
-            "x-internal-key": AGENT_API_KEY,
-        };
-
-        const payload = {
-            product_identifier: code,
-        };
-
-        console.info(
-            "Calling summary agent:",
-            agentUrl,
-            "payload keys:",
-            Object.keys(payload),
-        );
-
-        const res = await axios.post(agentUrl, payload, {
-            headers,
-            timeout: 100000,
-        });
-
-        if (!res || !res.data) {
-            throw new Error("Agent did not respond.") as ExtendedError;
-        }
-
-        const finalReport = res.data || {};
-
-        const summary: ProductSummary = {
-            data: finalReport.summary || [],
-            metadata: finalReport.metadata || {},
-            generatedAt: new Date().toISOString(),
-        };
-        product.summary = summary;
 
         const companyRaw: string = product.brand || code;
         const companyKey: string =
@@ -1273,12 +1242,53 @@ async function generateProductSummary(code: string): Promise<IProduct> {
             ) || code;
         const cacheKey = `brandSummary:${companyKey}`;
 
-        console.log(`[redis] caching with key: '${cacheKey}'`);
+        let cachedSummary = await redisClient.get(cacheKey);
+        if (cachedSummary) {
+            console.log("[redis] Cache hit:", cachedSummary);
+            product = JSON.parse(cachedSummary);
+        } else {
+            console.log("[redis] Cache miss...");
 
-        await redisClient.set(cacheKey, JSON.stringify(product), {
-            EX: CACHE_TTL,
-        });
+            const agentUrl = `${AGENT_API_ENDPOINT.replace(/\/$/, "")}/workflow/run`;
 
+            const headers = {
+                "x-internal-key": AGENT_API_KEY,
+            };
+
+            const payload = {
+                product_identifier: code,
+            };
+
+            console.info(
+                "Calling summary agent:",
+                agentUrl,
+                "payload keys:",
+                Object.keys(payload),
+            );
+
+            const res = await axios.post(agentUrl, payload, {
+                headers,
+                timeout: 100000,
+            });
+
+            if (!res || !res.data) {
+                throw new Error("Agent did not respond.") as ExtendedError;
+            }
+
+            const finalReport = res.data || {};
+
+            const summary: ProductSummary = {
+                data: finalReport.summary || [],
+                metadata: finalReport.metadata || {},
+                generatedAt: new Date().toISOString(),
+            };
+            product.summary = summary;
+
+            console.log(`[redis] caching with key: '${cacheKey}'`);
+            await redisClient.set(cacheKey, JSON.stringify(product), {
+                EX: CACHE_TTL,
+            });
+        }
         return product;
     } catch (error) {
         const encodedError = error as ExtendedError;

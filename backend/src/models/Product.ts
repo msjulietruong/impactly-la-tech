@@ -59,7 +59,7 @@ const productSchema: Schema<IProduct> = new Schema(
             generatedAt: String,
         },
         environmental_score_grade: {
-            type: String,
+            type: Schema.Types.Mixed,
             validate: {
                 validator: (v) =>
                     typeof v === "string" || typeof v === "boolean",
