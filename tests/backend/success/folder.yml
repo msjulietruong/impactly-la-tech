@@ -1,0 +1,17 @@
+info:
+  name: success
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+  scripts:
+    - type: tests
+      code: |-
+        test("Route can be reached and returns 2XX", function () {
+          expect(res.getStatus()).to.be.within(200, 299);
+
+          const json = res.getBody();
+
+          expect(json).to.not.have.property("error");
+        });

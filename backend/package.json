@@ -5,8 +5,9 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
+    "build": "tsc",
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
+    "start": "node dist/server.js",
     "ingest:esg": "node scripts/ingest-esg.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "verify": "node scripts/ingest-esg.js && node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
@@ -20,14 +21,18 @@
     "csv-parse": "^5.5.2",
     "dotenv": "^16.6.1",
     "express": "^4.18.2",
-    "mongoose": "^8.19.1",
     "mongoose": "^8.0.3",
     "redis": "^5.8.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.10",
     "jest": "^29.7.0",
     "nodemon": "^3.0.2",
-    "supertest": "^6.3.4"
+    "supertest": "^6.3.4",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
   },
   "keywords": [
     "api",

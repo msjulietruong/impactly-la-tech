@@ -1,0 +1,44 @@
+info:
+  name: product summary
+  type: http
+  seq: 9
+
+http:
+  method: GET
+  url: http://localhost:3001/api/products/95/summary
+  params:
+    - name: ""
+      value: ""
+      type: query
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const body = res.getBody();
+        const product = body;
+
+        test("Product is valid", () => {
+          expect(product).to.have.property("product_name");
+          expect(product).to.have.property("code");
+        });
+
+        test("Product has valid embeddings", () => {
+          expect(product.embedding).to.be.an("array");
+          expect(product.embedding.length).to.be.greaterThan(0);
+        });
+
+        test("Product has valid summary", () => {
+          expect(product.summary).to.not.equal(null);
+          expect(product.summary).to.have.property("data");
+          expect(product.summary.data).to.be.an("array");
+          expect(product.summary.data.length).to.be.greaterThan(0);
+          expect(product.summary.data[0]).to.be.a("string");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
